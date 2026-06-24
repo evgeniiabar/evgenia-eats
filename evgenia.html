@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#f2f2f5">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Евгения ест</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+:root{
+  --bg:#f2f2f5;--bg2:#e8e8ed;--card:#fff;--border:#dcdce4;
+  --accent:#6c5ce7;--accent2:#a29bfe;--accent-bg:#ede9ff;
+  --green:#00b894;--green-bg:#e8f8f5;--orange:#e17055;--red:#d63031;
+  --text:#1a1a2e;--text2:#6b6b85;--text3:#b0b0c0;
+  --radius:18px;--radius-sm:12px;--shadow:0 2px 12px rgba(0,0,0,0.07);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;min-height:100dvh;max-width:430px;margin:0 auto;padding-bottom:96px;overflow-x:hidden;}
+
+/* TOP BAR */
+.top-bar{padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center;}
+.date-label{font-size:13px;color:var(--text2);font-weight:500;}
+.logo{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--accent);}
+
+/* BT STATUS BAR — always visible */
+.bt-statusbar{
+  margin:12px 20px 0;
+  display:flex;align-items:center;gap:10px;
+  background:var(--card);border-radius:99px;
+  padding:10px 16px;box-shadow:var(--shadow);
+  cursor:pointer;transition:all .15s;
+}
+.bt-statusbar.connected{background:var(--green-bg);border:1px solid #b2dfdb;}
+.bt-dot{width:10px;height:10px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
+.bt-statusbar.connected .bt-dot{background:var(--green);}
+.bt-statusbar-text{flex:1;font-size:14px;font-weight:600;color:var(--text2);}
+.bt-statusbar.connected .bt-statusbar-text{color:var(--green);}
+.bt-statusbar-weight{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--green);display:none;}
+.bt-statusbar.connected .bt-statusbar-weight{display:block;}
+.bt-statusbar-action{font-size:13px;color:var(--accent);font-weight:600;}
+
+/* RING */
+.hero{padding:20px 20px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.ring-wrap{position:relative;width:180px;height:180px;}
+.ring-svg{transform:rotate(-90deg);}
+.ring-track{fill:none;stroke:var(--bg2);stroke-width:14;}
+.ring-fill{fill:none;stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.34,1.56,.64,1);}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
+.ring-kcal{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.ring-sub{font-size:13px;color:var(--text2);font-weight:500;}
+.stats-row{display:flex;gap:10px;width:100%;}
+.stat-card{flex:1;background:var(--card);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;box-shadow:var(--shadow);}
+.stat-val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;}
+.stat-label{font-size:12px;color:var(--text2);margin-top:2px;}
+
+/* MACROS */
+.macros-card{margin:0 20px 14px;background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.macros-title{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;}
+.macro-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
+.macro-row:last-child{margin-bottom:0;}
+.macro-name{font-size:14px;font-weight:500;width:72px;}
+.macro-track{flex:1;height:7px;background:var(--bg2);border-radius:99px;overflow:hidden;}
+.macro-fill{height:100%;border-radius:99px;transition:width .5s;}
+.macro-g{font-size:13px;color:var(--text2);width:56px;text-align:right;font-weight:500;}
+
+/* LOG */
+.section-header{padding:4px 20px 10px;display:flex;justify-content:space-between;align-items:center;}
+.section-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;}
+.section-action{font-size:13px;color:var(--accent);cursor:pointer;background:none;border:none;font-weight:600;}
+.log-list{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
+.log-entry{background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
+.entry-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--bg);}
+.entry-info{flex:1;min-width:0;}
+.entry-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.entry-meta{font-size:13px;color:var(--text2);margin-top:2px;}
+.entry-kcal{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;color:var(--accent);flex-shrink:0;}
+.entry-del{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;flex-shrink:0;}
+.empty-log{text-align:center;padding:36px 20px;color:var(--text3);font-size:15px;line-height:1.7;}
+
+/* NAV */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:10px 0 max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -2px 16px rgba(0,0,0,0.06);}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 0;color:var(--text3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;transition:color .15s;}
+.nav-btn.active{color:var(--accent);}
+.nav-btn svg{width:23px;height:23px;}
+.nav-add{flex:1;display:flex;align-items:center;justify-content:center;}
+.nav-add-btn{width:54px;height:54px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(108,92,231,.4);margin-top:-16px;transition:transform .15s;}
+.nav-add-btn:active{transform:scale(.93);}
+.nav-add-btn svg{width:28px;height:28px;color:white;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;margin:0 auto;padding:12px 20px 40px;max-height:92dvh;overflow-y:auto;animation:slideUp .25s cubic-bezier(.34,1.2,.64,1);}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-handle{width:44px;height:5px;border-radius:3px;background:var(--border);margin:0 auto 18px;}
+.modal-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:16px;}
+
+/* MEAL TIME */
+.meal-time-btns{display:flex;gap:8px;margin-bottom:16px;}
+.mtb{flex:1;padding:10px;border-radius:10px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
+.mtb.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
+
+/* SEARCH — BIG, front and center */
+.search-wrap{position:relative;margin-bottom:12px;}
+.search-inp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:15px 50px 15px 50px;color:var(--text);font-size:17px;font-weight:500;outline:none;transition:border-color .15s;}
+.search-inp:focus{border-color:var(--accent);background:white;}
+.search-ico{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
+.barcode-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);font-size:22px;}
+
+/* QUICK PICKS */
+.quick-section{margin-bottom:14px;}
+.quick-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+.quick-chips{display:flex;gap:7px;flex-wrap:wrap;}
+.quick-chip{padding:7px 13px;border-radius:99px;background:var(--bg2);border:none;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.quick-chip:active{background:var(--accent-bg);color:var(--accent);}
+
+/* FOOD LIST */
+.food-list{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto;}
+.food-item{background:var(--bg);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;cursor:pointer;gap:14px;transition:all .15s;border:2px solid transparent;}
+.food-item:active{border-color:var(--accent);background:var(--accent-bg);}
+.food-emoji{font-size:24px;flex-shrink:0;}
+.food-name{flex:1;font-size:15px;font-weight:600;}
+.food-right{text-align:right;flex-shrink:0;}
+.food-kcal{font-size:16px;color:var(--accent);font-weight:700;}
+.food-per{font-size:12px;color:var(--text3);}
+
+/* ADD MODE TABS */
+.mode-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;}
+.mode-tabs::-webkit-scrollbar{display:none;}
+.mode-tab{flex-shrink:0;padding:9px 16px;border-radius:99px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+.mode-tab.active{background:var(--accent);border-color:var(--accent);color:white;}
+
+/* PORTION */
+.portion-food{display:flex;align-items:center;gap:14px;margin-bottom:16px;background:var(--bg);border-radius:var(--radius-sm);padding:14px;}
+.portion-emoji{font-size:34px;}
+.portion-food-name{font-size:17px;font-weight:700;}
+.portion-food-meta{font-size:13px;color:var(--text2);margin-top:3px;}
+
+/* Live BT weight indicator in portion */
+.bt-live{display:none;align-items:center;gap:10px;background:var(--green-bg);border:1px solid #b2dfdb;border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:14px;}
+.bt-live.show{display:flex;}
+.bt-live-num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--green);}
+.bt-live-label{font-size:13px;color:var(--text2);flex:1;}
+.bt-live-use{padding:8px 16px;border-radius:99px;background:var(--green);border:none;color:white;font-size:14px;font-weight:700;cursor:pointer;}
+
+.g-big{font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:700;text-align:center;color:var(--text);line-height:1;margin-bottom:2px;}
+.g-label{font-size:14px;color:var(--text2);text-align:center;margin-bottom:14px;font-weight:500;}
+input[type=range]{width:100%;-webkit-appearance:none;height:8px;background:var(--bg2);border-radius:99px;outline:none;margin-bottom:12px;}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(108,92,231,.4);}
+.g-inp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px;color:var(--text);font-size:22px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;outline:none;margin-bottom:12px;}
+.g-inp:focus{border-color:var(--accent);}
+.result-card{background:var(--accent-bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:20px;text-align:center;}
+.result-kcal{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--accent);}
+.result-bju{font-size:14px;color:var(--text2);margin-top:4px;font-weight:500;}
+
+/* COMBO */
+.field{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;color:var(--text);font-size:16px;font-weight:500;outline:none;margin-bottom:12px;transition:border-color .15s;}
+.field:focus{border-color:var(--accent);background:white;}
+.flabel{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;}
+.combo-ings{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
+.combo-ing{display:flex;align-items:center;gap:9px;background:var(--bg);border-radius:var(--radius-sm);padding:11px 13px;}
+.ci-name{flex:1;font-size:14px;font-weight:600;}
+.ci-g{width:62px;background:white;border:2px solid var(--border);border-radius:8px;padding:6px 8px;color:var(--text);font-size:15px;text-align:center;outline:none;font-weight:700;}
+.ci-g:focus{border-color:var(--accent);}
+.ci-unit{font-size:13px;color:var(--text3);}
+.ci-kcal{font-size:13px;color:var(--accent);font-weight:700;min-width:44px;text-align:right;}
+.ci-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:2px 5px;}
+.batch-row{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:var(--radius-sm);padding:13px 16px;margin-bottom:12px;}
+.batch-label{flex:1;}
+.batch-main{font-size:15px;font-weight:700;}
+.batch-sub{font-size:12px;color:var(--text2);margin-top:2px;}
+.batch-inp{width:78px;background:white;border:2px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--text);font-size:18px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;outline:none;}
+.batch-inp:focus{border-color:var(--accent);}
+.combo-total{background:var(--accent-bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.ct-kcal{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--accent);}
+.ct-sub{font-size:13px;color:var(--text2);}
+
+/* SAVED MEALS */
+.saved-meal{background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:13px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.saved-meal:active{border-color:var(--accent);background:var(--accent-bg);}
+.sm-icon{font-size:28px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:white;border-radius:13px;flex-shrink:0;}
+.sm-info{flex:1;}
+.sm-name{font-size:16px;font-weight:700;}
+.sm-meta{font-size:13px;color:var(--text2);margin-top:2px;}
+.sm-remain{font-size:12px;color:var(--green);font-weight:600;margin-top:3px;}
+.sm-remain.low{color:var(--orange);}
+.sm-kcal{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--accent);}
+.sm-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px 6px;}
+
+/* PHOTO */
+.photo-area{border:3px dashed var(--border);border-radius:var(--radius);padding:36px 20px;text-align:center;cursor:pointer;background:var(--bg);transition:border-color .15s;}
+.photo-area input{display:none;}
+.photo-preview{width:100%;border-radius:12px;margin-bottom:12px;display:none;}
+.ai-box{background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-top:14px;display:none;}
+.ai-box.show{display:block;}
+.ai-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
+.ai-item:last-child{border-bottom:none;}
+.ai-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:white;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.ai-check.on{background:var(--accent);border-color:var(--accent);}
+
+/* PAGES */
+.home-page{display:block;}
+.home-page.hidden{display:none;}
+.page{padding:20px;display:none;}
+.page.active{display:block;}
+.page-title{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;margin-bottom:18px;}
+.history-day{margin-bottom:14px;background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow);}
+.hist-title{font-size:14px;font-weight:700;margin-bottom:8px;}
+.hist-bar{height:9px;border-radius:99px;background:var(--bg2);overflow:hidden;margin-bottom:6px;}
+.hist-fill{height:100%;border-radius:99px;}
+.hist-meta{font-size:13px;color:var(--text2);}
+
+/* BTNS */
+.btn{width:100%;padding:16px;border-radius:var(--radius-sm);font-size:16px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
+.btn-primary{background:var(--accent);color:white;box-shadow:0 4px 16px rgba(108,92,231,.3);}
+.btn-primary:active{transform:scale(.98);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-secondary{background:var(--bg2);color:var(--text2);margin-top:10px;}
+
+/* SETTINGS */
+.s-label{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
+
+/* TOAST */
+.toast{position:fixed;bottom:108px;left:50%;transform:translateX(-50%);background:var(--text);color:white;border-radius:99px;padding:12px 24px;font-size:15px;font-weight:600;z-index:999;white-space:nowrap;animation:tIn .2s ease,tOut .3s ease 1.7s forwards;}
+@keyframes tIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes tOut{to{opacity:0;transform:translateX(-50%) translateY(10px)}}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<div class="home-page" id="homePage">
+  <div class="top-bar">
+    <div class="date-label" id="todayLabel"></div>
+    <div class="logo">евгения ест</div>
+  </div>
+
+  <!-- GLOBAL BT STATUS BAR -->
+  <div class="bt-statusbar" id="btStatusBar" onclick="toggleBT()">
+    <div class="bt-dot" id="btDot"></div>
+    <div class="bt-statusbar-text" id="btStatusText">Весы не подключены</div>
+    <div class="bt-statusbar-weight" id="btStatusWeight">0г</div>
+    <div class="bt-statusbar-action" id="btStatusAction">Подключить →</div>
+  </div>
+
+  <div class="hero">
+    <div class="ring-wrap">
+      <svg class="ring-svg" width="180" height="180" viewBox="0 0 180 180">
+        <circle class="ring-track" cx="90" cy="90" r="76"/>
+        <circle class="ring-fill" id="ringFill" cx="90" cy="90" r="76" stroke="url(#rg)" stroke-dasharray="477.5" stroke-dashoffset="477.5"/>
+        <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c5ce7"/><stop offset="100%" stop-color="#a29bfe"/></linearGradient></defs>
+      </svg>
+      <div class="ring-center">
+        <div class="ring-kcal" id="ringKcal">0</div>
+        <div class="ring-sub">из <span id="ringGoal">1700</span> ккал</div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-val" id="statLeft" style="color:var(--green)">1700</div><div class="stat-label">осталось</div></div>
+      <div class="stat-card"><div class="stat-val" id="statN" style="color:var(--accent)">0</div><div class="stat-label">приёмов</div></div>
+      <div class="stat-card"><div class="stat-val" id="statP" style="color:var(--orange)">0г</div><div class="stat-label">белок</div></div>
+    </div>
+  </div>
+
+  <div class="macros-card">
+    <div class="macros-title">БЖУ сегодня</div>
+    <div class="macro-row"><div class="macro-name">Белки</div><div class="macro-track"><div class="macro-fill" id="mPF" style="background:#e17055;width:0%"></div></div><div class="macro-g" id="mP">0/130г</div></div>
+    <div class="macro-row"><div class="macro-name">Жиры</div><div class="macro-track"><div class="macro-fill" id="mFF" style="background:#fdcb6e;width:0%"></div></div><div class="macro-g" id="mF">0/55г</div></div>
+    <div class="macro-row"><div class="macro-name">Углеводы</div><div class="macro-track"><div class="macro-fill" id="mCF" style="background:#74b9ff;width:0%"></div></div><div class="macro-g" id="mC">0/155г</div></div>
+  </div>
+
+  <div class="section-header">
+    <div class="section-title">Сегодня</div>
+    <button class="section-action" onclick="clearToday()">Очистить</button>
+  </div>
+  <div class="log-list" id="logList">
+    <div class="empty-log">Пока ничего не добавлено 🍽<br><span style="font-size:14px">Нажми + чтобы добавить еду</span></div>
+  </div>
+</div>
+
+<!-- MEALS PAGE -->
+<div class="page" id="mealsPage">
+  <div class="page-title">Мои блюда</div>
+  <div id="savedMealsList"></div>
+  <div class="empty-log" id="mealsEmpty" style="display:none">Нет сохранённых блюд.<br>Создай в разделе «Смесь»!</div>
+</div>
+
+<!-- HISTORY PAGE -->
+<div class="page" id="historyPage">
+  <div class="page-title">История</div>
+  <div id="historyList"></div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn active" id="navHome" onclick="showPage('home')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+    Сегодня
+  </button>
+  <button class="nav-btn" id="navMeals" onclick="showPage('meals')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+    Блюда
+  </button>
+  <div class="nav-add"><button class="nav-add-btn" onclick="openAddModal()"><svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg></button></div>
+  <button class="nav-btn" id="navHistory" onclick="showPage('history')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+    История
+  </button>
+  <button class="nav-btn" id="navSet" onclick="showPage('settings')">
+    <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+    Настройки
+  </button>
+</nav>
+
+<!-- ADD MODAL — SEARCH IS DEFAULT -->
+<div class="modal-overlay" id="addModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Добавить еду</div>
+
+    <div class="meal-time-btns">
+      <button class="mtb active" onclick="selTime(this,'завтрак')">Завтрак</button>
+      <button class="mtb" onclick="selTime(this,'обед')">Обед</button>
+      <button class="mtb" onclick="selTime(this,'ужин')">Ужин</button>
+    </div>
+
+    <div class="mode-tabs">
+      <button class="mode-tab active" onclick="switchMode('search')">🔍 Продукты</button>
+      <button class="mode-tab" onclick="switchMode('saved')">⭐ Мои блюда</button>
+      <button class="mode-tab" onclick="switchMode('combo')">🍳 Смесь</button>
+      <button class="mode-tab" onclick="switchMode('photo')">📸 Фото</button>
+    </div>
+
+    <!-- SEARCH MODE (default) -->
+    <div id="modeSearch">
+      <div class="search-wrap">
+        <svg class="search-ico" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-inp" type="text" placeholder="Творог, тунец, хлеб..." id="searchInp" oninput="doSearch(this.value)" autocomplete="off">
+        <button class="barcode-btn" onclick="openBarcode()" title="Сканировать штрихкод">📷</button>
+      </div>
+
+      <!-- Quick picks when search empty -->
+      <div id="quickPicks">
+        <div class="quick-section">
+          <div class="quick-title">Часто ем</div>
+          <div class="quick-chips" id="recentChips"></div>
+        </div>
+        <div class="quick-section">
+          <div class="quick-title">Белки</div>
+          <div class="quick-chips">
+            <button class="quick-chip" onclick="quickPick('Творог 5%')">🧀 Творог</button>
+            <button class="quick-chip" onclick="quickPick('Тунец в собственном соку')">🐟 Тунец</button>
+            <button class="quick-chip" onclick="quickPick('Куриная грудка')">🍗 Грудка</button>
+            <button class="quick-chip" onclick="quickPick('Яйцо куриное')">🥚 Яйцо</button>
+            <button class="quick-chip" onclick="quickPick('Греческий йогурт 2%')">🥛 Йогурт</button>
+          </div>
+        </div>
+        <div class="quick-section">
+          <div class="quick-title">Хлеб и крупы</div>
+          <div class="quick-chips">
+            <button class="quick-chip" onclick="quickPick('Хлеб ржаной')">🍞 Ржаной</button>
+            <button class="quick-chip" onclick="quickPick('Хлеб бородинский')">🍞 Бородинский</button>
+            <button class="quick-chip" onclick="quickPick('Макароны варёные')">🍝 Макароны</button>
+            <button class="quick-chip" onclick="quickPick('Гречка варёная')">🌾 Гречка</button>
+            <button class="quick-chip" onclick="quickPick('Овсянка варёная')">🌾 Овсянка</button>
+          </div>
+        </div>
+        <div class="quick-section">
+          <div class="quick-title">Овощи и салат</div>
+          <div class="quick-chips">
+            <button class="quick-chip" onclick="quickPick('Огурец')">🥒 Огурец</button>
+            <button class="quick-chip" onclick="quickPick('Помидор')">🍅 Томат</button>
+            <button class="quick-chip" onclick="quickPick('Брокколи')">🥦 Брокколи</button>
+            <button class="quick-chip" onclick="quickPick('Кабачок')">🥒 Кабачок</button>
+            <button class="quick-chip" onclick="quickPick('Авокадо')">🥑 Авокадо</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="food-list" id="foodList" style="display:none"></div>
+    </div>
+
+    <!-- SAVED MODE -->
+    <div id="modeSaved" style="display:none">
+      <div id="savedInModal"></div>
+    </div>
+
+    <!-- COMBO MODE -->
+    <div id="modeCombo" style="display:none">
+      <div class="flabel">Название блюда</div>
+      <input class="field" type="text" placeholder="Рагу, тунец с творогом..." id="comboName">
+      <div class="flabel">Ингредиенты</div>
+      <div class="search-wrap" style="margin-bottom:8px">
+        <svg class="search-ico" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input class="search-inp" type="text" placeholder="Добавить продукт..." id="comboSearch" oninput="doComboSearch(this.value)" style="font-size:15px;padding:13px 16px 13px 46px">
+      </div>
+      <div class="food-list" id="comboSR" style="display:none;max-height:200px;margin-bottom:10px"></div>
+      <div class="combo-ings" id="comboIngs"></div>
+      <div class="batch-row">
+        <div class="batch-label">
+          <div class="batch-main">Всего приготовила</div>
+          <div class="batch-sub">введи общий вес готового блюда</div>
+        </div>
+        <input class="batch-inp" type="number" id="batchG" placeholder="800">
+        <div style="font-size:14px;color:var(--text2);font-weight:600;margin-left:2px">г</div>
+      </div>
+      <div class="combo-total">
+        <div><div class="ct-sub flabel" style="margin-bottom:2px">Итого</div><div class="ct-sub" id="comboIngG">0г</div></div>
+        <div class="ct-kcal" id="comboKcal">0 ккал</div>
+      </div>
+      <button class="btn btn-secondary" style="margin-top:0;margin-bottom:10px" onclick="saveCombo()">⭐ Сохранить блюдо</button>
+      <button class="btn btn-primary" onclick="logComboNow()">Добавить сейчас →</button>
+    </div>
+
+    <!-- PHOTO MODE -->
+    <div id="modePhoto" style="display:none">
+      <label class="photo-area" id="photoArea">
+        <input type="file" accept="image/*" capture="environment" id="photoInp" onchange="handlePhoto(event)">
+        <img class="photo-preview" id="photoPreview">
+        <div id="photoPlaceholder">
+          <div style="font-size:48px;margin-bottom:10px">📸</div>
+          <div style="font-size:16px;font-weight:700">Сфотографировать еду</div>
+          <div style="font-size:14px;color:var(--text2);margin-top:4px">или выбрать из галереи</div>
+        </div>
+      </label>
+      <div class="ai-box" id="aiBox">
+        <div id="aiLoad" style="text-align:center;padding:20px;color:var(--text2);font-size:15px"><span class="spinner"></span>ИИ анализирует...</div>
+        <div id="aiItems"></div>
+      </div>
+      <button class="btn btn-primary" id="addPhotoBtn" onclick="addPhotoItems()" style="display:none;margin-top:14px">Добавить выбранное ✓</button>
+    </div>
+
+    <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+  </div>
+</div>
+
+<!-- PORTION MODAL -->
+<div class="modal-overlay" id="portionModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="portion-food">
+      <div class="portion-emoji" id="pEmoji"></div>
+      <div>
+        <div class="portion-food-name" id="pName"></div>
+        <div class="portion-food-meta" id="pMeta"></div>
+      </div>
+    </div>
+    <!-- Live BT weight -->
+    <div class="bt-live" id="btLive">
+      <div>
+        <div class="bt-live-num" id="btLiveNum">0</div>
+        <div style="font-size:12px;color:var(--text2)">граммов на весах</div>
+      </div>
+      <div class="bt-live-label">Поставь еду на весы и нажми →</div>
+      <button class="bt-live-use" onclick="useLiveWeight()">Взять →</button>
+    </div>
+    <div class="g-big" id="gBig">100</div>
+    <div class="g-label">граммов</div>
+    <input type="range" id="gSlider" min="5" max="600" value="100" step="5" oninput="updateG(this.value)">
+    <input class="g-inp" type="number" id="gInp" value="100" oninput="syncG(this.value)" placeholder="Введи граммы">
+    <div class="result-card">
+      <div class="result-kcal" id="rKcal">0 ккал</div>
+      <div class="result-bju" id="rBju"></div>
+    </div>
+    <button class="btn btn-primary" onclick="confirmP()">Добавить в дневник ✓</button>
+    <button class="btn btn-secondary" onclick="closePModal()">Отмена</button>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Настройки</div>
+    <div class="s-label">Дневная цель (ккал)</div>
+    <input class="field" type="number" id="goalInp" value="1700" style="font-size:24px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;margin-bottom:16px">
+    <div class="s-label">API ключ Anthropic (для 📸 фото)</div>
+    <input class="field" type="password" id="apiInp" placeholder="sk-ant-..." style="margin-bottom:6px">
+    <div style="font-size:13px;color:var(--text2);margin-bottom:20px">console.anthropic.com → API Keys</div>
+    <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
+    <button class="btn btn-secondary" onclick="document.getElementById('settingsModal').classList.remove('open')">Закрыть</button>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let S=JSON.parse(localStorage.getItem('evg_v4')||'{}');
+if(!S.goal)S.goal=1700;
+if(!S.log)S.log={};
+if(!S.meals)S.meals={};
+if(!S.recent)S.recent=[];
+const TODAY=new Date().toISOString().slice(0,10);
+const MAC={p:130,f:55,c:155};
+function save(){localStorage.setItem('evg_v4',JSON.stringify(S));}
+
+// ===== FOODS =====
+const FOODS=[
+  {name:'Творог 5%',kcal:121,p:17,f:5,c:3,emoji:'🧀'},
+  {name:'Творог 0%',kcal:71,p:16,f:0.5,c:2,emoji:'🧀'},
+  {name:'Творог зернёный',kcal:105,p:12,f:5,c:2.7,emoji:'🧀'},
+  {name:'Тунец в собственном соку',kcal:96,p:22,f:1,c:0,emoji:'🐟'},
+  {name:'Тунец в масле',kcal:198,p:21,f:12,c:0,emoji:'🐟'},
+  {name:'Песто',kcal:500,p:6,f:50,c:5,emoji:'🌿'},
+  {name:'Хлеб ржаной',kcal:210,p:6.5,f:1.2,c:40,emoji:'🍞'},
+  {name:'Хлеб бородинский',kcal:207,p:6.8,f:1.3,c:40,emoji:'🍞'},
+  {name:'Хлеб цельнозерновой',kcal:230,p:8,f:3,c:43,emoji:'🍞'},
+  {name:'Хлеб белый',kcal:265,p:8,f:3.2,c:50,emoji:'🍞'},
+  {name:'Макароны варёные',kcal:158,p:5.5,f:0.9,c:31,emoji:'🍝'},
+  {name:'Спагетти варёные',kcal:157,p:5.8,f:0.9,c:30,emoji:'🍝'},
+  {name:'Гречка варёная',kcal:110,p:4,f:1.1,c:22,emoji:'🌾'},
+  {name:'Овсянка варёная',kcal:88,p:3,f:1.7,c:15,emoji:'🌾'},
+  {name:'Рис белый варёный',kcal:130,p:2.7,f:0.3,c:28,emoji:'🍚'},
+  {name:'Картофель варёный',kcal:82,p:2,f:0.1,c:17,emoji:'🥔'},
+  {name:'Куриная грудка',kcal:165,p:31,f:3.6,c:0,emoji:'🍗'},
+  {name:'Куриное бедро',kcal:209,p:26,f:11,c:0,emoji:'🍗'},
+  {name:'Яйцо куриное',kcal:155,p:13,f:11,c:1,emoji:'🥚'},
+  {name:'Яичный белок',kcal:52,p:11,f:0.2,c:0.7,emoji:'🥚'},
+  {name:'Говядина постная',kcal:187,p:29,f:7,c:0,emoji:'🥩'},
+  {name:'Свинина постная',kcal:164,p:26,f:6,c:0,emoji:'🥩'},
+  {name:'Лосось',kcal:208,p:20,f:13,c:0,emoji:'🐟'},
+  {name:'Скумбрия',kcal:262,p:18,f:21,c:0,emoji:'🐟'},
+  {name:'Сельдь',kcal:217,p:17,f:16,c:0,emoji:'🐟'},
+  {name:'Креветки',kcal:99,p:21,f:1,c:0,emoji:'🦐'},
+  {name:'Греческий йогурт 2%',kcal:66,p:5,f:2,c:6,emoji:'🥛'},
+  {name:'Кефир 1%',kcal:40,p:3.2,f:1,c:4,emoji:'🥛'},
+  {name:'Молоко 2.5%',kcal:52,p:2.8,f:2.5,c:4.7,emoji:'🥛'},
+  {name:'Сметана 10%',kcal:115,p:3,f:10,c:4,emoji:'🥄'},
+  {name:'Сметана 20%',kcal:206,p:2.8,f:20,c:3.7,emoji:'🥄'},
+  {name:'Сыр твёрдый',kcal:402,p:25,f:33,c:0,emoji:'🧀'},
+  {name:'Сыр моцарелла',kcal:280,p:18,f:22,c:2,emoji:'🧀'},
+  {name:'Кабачок',kcal:24,p:0.6,f:0.3,c:4.6,emoji:'🥒'},
+  {name:'Баклажан',kcal:24,p:1.2,f:0.2,c:4.5,emoji:'🍆'},
+  {name:'Болгарский перец',kcal:27,p:1,f:0.3,c:5.3,emoji:'🫑'},
+  {name:'Томатная паста',kcal:82,p:4.8,f:0.5,c:15,emoji:'🍅'},
+  {name:'Морковь',kcal:41,p:0.9,f:0.2,c:9.6,emoji:'🥕'},
+  {name:'Лук репчатый',kcal:41,p:1.1,f:0.1,c:8.5,emoji:'🧅'},
+  {name:'Чеснок',kcal:149,p:6.4,f:0.5,c:30,emoji:'🧄'},
+  {name:'Огурец',kcal:15,p:0.7,f:0.1,c:3,emoji:'🥒'},
+  {name:'Помидор',kcal:18,p:0.9,f:0.2,c:3.5,emoji:'🍅'},
+  {name:'Листья салата',kcal:15,p:1.4,f:0.2,c:2.3,emoji:'🥬'},
+  {name:'Шпинат',kcal:23,p:2.9,f:0.4,c:3.6,emoji:'🥬'},
+  {name:'Брокколи',kcal:34,p:2.8,f:0.4,c:7,emoji:'🥦'},
+  {name:'Цветная капуста',kcal:30,p:2.5,f:0.3,c:5,emoji:'🥦'},
+  {name:'Капуста белокочанная',kcal:27,p:1.8,f:0.1,c:5,emoji:'🥬'},
+  {name:'Авокадо',kcal:160,p:2,f:15,c:9,emoji:'🥑'},
+  {name:'Кукуруза консервированная',kcal:86,p:2.7,f:0.6,c:19,emoji:'🌽'},
+  {name:'Горошек зелёный',kcal:55,p:3.6,f:0.4,c:9.6,emoji:'🫛'},
+  {name:'Оливковое масло',kcal:884,p:0,f:100,c:0,emoji:'🫙'},
+  {name:'Сливочное масло',kcal:717,p:0.5,f:81,c:0.8,emoji:'🧈'},
+  {name:'Банан',kcal:89,p:1.1,f:0.3,c:23,emoji:'🍌'},
+  {name:'Яблоко',kcal:52,p:0.3,f:0.2,c:14,emoji:'🍎'},
+  {name:'Апельсин',kcal:47,p:0.9,f:0.1,c:12,emoji:'🍊'},
+  {name:'Черника',kcal:57,p:0.7,f:0.3,c:14,emoji:'🫐'},
+  {name:'Клубника',kcal:33,p:0.7,f:0.3,c:8,emoji:'🍓'},
+  {name:'Виноград',kcal:67,p:0.6,f:0.4,c:17,emoji:'🍇'},
+  {name:'Арахисовая паста',kcal:588,p:25,f:50,c:20,emoji:'🥜'},
+  {name:'Грецкий орех',kcal:654,p:15,f:65,c:14,emoji:'🥜'},
+  {name:'Миндаль',kcal:576,p:21,f:49,c:22,emoji:'🥜'},
+  {name:'Чечевица варёная',kcal:116,p:9,f:0.4,c:20,emoji:'🫘'},
+  {name:'Нут варёный',kcal:164,p:8.9,f:2.6,c:27,emoji:'🫘'},
+  {name:'Мёд',kcal:304,p:0.3,f:0,c:82,emoji:'🍯'},
+  {name:'Шоколад тёмный 70%',kcal:546,p:5,f:31,c:62,emoji:'🍫'},
+  // Магнит / Пятёрочка СТМ
+  {name:'Йогурт Активиа натуральный',kcal:60,p:4,f:2.5,c:5.5,emoji:'🥛'},
+  {name:'Творог Простоквашино 5%',kcal:121,p:16,f:5,c:3,emoji:'🧀'},
+  {name:'Кефир Простоквашино 1%',kcal:40,p:3,f:1,c:4,emoji:'🥛'},
+  {name:'Молоко Простоквашино 2.5%',kcal:52,p:2.8,f:2.5,c:4.7,emoji:'🥛'},
+  {name:'Куриные котлеты (готовые)',kcal:218,p:15,f:15,c:7,emoji:'🍗'},
+  {name:'Сосиски молочные',kcal:266,p:11,f:23,c:1.9,emoji:'🌭'},
+  {name:'Колбаса варёная докторская',kcal:257,p:13,f:22,c:1.5,emoji:'🥩'},
+  {name:'Гречка Магнит',kcal:329,p:12.6,f:3.3,c:62,emoji:'🌾'},
+  {name:'Овсянка Геркулес',kcal:352,p:12,f:6,c:62,emoji:'🌾'},
+  {name:'Рис Краснодарский',kcal:344,p:7,f:1,c:76,emoji:'🍚'},
+];
+
+// ===== INIT =====
+function init(){
+  const days=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
+  const months=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
+  const d=new Date();
+  document.getElementById('todayLabel').textContent=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
+  document.getElementById('goalInp').value=S.goal;
+  document.getElementById('apiInp').value=localStorage.getItem('evg_api')||'';
+  renderHome();
+  renderRecentChips();
+}
+
+// ===== HOME =====
+function renderHome(){
+  const e=S.log[TODAY]||[];
+  const tot=e.reduce((s,x)=>s+x.kcal,0);
+  const prot=e.reduce((s,x)=>s+(x.p||0),0);
+  const fat=e.reduce((s,x)=>s+(x.f||0),0);
+  const carb=e.reduce((s,x)=>s+(x.c||0),0);
+  const g=S.goal;
+  const circ=477.5;
+  const pct=Math.min(tot/g,1);
+  document.getElementById('ringFill').style.strokeDashoffset=circ-pct*circ;
+  document.getElementById('ringFill').style.stroke=tot>g?'#d63031':'url(#rg)';
+  document.getElementById('ringKcal').textContent=Math.round(tot);
+  document.getElementById('ringKcal').style.color=tot>g?'#d63031':tot>g*.9?'#e17055':'#1a1a2e';
+  document.getElementById('ringGoal').textContent=g;
+  const left=g-tot;
+  const le=document.getElementById('statLeft');
+  le.textContent=left>=0?left:`+${Math.abs(left)}`;
+  le.style.color=left<0?'#d63031':left<200?'#e17055':'#00b894';
+  document.getElementById('statN').textContent=e.length;
+  document.getElementById('statP').textContent=Math.round(prot)+'г';
+  document.getElementById('mP').textContent=`${Math.round(prot)}/${MAC.p}г`;
+  document.getElementById('mF').textContent=`${Math.round(fat)}/${MAC.f}г`;
+  document.getElementById('mC').textContent=`${Math.round(carb)}/${MAC.c}г`;
+  document.getElementById('mPF').style.width=Math.min(prot/MAC.p*100,100)+'%';
+  document.getElementById('mFF').style.width=Math.min(fat/MAC.f*100,100)+'%';
+  document.getElementById('mCF').style.width=Math.min(carb/MAC.c*100,100)+'%';
+  const ll=document.getElementById('logList');
+  if(!e.length){ll.innerHTML='<div class="empty-log">Пока ничего не добавлено 🍽<br><span style="font-size:14px">Нажми + чтобы добавить еду</span></div>';return;}
+  ll.innerHTML=e.map((x,i)=>`
+    <div class="log-entry">
+      <div class="entry-icon">${x.emoji||'🍽'}</div>
+      <div class="entry-info">
+        <div class="entry-name">${x.name}</div>
+        <div class="entry-meta">${x.time} · ${x.g}г · Б${Math.round(x.p||0)} Ж${Math.round(x.f||0)} У${Math.round(x.c||0)}</div>
+      </div>
+      <div class="entry-kcal">${Math.round(x.kcal)}</div>
+      <button class="entry-del" onclick="delEntry(${i})">×</button>
+    </div>`).join('');
+}
+function delEntry(i){S.log[TODAY].splice(i,1);save();renderHome();}
+function clearToday(){if(!confirm('Очистить весь день?'))return;S.log[TODAY]=[];save();renderHome();}
+
+// ===== PAGES =====
+function showPage(p){
+  document.getElementById('homePage').classList.toggle('hidden',p!=='home');
+  document.getElementById('mealsPage').classList.toggle('active',p==='meals');
+  document.getElementById('historyPage').classList.toggle('active',p==='history');
+  if(p==='settings'){document.getElementById('settingsModal').classList.add('open');return;}
+  ['navHome','navMeals','navHistory','navSet'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  const map={home:'navHome',meals:'navMeals',history:'navHistory'};
+  if(map[p])document.getElementById(map[p]).classList.add('active');
+  if(p==='history')renderHistory();
+  if(p==='meals')renderSavedMeals();
+}
+
+function renderHistory(){
+  const days=Object.keys(S.log).sort().reverse().slice(0,30);
+  const hl=document.getElementById('historyList');
+  if(!days.length){hl.innerHTML='<div class="empty-log">Нет данных пока</div>';return;}
+  const dn=['вс','пн','вт','ср','чт','пт','сб'];
+  const mn=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
+  hl.innerHTML=days.map(d=>{
+    const e=S.log[d]||[];
+    const tot=e.reduce((s,x)=>s+x.kcal,0);
+    const pct=Math.min(tot/S.goal*100,100);
+    const col=tot>S.goal?'#d63031':tot>S.goal*.9?'#e17055':'#6c5ce7';
+    const dt=new Date(d+'T12:00:00');
+    return`<div class="history-day">
+      <div class="hist-title">${dn[dt.getDay()]} ${dt.getDate()} ${mn[dt.getMonth()]}${d===TODAY?' · сегодня':''}</div>
+      <div class="hist-bar"><div class="hist-fill" style="width:${pct}%;background:${col}"></div></div>
+      <div class="hist-meta">${Math.round(tot)} / ${S.goal} ккал · ${e.length} приёмов</div>
+    </div>`;
+  }).join('');
+}
+
+function renderSavedMeals(){
+  const meals=Object.values(S.meals||{});
+  const el=document.getElementById('savedMealsList');
+  const empty=document.getElementById('mealsEmpty');
+  if(!meals.length){el.innerHTML='';empty.style.display='block';return;}
+  empty.style.display='none';
+  el.innerHTML=renderMealCards(meals,false);
+}
+
+function renderMealCards(meals,inModal){
+  return meals.map(m=>{
+    const batch=(m.batchLog||[]).find(b=>b.date===TODAY)||null;
+    const rem=batch?batch.remainG:null;
+    const remPct=rem!==null&&batch.totalG?Math.round(rem/batch.totalG*100):null;
+    const remHtml=rem!==null?`<div class="sm-remain ${remPct<25?'low':''}">Осталось: ${Math.round(rem)}г (${remPct}%)</div>`:'';
+    const fn=inModal?`openSavedP('${m.id}',true)`:`openSavedP('${m.id}')`;
+    return`<div class="saved-meal" onclick="${fn}">
+      <div class="sm-icon">${m.emoji||'🍳'}</div>
+      <div class="sm-info">
+        <div class="sm-name">${m.name}</div>
+        <div class="sm-meta">${Math.round(m.kcalPer100)} ккал/100г</div>
+        ${remHtml}
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+        <div class="sm-kcal">${Math.round(m.totalKcal)}</div>
+        <button class="sm-del" onclick="event.stopPropagation();delMeal('${m.id}')">×</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function delMeal(id){if(!confirm('Удалить?'))return;delete S.meals[id];save();renderSavedMeals();}
+
+// ===== RECENT =====
+function addToRecent(name){
+  S.recent=S.recent.filter(n=>n!==name);
+  S.recent.unshift(name);
+  if(S.recent.length>8)S.recent=S.recent.slice(0,8);
+  save();
+}
+function renderRecentChips(){
+  const el=document.getElementById('recentChips');
+  const sec=el.closest('.quick-section');
+  if(!S.recent||!S.recent.length){sec.style.display='none';return;}
+  sec.style.display='block';
+  el.innerHTML=S.recent.map(n=>{
+    const f=FOODS.find(x=>x.name===n);
+    return`<button class="quick-chip" onclick="quickPick('${n.replace(/'/g,"&#39;")}')">${f?f.emoji:'🍽'} ${n.split(' ')[0]}</button>`;
+  }).join('');
+}
+
+// ===== MODAL =====
+let curMode='search',curTime='завтрак',portItem=null;
+
+function openAddModal(){
+  document.getElementById('addModal').classList.add('open');
+  switchMode('search');
+  document.getElementById('searchInp').value='';
+  showQuickPicks();
+  renderRecentChips();
+}
+function closeModal(){document.getElementById('addModal').classList.remove('open');}
+function switchMode(m){
+  curMode=m;
+  ['search','saved','combo','photo'].forEach(x=>{
+    document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1)).style.display=x===m?'block':'none';
+  });
+  document.querySelectorAll('.mode-tab').forEach((el,i)=>el.classList.toggle('active',['search','saved','combo','photo'][i]===m));
+  if(m==='saved')renderSavedInModal();
+  if(m==='photo')resetPhoto();
+}
+function selTime(btn,t){curTime=t;btn.closest('.meal-time-btns').querySelectorAll('.mtb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+
+// ===== SEARCH =====
+let sTm;
+function doSearch(q){
+  clearTimeout(sTm);sTm=setTimeout(()=>{
+    if(q.length<1){showQuickPicks();return;}
+    document.getElementById('quickPicks').style.display='none';
+    const fl=document.getElementById('foodList');
+    fl.style.display='flex';
+    const hits=FOODS.filter(f=>f.name.toLowerCase().includes(q.toLowerCase())).slice(0,20);
+    if(!hits.length){fl.innerHTML='<div style="color:var(--text3);padding:12px;font-size:15px;text-align:center">Не найдено — попробуй по-другому</div>';return;}
+    fl.innerHTML=hits.map(f=>foodItemHTML(f)).join('');
+  },150);
+}
+function showQuickPicks(){
+  document.getElementById('quickPicks').style.display='block';
+  document.getElementById('foodList').style.display='none';
+}
+function foodItemHTML(f){
+  return`<div class="food-item" onclick='openP(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
+    <div class="food-emoji">${f.emoji}</div>
+    <div class="food-name">${f.name}</div>
+    <div class="food-right"><div class="food-kcal">${f.kcal}</div><div class="food-per">на 100г</div></div>
+  </div>`;
+}
+function quickPick(name){
+  const f=FOODS.find(x=>x.name===name);
+  if(f)openP(f);
+}
+
+// ===== BARCODE =====
+async function openBarcode(){
+  // Use camera + ZXing via CDN for barcode scanning
+  showToast('📷 Наведи камеру на штрихкод...');
+  // Fallback: prompt manual barcode entry
+  const code=prompt('Введи штрихкод с упаковки:');
+  if(!code)return;
+  await lookupBarcode(code.trim());
+}
+async function lookupBarcode(barcode){
+  showToast('🔍 Ищу продукт...');
+  try{
+    const resp=await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+    const data=await resp.json();
+    if(data.status!==1||!data.product){showToast('❌ Продукт не найден');return;}
+    const p=data.product;
+    const n=p.product_name_ru||p.product_name||'Продукт';
+    const per=p.nutriments;
+    const food={
+      name:n,
+      kcal:Math.round(per['energy-kcal_100g']||per['energy-kcal']||0),
+      p:Math.round((per.proteins_100g||0)*10)/10,
+      f:Math.round((per.fat_100g||0)*10)/10,
+      c:Math.round((per.carbohydrates_100g||0)*10)/10,
+      emoji:'🛒'
+    };
+    if(!food.kcal){showToast('❌ Нет данных о калориях');return;}
+    showToast(`✅ Найдено: ${food.name}`);
+    openP(food);
+  }catch(e){showToast('❌ Ошибка поиска');}
+}
+
+// ===== BLUETOOTH =====
+let btDev=null,btWeight=0,btOn=false;
+
+async function toggleBT(){
+  if(btOn&&btDev){btDev.gatt.disconnect();return;}
+  if(!navigator.bluetooth){showToast('⚠️ Нужен Chrome на Android');return;}
+  try{
+    document.getElementById('btStatusAction').textContent='Поиск...';
+    btDev=await navigator.bluetooth.requestDevice({
+      filters:[{namePrefix:'Kitchen Scale'},{namePrefix:'Futula'}],
+      optionalServices:['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']
+    });
+    const server=await btDev.gatt.connect();
+    let service=null;
+    for(const uuid of['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']){
+      try{service=await server.getPrimaryService(uuid);break;}catch(e){}
+    }
+    if(!service)throw new Error('Сервис не найден');
+    const chars=await service.getCharacteristics();
+    for(const ch of chars){
+      if(ch.properties.notify){
+        await ch.startNotifications();
+        ch.addEventListener('characteristicvaluechanged',e=>{
+          const d=e.target.value;
+          let w=0;
+          if(d.byteLength>=6)w=(d.getUint8(4)*256+d.getUint8(5))/10;
+          else if(d.byteLength>=2)w=(d.getUint8(0)*256+d.getUint8(1))/10;
+          if(w>0&&w<5000){
+            btWeight=Math.round(w);
+            updateBtUI();
+            // Auto-update portion modal
+            if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);
+          }
+        });
+        break;
+      }
+    }
+    btOn=true;
+    updateBtUI();
+    btDev.addEventListener('gattserverdisconnected',()=>{btOn=false;btDev=null;btWeight=0;updateBtUI();showToast('Весы отключились');});
+    showToast('✅ Весы подключены!');
+  }catch(err){
+    document.getElementById('btStatusAction').textContent='Подключить →';
+    if(err.name!=='NotFoundError')showToast('Ошибка: '+err.message);
+  }
+}
+
+function updateBtUI(){
+  const bar=document.getElementById('btStatusBar');
+  bar.classList.toggle('connected',btOn);
+  document.getElementById('btStatusText').textContent=btOn?'Весы подключены':'Весы не подключены';
+  document.getElementById('btStatusWeight').textContent=(btWeight||0)+'г';
+  document.getElementById('btStatusAction').textContent=btOn?'Отключить':'Подключить →';
+  // Live in portion modal
+  const live=document.getElementById('btLive');
+  if(live){
+    live.classList.toggle('show',btOn);
+    if(btOn){document.getElementById('btLiveNum').textContent=btWeight||0;}
+  }
+}
+
+function useLiveWeight(){if(btWeight>0)syncG(btWeight);}
+
+// ===== PORTION =====
+function openP(food){
+  portItem=food;
+  document.getElementById('pEmoji').textContent=food.emoji||'🍽';
+  document.getElementById('pName').textContent=food.name;
+  document.getElementById('pMeta').textContent=`${food.kcal} ккал / 100г · Б${food.p} Ж${food.f} У${food.c}`;
+  const initG=btWeight>0?btWeight:100;
+  document.getElementById('gSlider').value=Math.min(initG,600);
+  document.getElementById('gInp').value=initG;
+  document.getElementById('gBig').textContent=initG;
+  calcG(initG);
+  updateBtUI();
+  document.getElementById('portionModal').classList.add('open');
+}
+function updateG(g){g=parseInt(g)||0;document.getElementById('gBig').textContent=g;document.getElementById('gInp').value=g;calcG(g);}
+function syncG(g){g=parseInt(g)||0;document.getElementById('gBig').textContent=g;document.getElementById('gSlider').value=Math.min(g,600);document.getElementById('gInp').value=g;calcG(g);if(document.getElementById('btLiveNum'))document.getElementById('btLiveNum').textContent=btWeight||0;}
+function calcG(g){
+  if(!portItem)return;
+  const k=Math.round(portItem.kcal*g/100);
+  document.getElementById('rKcal').textContent=k+' ккал';
+  document.getElementById('rBju').textContent=`Белки ${Math.round(portItem.p*g/100*10)/10}г · Жиры ${Math.round(portItem.f*g/100*10)/10}г · Углеводы ${Math.round(portItem.c*g/100*10)/10}г`;
+}
+function confirmP(){
+  const g=parseInt(document.getElementById('gInp').value)||0;
+  if(!g)return;
+  const f=portItem;
+  if(!S.log[TODAY])S.log[TODAY]=[];
+  const entry={name:f.name,emoji:f.emoji||'🍽',kcal:Math.round(f.kcal*g/100),p:Math.round(f.p*g/100*10)/10,f:Math.round(f.f*g/100*10)/10,c:Math.round(f.c*g/100*10)/10,g,time:curTime};
+  if(f.isMeal&&f.id&&S.meals[f.id]){
+    const m=S.meals[f.id];
+    if(!m.batchLog)m.batchLog=[];
+    let batch=m.batchLog.find(b=>b.date===TODAY);
+    if(!batch){batch={date:TODAY,totalG:m.totalIngG,remainG:m.totalIngG};m.batchLog.push(batch);}
+    batch.remainG=Math.max(0,batch.remainG-g);
+  }
+  S.log[TODAY].push(entry);
+  addToRecent(f.name);
+  save();renderHome();closePModal();closeModal();showToast('✅ Добавлено!');
+}
+function closePModal(){document.getElementById('portionModal').classList.remove('open');}
+
+// ===== SAVED IN MODAL =====
+function renderSavedInModal(){
+  const meals=Object.values(S.meals||{});
+  const el=document.getElementById('savedInModal');
+  if(!meals.length){el.innerHTML='<div class="empty-log">Нет сохранённых блюд.<br>Создай их в разделе «Смесь»!</div>';return;}
+  el.innerHTML=renderMealCards(meals,true);
+}
+function openSavedP(id,fromModal=false){
+  const m=S.meals[id];if(!m)return;
+  portItem={name:m.name,emoji:m.emoji||'🍳',id,isMeal:true,
+    kcal:m.kcalPer100,
+    p:(m.totalP||0)/m.totalIngG*100,
+    f:(m.totalF||0)/m.totalIngG*100,
+    c:(m.totalC||0)/m.totalIngG*100};
+  const batch=(m.batchLog||[]).find(b=>b.date===TODAY);
+  const defG=btWeight>0?btWeight:(batch?Math.min(batch.remainG,300):200);
+  document.getElementById('pEmoji').textContent=m.emoji||'🍳';
+  document.getElementById('pName').textContent=m.name;
+  document.getElementById('pMeta').textContent=`${Math.round(m.kcalPer100)} ккал/100г`;
+  document.getElementById('gSlider').max=batch?Math.max(batch.remainG,600):1000;
+  syncG(defG);updateBtUI();
+  document.getElementById('portionModal').classList.add('open');
+}
+
+// ===== COMBO =====
+let cIngs=[];
+function doComboSearch(q){
+  const fl=document.getElementById('comboSR');
+  if(q.length<1){fl.style.display='none';return;}
+  const hits=FOODS.filter(f=>f.name.toLowerCase().includes(q.toLowerCase())).slice(0,8);
+  fl.style.display='flex';
+  fl.innerHTML=hits.length?hits.map(f=>`<div class="food-item" onclick='addCI(${JSON.stringify(f).replace(/'/g,"&#39;")})'><div class="food-emoji">${f.emoji}</div><div class="food-name">${f.name}</div><div class="food-right"><div class="food-kcal">${f.kcal}</div><div class="food-per">на 100г</div></div></div>`).join(''):'<div style="color:var(--text3);padding:10px">Не найдено</div>';
+}
+function addCI(food){cIngs.push({...food,g:100});document.getElementById('comboSearch').value='';document.getElementById('comboSR').style.display='none';renderCI();}
+function renderCI(){
+  document.getElementById('comboIngs').innerHTML=cIngs.map((f,i)=>`
+    <div class="combo-ing">
+      <div style="font-size:18px">${f.emoji}</div>
+      <div class="ci-name">${f.name}</div>
+      <input class="ci-g" type="number" value="${f.g}" min="1" max="3000" onchange="updCI(${i},this.value)">
+      <div class="ci-unit">г</div>
+      <div class="ci-kcal">${Math.round(f.kcal*f.g/100)}</div>
+      <button class="ci-del" onclick="delCI(${i})">×</button>
+    </div>`).join('');
+  updCT();
+}
+function updCI(i,g){cIngs[i].g=parseInt(g)||0;renderCI();}
+function delCI(i){cIngs.splice(i,1);renderCI();}
+function updCT(){
+  const tk=cIngs.reduce((s,f)=>s+f.kcal*f.g/100,0);
+  const tg=cIngs.reduce((s,f)=>s+f.g,0);
+  document.getElementById('comboKcal').textContent=Math.round(tk)+' ккал';
+  document.getElementById('comboIngG').textContent=tg+'г ингредиентов';
+}
+function getCD(){
+  const name=document.getElementById('comboName').value||'Блюдо';
+  const tk=cIngs.reduce((s,f)=>s+f.kcal*f.g/100,0);
+  const tg=cIngs.reduce((s,f)=>s+f.g,0);
+  const tp=cIngs.reduce((s,f)=>s+f.p*f.g/100,0);
+  const tf=cIngs.reduce((s,f)=>s+f.f*f.g/100,0);
+  const tc=cIngs.reduce((s,f)=>s+f.c*f.g/100,0);
+  const bg=parseInt(document.getElementById('batchG').value)||tg;
+  return{name,tk,tg,tp,tf,tc,bg,kp100:tk/bg*100};
+}
+function saveCombo(){
+  if(!cIngs.length){showToast('Добавь ингредиенты');return;}
+  const d=getCD();
+  const id='m'+Date.now();
+  S.meals[id]={id,name:d.name,emoji:'🍳',ingredients:[...cIngs],totalKcal:d.tk,totalIngG:d.bg,totalP:d.tp,totalF:d.tf,totalC:d.tc,kcalPer100:d.kp100,batchLog:[]};
+  save();showToast('⭐ Блюдо сохранено!');
+}
+function logComboNow(){
+  if(!cIngs.length){showToast('Добавь ингредиенты');return;}
+  const d=getCD();
+  const g=btWeight>0?btWeight:d.bg;
+  if(!S.log[TODAY])S.log[TODAY]=[];
+  S.log[TODAY].push({name:d.name,emoji:'🍳',kcal:Math.round(d.kp100*g/100),p:Math.round(d.tp/d.bg*g*10)/10,f:Math.round(d.tf/d.bg*g*10)/10,c:Math.round(d.tc/d.bg*g*10)/10,g,time:curTime});
+  cIngs=[];document.getElementById('comboName').value='';document.getElementById('batchG').value='';
+  renderCI();save();renderHome();closeModal();showToast('✅ Добавлено!');
+}
+
+// ===== PHOTO =====
+let photoB64=null,aiItems=[];
+function resetPhoto(){
+  photoB64=null;aiItems=[];
+  const prev=document.getElementById('photoPreview');prev.style.display='none';prev.src='';
+  document.getElementById('photoPlaceholder').style.display='block';
+  document.getElementById('aiBox').classList.remove('show');
+  document.getElementById('addPhotoBtn').style.display='none';
+  document.getElementById('photoInp').value='';
+}
+async function handlePhoto(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=async ev=>{
+    const url=ev.target.result;photoB64=url.split(',')[1];
+    const prev=document.getElementById('photoPreview');prev.src=url;prev.style.display='block';
+    document.getElementById('photoPlaceholder').style.display='none';
+    await analyzePhoto();
+  };
+  reader.readAsDataURL(file);
+}
+async function analyzePhoto(){
+  const key=localStorage.getItem('evg_api');
+  const box=document.getElementById('aiBox');const load=document.getElementById('aiLoad');const items=document.getElementById('aiItems');
+  box.classList.add('show');load.style.display='block';items.innerHTML='';
+  document.getElementById('addPhotoBtn').style.display='none';
+  if(!key){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь API ключ в Настройки</div>';return;}
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото. ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. Пустой массив если ничего.'}]}]})});
+    const data=await resp.json();
+    aiItems=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,'').trim()).map(it=>({...it,checked:true}));
+    renderAI();
+  }catch(err){load.style.display='none';items.innerHTML='<div style="color:var(--red);padding:10px">Ошибка. Проверь API ключ.</div>';}
+}
+function renderAI(){
+  document.getElementById('aiLoad').style.display='none';
+  const el=document.getElementById('aiItems');
+  if(!aiItems.length){el.innerHTML='<div style="color:var(--text2);padding:10px;font-size:15px">Ничего не распознано</div>';return;}
+  el.innerHTML=aiItems.map((it,i)=>`
+    <div class="ai-item">
+      <button class="ai-check ${it.checked?'on':''}" onclick="toggleAI(${i})">${it.checked?'<svg width="14" height="14" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>':''}</button>
+      <div style="font-size:22px">${it.emoji||'🍽'}</div>
+      <div style="flex:1"><div style="font-size:15px;font-weight:600">${it.name}</div><div style="font-size:13px;color:var(--text2)">${it.estimatedG||100}г</div></div>
+      <div style="font-size:16px;font-weight:700;color:var(--accent)">${Math.round(it.kcal*(it.estimatedG||100)/100)} ккал</div>
+    </div>`).join('');
+  document.getElementById('addPhotoBtn').style.display='block';
+}
+function toggleAI(i){aiItems[i].checked=!aiItems[i].checked;renderAI();}
+function addPhotoItems(){
+  const checked=aiItems.filter(it=>it.checked);if(!checked.length)return;
+  if(!S.log[TODAY])S.log[TODAY]=[];
+  checked.forEach(it=>{const g=it.estimatedG||100;S.log[TODAY].push({name:it.name,emoji:it.emoji||'📸',kcal:Math.round(it.kcal*g/100),p:Math.round(it.p*g/100*10)/10,f:Math.round(it.f*g/100*10)/10,c:Math.round(it.c*g/100*10)/10,g,time:curTime});addToRecent(it.name);});
+  save();renderHome();closeModal();showToast('✅ Добавлено!');
+}
+
+// ===== SETTINGS =====
+function saveSettings(){
+  S.goal=parseInt(document.getElementById('goalInp').value)||1700;
+  const key=document.getElementById('apiInp').value.trim();
+  save();if(key)localStorage.setItem('evg_api',key);
+  document.getElementById('settingsModal').classList.remove('open');
+  renderHome();showToast('✅ Сохранено');
+}
+
+// ===== TOAST =====
+function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+
+// ===== OVERLAY CLOSE =====
+['addModal','portionModal','settingsModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{
+    if(e.target===document.getElementById(id)){
+      if(id==='portionModal')closePModal();
+      else if(id==='addModal')closeModal();
+      else document.getElementById(id).classList.remove('open');
+    }
+  });
+});
+
+init();
+</script>
+</body>
+</html>
