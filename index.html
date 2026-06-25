@@ -965,10 +965,11 @@ async function analyzePhoto(){
   box.classList.add('show');load.style.display='block';itemsEl.innerHTML='';
   document.getElementById('addPhotoBtn').style.display='none';
   if(!key){load.style.display='none';itemsEl.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь API ключ в Настройки</div>';return;}
+  const PROXY='https://divine-pine-6f4f.evgenia-barakshina.workers.dev';
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+    const resp=await fetch(PROXY+'/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото. ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. Пустой массив если ничего.'}]}]})
     });
     const data=await resp.json();
