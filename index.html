@@ -1016,3 +1016,17 @@ function saveSettings(){
 }
 
 function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+['addModal','portionModal','settingsModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',e=>{
+    if(e.target===document.getElementById(id)){
+      if(id==='portionModal')closePModal();
+      else if(id==='addModal')closeModal();
+      else document.getElementById(id).classList.remove('open');
+    }
+  });
+});
+
+init();
+</script>
+</body>
+</html>
