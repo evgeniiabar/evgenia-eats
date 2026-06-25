@@ -903,28 +903,13 @@ async function toggleBT(){
         ch.addEventListener('characteristicvaluechanged',e=>{
           const d=e.target.value;
           let w=0;
-          // Try multiple byte positions for Futula Kitchen Scale S
-          const candidates=[];
-          for(let i=0;i+1<d.byteLength;i++){
-            const v=(d.getUint8(i)*256+d.getUint8(i+1))/10;
-            if(v>0&&v<5000)candidates.push(v);
+          if(d.byteLength>=6) w=(d.getUint8(4)*256+d.getUint8(5))/10;
+          else if(d.byteLength>=2) w=(d.getUint8(0)*256+d.getUint8(1))/10;
+          if(w>=0&&w<5000){
+            btWeight=Math.round(w);
+            updateBtUI();
+            if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);
           }
-          // Also try little-endian
-          for(let i=0;i+1<d.byteLength;i++){
-            const v=(d.getUint8(i+1)*256+d.getUint8(i))/10;
-            if(v>0&&v<5000)candidates.push(v);
-          }
-          // Pick most reasonable value (between 1g and 3000g)
-          if(candidates.length){
-            w=candidates.reduce((best,v)=>{
-              const rb=Math.abs(best-500);const rv=Math.abs(v-500);
-              return rv<rb?v:best;
-            },candidates[0]);
-          }
-          if(w>0&&w<5000){btWeight=Math.round(w);updateBtUI();if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);}
-          // Debug: log raw bytes
-          const bytes=Array.from({length:d.byteLength},(_,i)=>d.getUint8(i));
-          console.log('BT raw:',bytes,'picked:',w);
         });break;
       }
     }
