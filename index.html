@@ -237,6 +237,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
     <div class="bt-bar-w" id="btBarW">0г</div>
     <div class="bt-bar-act" id="btBarAct">Подключить →</div>
   </div>
+
   <div class="widgets-row">
     <div class="streak-widget">
       <div class="streak-top">
@@ -903,9 +904,9 @@ async function toggleBT(){
         ch.addEventListener('characteristicvaluechanged',e=>{
           const d=e.target.value;
           let w=0;
-          if(d.byteLength>=6) w=(d.getUint8(4)*256+d.getUint8(5))/10;
-          else if(d.byteLength>=2) w=(d.getUint8(0)*256+d.getUint8(1))/10;
-          if(w>=0&&w<5000){
+          if(d.byteLength>=6)w=(d.getUint8(4)*256+d.getUint8(5))/10;
+          else if(d.byteLength>=2)w=(d.getUint8(0)*256+d.getUint8(1))/10;
+          if(w>0&&w<5000){
             btWeight=Math.round(w);
             updateBtUI();
             if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);
@@ -926,10 +927,7 @@ function updateBtUI(){
   const live=document.getElementById('btLive');
   if(live){
     live.classList.toggle('show',btOn);
-    if(btOn&&btWeight>0){
-      document.getElementById('btLiveNum').textContent=btWeight;
-      if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);
-    }
+    if(btOn){document.getElementById('btLiveNum').textContent=btWeight||0;}
   }
 }
 function useLive(){if(btWeight>0)syncG(btWeight);}
