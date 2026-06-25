@@ -7,6 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <title>Евгения ест</title>
 <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
+<script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 :root{
@@ -240,12 +241,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
   </div>
 
   <!-- GLOBAL BT STATUS BAR -->
-  <div class="bt-statusbar" id="btStatusBar" onclick="toggleBT()">
-    <div class="bt-dot" id="btDot"></div>
-    <div class="bt-statusbar-text" id="btStatusText">Весы не подключены</div>
-    <div class="bt-statusbar-weight" id="btStatusWeight">0г</div>
-    <div class="bt-statusbar-action" id="btStatusAction">Подключить →</div>
-  </div>
+
 
   <div class="hero">
     <div class="ring-wrap">
@@ -449,14 +445,19 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
         <div class="portion-food-meta" id="pMeta"></div>
       </div>
     </div>
-    <!-- Live BT weight -->
-    <div class="bt-live" id="btLive">
-      <div>
-        <div class="bt-live-num" id="btLiveNum">0</div>
-        <div style="font-size:12px;color:var(--text2)">граммов на весах</div>
+    <!-- BT weight button -->
+    <div id="btBlock" style="margin-bottom:14px;">
+      <button id="btConnectBtn" onclick="connectScaleForPortion()" style="width:100%;padding:12px;border-radius:12px;background:var(--bg2);border:2px solid var(--border);color:var(--text2);font-size:15px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all .15s;">
+        <span>⚖️</span><span id="btBtnLabel">Взвесить на весах</span>
+      </button>
+      <div id="btWeightDisplay" style="display:none;margin-top:10px;background:var(--green-bg);border:2px solid #b2dfdb;border-radius:12px;padding:14px 16px;display:none;align-items:center;gap:12px;">
+        <div>
+          <div style="font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--green);line-height:1;" id="btLiveNum">0</div>
+          <div style="font-size:12px;color:var(--text2)">граммов</div>
+        </div>
+        <div style="flex:1;font-size:13px;color:var(--text2)">Поставь еду на весы — вес обновится</div>
+        <button onclick="useLiveWeight()" style="padding:10px 16px;border-radius:99px;background:var(--green);border:none;color:white;font-size:14px;font-weight:700;cursor:pointer;">Использовать →</button>
       </div>
-      <div class="bt-live-label">Поставь еду на весы и нажми →</div>
-      <button class="bt-live-use" onclick="useLiveWeight()">Взять →</button>
     </div>
     <div class="g-big" id="gBig">100</div>
     <div class="g-label">граммов</div>
@@ -866,15 +867,23 @@ async function lookupBarcode(barcode){
 // ===== BLUETOOTH =====
 let btDev=null,btWeight=0,btOn=false;
 
-async function toggleBT(){
-  if(btOn&&btDev){btDev.gatt.disconnect();return;}
+async function connectScaleForPortion(){
+  const btn=document.getElementById('btConnectBtn');
+  const lbl=document.getElementById('btBtnLabel');
+  if(btOn&&btDev){
+    // Already connected — disconnect
+    btDev.gatt.disconnect();
+    return;
+  }
   if(!navigator.bluetooth){showToast('⚠️ Нужен Chrome на Android');return;}
   try{
-    document.getElementById('btStatusAction').textContent='Поиск...';
+    lbl.textContent='Поиск весов...';
+    btn.style.borderColor='var(--accent)';
     btDev=await navigator.bluetooth.requestDevice({
       filters:[{namePrefix:'Kitchen Scale'},{namePrefix:'Futula'}],
       optionalServices:['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']
     });
+    lbl.textContent='Подключение...';
     const server=await btDev.gatt.connect();
     let service=null;
     for(const uuid of['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']){
@@ -892,38 +901,38 @@ async function toggleBT(){
           else if(d.byteLength>=2)w=(d.getUint8(0)*256+d.getUint8(1))/10;
           if(w>0&&w<5000){
             btWeight=Math.round(w);
-            updateBtUI();
-            // Auto-update portion modal
-            if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);
+            // Show weight display
+            const wd=document.getElementById('btWeightDisplay');
+            if(wd){wd.style.display='flex';}
+            const lnum=document.getElementById('btLiveNum');
+            if(lnum)lnum.textContent=btWeight;
+            // Auto-sync to grams field
+            syncG(btWeight);
           }
         });
         break;
       }
     }
     btOn=true;
-    updateBtUI();
-    btDev.addEventListener('gattserverdisconnected',()=>{btOn=false;btDev=null;btWeight=0;updateBtUI();showToast('Весы отключились');});
-    showToast('✅ Весы подключены!');
+    lbl.textContent='⚖️ '+( btWeight||'...')+'г · Отключить';
+    btn.style.background='var(--green-bg)';
+    btn.style.borderColor='var(--green)';
+    btn.style.color='var(--green)';
+    btDev.addEventListener('gattserverdisconnected',()=>{
+      btOn=false;btDev=null;btWeight=0;
+      lbl.textContent='Взвесить на весах';
+      btn.style.background='';btn.style.borderColor='';btn.style.color='';
+      const wd=document.getElementById('btWeightDisplay');
+      if(wd)wd.style.display='none';
+    });
   }catch(err){
-    document.getElementById('btStatusAction').textContent='Подключить →';
+    lbl.textContent='Взвесить на весах';
+    btn.style.borderColor='';
     if(err.name!=='NotFoundError')showToast('Ошибка: '+err.message);
   }
 }
 
-function updateBtUI(){
-  const bar=document.getElementById('btStatusBar');
-  bar.classList.toggle('connected',btOn);
-  document.getElementById('btStatusText').textContent=btOn?'Весы подключены':'Весы не подключены';
-  document.getElementById('btStatusWeight').textContent=(btWeight||0)+'г';
-  document.getElementById('btStatusAction').textContent=btOn?'Отключить':'Подключить →';
-  // Live in portion modal
-  const live=document.getElementById('btLive');
-  if(live){
-    live.classList.toggle('show',btOn);
-    if(btOn){document.getElementById('btLiveNum').textContent=btWeight||0;}
-  }
-}
-
+function updateBtUI(){}
 function useLiveWeight(){if(btWeight>0)syncG(btWeight);}
 
 // ===== PORTION =====
@@ -1142,6 +1151,25 @@ init();
   </div>
   <div style="padding:20px;text-align:center;color:rgba(255,255,255,.8);font-size:15px;background:rgba(0,0,0,.7);">
     <div id="barcodeStatus" style="color:#a29bfe;font-weight:600;min-height:22px;margin-bottom:12px;"></div>
+    <div style="display:flex;gap:8px;">
+      <input id="barcodeManual" type="number" placeholder="Или введи код вручную..." style="flex:1;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:10px 14px;color:white;font-size:15px;outline:none;">
+      <button onclick="manualBarcode()" style="padding:10px 16px;background:#6c5ce7;border:none;border-radius:10px;color:white;font-size:15px;font-weight:700;cursor:pointer;">→</button>
+    </div>
+  </div>
+</div>
+<div id="barcodeOverlay" style="display:none;position:fixed;inset:0;z-index:300;background:#000;flex-direction:column;">
+  <div style="padding:20px;display:flex;align-items:center;gap:16px;background:rgba(0,0,0,.7);">
+    <button onclick="closeBarcode()" style="background:none;border:none;color:white;font-size:28px;cursor:pointer;">←</button>
+    <div style="font-size:18px;font-weight:700;color:white;">Сканировать штрихкод</div>
+  </div>
+  <div style="flex:1;position:relative;overflow:hidden;">
+    <video id="barcodeVideo" style="width:100%;height:100%;object-fit:cover;" playsinline muted></video>
+    <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;">
+      <div style="width:260px;height:160px;border:3px solid white;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.55);"></div>
+    </div>
+  </div>
+  <div style="padding:20px;text-align:center;background:rgba(0,0,0,.7);">
+    <div id="barcodeStatus" style="color:#a29bfe;font-weight:600;font-size:15px;margin-bottom:12px;"></div>
     <div style="display:flex;gap:8px;">
       <input id="barcodeManual" type="number" placeholder="Или введи код вручную..." style="flex:1;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:10px 14px;color:white;font-size:15px;outline:none;">
       <button onclick="manualBarcode()" style="padding:10px 16px;background:#6c5ce7;border:none;border-radius:10px;color:white;font-size:15px;font-weight:700;cursor:pointer;">→</button>
