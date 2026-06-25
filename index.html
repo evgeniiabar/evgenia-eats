@@ -839,7 +839,13 @@ function updateBtUI(){
   document.getElementById('btBarW').textContent=(btWeight||0)+'г';
   document.getElementById('btBarAct').textContent=btOn?'Отключить':'Подключить →';
   const live=document.getElementById('btLive');
-  if(live){live.classList.toggle('show',btOn);if(btOn)document.getElementById('btLiveNum').textContent=btWeight||0;}
+  if(live){
+    live.classList.toggle('show',btOn);
+    if(btOn&&btWeight>0){
+      document.getElementById('btLiveNum').textContent=btWeight;
+      if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);
+    }
+  }
 }
 function useLive(){if(btWeight>0)syncG(btWeight);}
 
@@ -868,7 +874,7 @@ function confirmP(){
     batch.remainG=Math.max(0,batch.remainG-g);
   }
   S.log[TODAY].push(entry);addToRecent(f.name);
-  save();renderHome();closePModal();closeModal();showToast('✅ Добавлено!');
+  save();closePModal();closeModal();renderHome();showToast('✅ Добавлено!');
 }
 function closePModal(){document.getElementById('portionModal').classList.remove('open');}
 
