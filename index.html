@@ -5,27 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#f2f2f5">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <title>Евгения ест</title>
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="icon" type="image/png" href="icon.png">
+<script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
 :root{
   --bg:#f2f2f5;--bg2:#e8e8ed;--card:#fff;--border:#dcdce4;
-  --accent:#6c5ce7;--accent2:#a29bfe;--accent-bg:#ede9ff;
+  --accent:#6c5ce7;--accent-bg:#ede9ff;
   --green:#00b894;--green-bg:#e8f8f5;--orange:#e17055;--red:#d63031;
   --text:#1a1a2e;--text2:#6b6b85;--text3:#b0b0c0;
-  --radius:18px;--radius-sm:12px;--shadow:0 2px 12px rgba(0,0,0,0.07);
+  --r:18px;--rsm:12px;--sh:0 2px 12px rgba(0,0,0,0.07);
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;min-height:100dvh;max-width:430px;margin:0 auto;padding-bottom:96px;overflow-x:hidden;}
-
 .top-bar{padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center;}
 .date-label{font-size:13px;color:var(--text2);font-weight:500;}
 .logo{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--accent);}
-
-/* BT STATUS */
-.bt-bar{margin:12px 20px 0;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:99px;padding:10px 16px;box-shadow:var(--shadow);cursor:pointer;transition:all .15s;}
+.bt-bar{margin:12px 20px 0;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:99px;padding:10px 16px;box-shadow:var(--sh);cursor:pointer;}
 .bt-bar.on{background:var(--green-bg);border:1px solid #b2dfdb;}
 .bt-dot{width:10px;height:10px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
 .bt-bar.on .bt-dot{background:var(--green);}
@@ -34,43 +33,26 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .bt-bar-w{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--green);display:none;}
 .bt-bar.on .bt-bar-w{display:block;}
 .bt-bar-act{font-size:13px;color:var(--accent);font-weight:600;}
-
-/* WIDGETS ROW */
 .widgets-row{display:flex;gap:10px;margin:14px 20px 0;}
-
-/* STREAK WIDGET */
-.streak-widget{
-  flex:1;background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);
-  display:flex;flex-direction:column;gap:6px;
-}
+.streak-widget{flex:1;background:var(--card);border-radius:var(--r);padding:14px;box-shadow:var(--sh);}
 .streak-top{display:flex;align-items:center;justify-content:space-between;}
 .streak-num{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--accent);line-height:1;}
 .streak-fire{font-size:28px;}
 .streak-label{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;}
-.streak-dots{display:flex;gap:4px;margin-top:4px;}
-.streak-dot{width:20px;height:6px;border-radius:99px;background:var(--bg2);}
-.streak-dot.filled{background:var(--accent);}
-.streak-dot.today-ok{background:var(--green);}
-
-/* QUICK REPEAT WIDGET */
-.repeat-widget{
-  flex:1;background:var(--accent);border-radius:var(--radius);padding:14px;box-shadow:0 4px 16px rgba(108,92,231,.3);
-  display:flex;flex-direction:column;gap:8px;cursor:pointer;
-  transition:transform .15s;
-}
+.streak-dots{display:flex;gap:4px;margin-top:6px;}
+.sdot{width:20px;height:6px;border-radius:99px;background:var(--bg2);}
+.sdot.ok{background:var(--accent);}
+.sdot.today{background:var(--green);}
+.repeat-widget{flex:1;background:var(--accent);border-radius:var(--r);padding:14px;box-shadow:0 4px 16px rgba(108,92,231,.3);cursor:pointer;transition:transform .15s;}
 .repeat-widget:active{transform:scale(.97);}
 .repeat-widget.empty{background:var(--card);cursor:default;}
 .repeat-widget.empty:active{transform:none;}
-.repeat-top{display:flex;align-items:center;justify-content:space-between;}
 .repeat-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.05em;}
 .repeat-widget.empty .repeat-label{color:var(--text3);}
-.repeat-icon{font-size:24px;}
+.repeat-icon{font-size:26px;margin:4px 0;}
 .repeat-name{font-size:14px;font-weight:700;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .repeat-widget.empty .repeat-name{color:var(--text3);font-size:13px;}
-.repeat-kcal{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:white;}
-.repeat-btn{background:rgba(255,255,255,.2);border:none;border-radius:99px;padding:6px 12px;color:white;font-size:13px;font-weight:700;cursor:pointer;align-self:flex-start;}
-
-/* RING */
+.repeat-kcal{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:white;margin-top:2px;}
 .hero{padding:16px 20px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;}
 .ring-wrap{position:relative;width:170px;height:170px;}
 .ring-svg{transform:rotate(-90deg);}
@@ -80,12 +62,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .ring-kcal{font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1;}
 .ring-sub{font-size:13px;color:var(--text2);font-weight:500;}
 .stats-row{display:flex;gap:10px;width:100%;}
-.stat-card{flex:1;background:var(--card);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;box-shadow:var(--shadow);}
+.stat-card{flex:1;background:var(--card);border-radius:var(--rsm);padding:12px 8px;text-align:center;box-shadow:var(--sh);}
 .stat-val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;}
 .stat-label{font-size:11px;color:var(--text2);margin-top:2px;}
-
-/* MACROS */
-.macros-card{margin:0 20px 14px;background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
+.macros-card{margin:0 20px 14px;background:var(--card);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh);}
 .macros-title{font-size:12px;color:var(--text2);font-weight:700;margin-bottom:10px;text-transform:uppercase;letter-spacing:.06em;}
 .macro-row{display:flex;align-items:center;gap:10px;margin-bottom:7px;}
 .macro-row:last-child{margin-bottom:0;}
@@ -93,13 +73,11 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .macro-track{flex:1;height:7px;background:var(--bg2);border-radius:99px;overflow:hidden;}
 .macro-fill{height:100%;border-radius:99px;transition:width .5s;}
 .macro-g{font-size:13px;color:var(--text2);width:56px;text-align:right;font-weight:500;}
-
-/* LOG */
 .section-header{padding:4px 20px 10px;display:flex;justify-content:space-between;align-items:center;}
 .section-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;}
 .section-action{font-size:13px;color:var(--accent);cursor:pointer;background:none;border:none;font-weight:600;}
 .log-list{padding:0 20px;display:flex;flex-direction:column;gap:8px;}
-.log-entry{background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);}
+.log-entry{background:var(--card);border-radius:var(--rsm);padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:var(--sh);}
 .entry-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;background:var(--bg);}
 .entry-info{flex:1;min-width:0;}
 .entry-name{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -107,9 +85,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .entry-kcal{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;color:var(--accent);flex-shrink:0;}
 .entry-del{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;flex-shrink:0;}
 .empty-log{text-align:center;padding:32px 20px;color:var(--text3);font-size:15px;line-height:1.7;}
-
-/* NAV */
-.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:10px 0 max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -2px 16px rgba(0,0,0,0.06);}
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:10px 0 max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -2px 16px rgba(0,0,0,.06);}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 0;color:var(--text3);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;transition:color .15s;}
 .nav-btn.active{color:var(--accent);}
 .nav-btn svg{width:23px;height:23px;}
@@ -117,52 +93,42 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .nav-add-btn{width:54px;height:54px;border-radius:50%;background:var(--accent);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(108,92,231,.4);margin-top:-16px;transition:transform .15s;}
 .nav-add-btn:active{transform:scale(.93);}
 .nav-add-btn svg{width:28px;height:28px;color:white;}
-
-/* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.45);backdrop-filter:blur(6px);align-items:flex-end;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--card);border-radius:24px 24px 0 0;width:100%;max-width:430px;margin:0 auto;padding:12px 20px 40px;max-height:92dvh;overflow-y:auto;animation:slideUp .25s cubic-bezier(.34,1.2,.64,1);}
 @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .modal-handle{width:44px;height:5px;border-radius:3px;background:var(--border);margin:0 auto 18px;}
 .modal-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:16px;}
-
 .mtbs{display:flex;gap:8px;margin-bottom:16px;}
 .mtb{flex:1;padding:10px;border-radius:10px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
 .mtb.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
-
 .mode-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;}
 .mode-tabs::-webkit-scrollbar{display:none;}
 .mode-tab{flex-shrink:0;padding:9px 16px;border-radius:99px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
 .mode-tab.active{background:var(--accent);border-color:var(--accent);color:white;}
-
-/* SEARCH */
 .search-wrap{position:relative;margin-bottom:12px;}
-.search-inp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:15px 50px 15px 50px;color:var(--text);font-size:17px;font-weight:500;outline:none;transition:border-color .15s;}
+.search-inp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--rsm);padding:15px 50px 15px 50px;color:var(--text);font-size:17px;font-weight:500;outline:none;transition:border-color .15s;}
 .search-inp:focus{border-color:var(--accent);background:white;}
 .search-ico{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
-.barcode-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);font-size:22px;}
-
+.barcode-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:var(--accent-bg);border:none;border-radius:8px;cursor:pointer;padding:6px 8px;font-size:20px;line-height:1;}
 .quick-section{margin-bottom:14px;}
 .quick-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
 .quick-chips{display:flex;gap:7px;flex-wrap:wrap;}
-.quick-chip{padding:7px 13px;border-radius:99px;background:var(--bg2);border:none;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.quick-chip:active{background:var(--accent-bg);color:var(--accent);}
-
+.qchip{padding:7px 13px;border-radius:99px;background:var(--bg2);border:none;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap;}
+.qchip:active{background:var(--accent-bg);color:var(--accent);}
 .food-list{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto;}
-.food-item{background:var(--bg);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;cursor:pointer;gap:14px;border:2px solid transparent;transition:all .15s;}
+.food-item{background:var(--bg);border-radius:var(--rsm);padding:14px 16px;display:flex;align-items:center;cursor:pointer;gap:14px;border:2px solid transparent;transition:all .15s;}
 .food-item:active{border-color:var(--accent);background:var(--accent-bg);}
 .food-emoji{font-size:24px;flex-shrink:0;}
 .food-name{flex:1;font-size:15px;font-weight:600;}
 .food-right{text-align:right;flex-shrink:0;}
 .food-kcal{font-size:16px;color:var(--accent);font-weight:700;}
 .food-per{font-size:12px;color:var(--text3);}
-
-/* PORTION */
-.portion-food{display:flex;align-items:center;gap:14px;margin-bottom:14px;background:var(--bg);border-radius:var(--radius-sm);padding:14px;}
+.portion-food{display:flex;align-items:center;gap:14px;margin-bottom:14px;background:var(--bg);border-radius:var(--rsm);padding:14px;}
 .portion-emoji{font-size:34px;}
 .pf-name{font-size:17px;font-weight:700;}
 .pf-meta{font-size:13px;color:var(--text2);margin-top:3px;}
-.bt-live{display:none;align-items:center;gap:10px;background:var(--green-bg);border:1px solid #b2dfdb;border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:14px;}
+.bt-live{display:none;align-items:center;gap:10px;background:var(--green-bg);border:1px solid #b2dfdb;border-radius:var(--rsm);padding:12px 16px;margin-bottom:14px;}
 .bt-live.show{display:flex;}
 .bt-live-num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--green);}
 .bt-live-use{padding:8px 16px;border-radius:99px;background:var(--green);border:none;color:white;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;}
@@ -170,35 +136,30 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .g-label{font-size:14px;color:var(--text2);text-align:center;margin-bottom:14px;font-weight:500;}
 input[type=range]{width:100%;-webkit-appearance:none;height:8px;background:var(--bg2);border-radius:99px;outline:none;margin-bottom:12px;}
 input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 10px rgba(108,92,231,.4);}
-.g-inp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px;color:var(--text);font-size:22px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;outline:none;margin-bottom:12px;}
+.g-inp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--rsm);padding:14px;color:var(--text);font-size:22px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;outline:none;margin-bottom:12px;}
 .g-inp:focus{border-color:var(--accent);}
-.result-card{background:var(--accent-bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:20px;text-align:center;}
+.result-card{background:var(--accent-bg);border-radius:var(--rsm);padding:14px;margin-bottom:20px;text-align:center;}
 .result-kcal{font-family:'Space Grotesk',sans-serif;font-size:30px;font-weight:700;color:var(--accent);}
 .result-bju{font-size:14px;color:var(--text2);margin-top:4px;font-weight:500;}
-
-/* COMBO */
-.field{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;color:var(--text);font-size:16px;font-weight:500;outline:none;margin-bottom:12px;transition:border-color .15s;}
+.field{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--rsm);padding:14px 16px;color:var(--text);font-size:16px;font-weight:500;outline:none;margin-bottom:12px;transition:border-color .15s;}
 .field:focus{border-color:var(--accent);background:white;}
 .flabel{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:7px;}
 .combo-ings{display:flex;flex-direction:column;gap:7px;margin-bottom:12px;}
-.combo-ing{display:flex;align-items:center;gap:9px;background:var(--bg);border-radius:var(--radius-sm);padding:11px 13px;}
+.combo-ing{display:flex;align-items:center;gap:9px;background:var(--bg);border-radius:var(--rsm);padding:11px 13px;}
 .ci-name{flex:1;font-size:14px;font-weight:600;}
 .ci-g{width:62px;background:white;border:2px solid var(--border);border-radius:8px;padding:6px 8px;color:var(--text);font-size:15px;text-align:center;outline:none;font-weight:700;}
 .ci-g:focus{border-color:var(--accent);}
-.ci-unit{font-size:13px;color:var(--text3);}
 .ci-kcal{font-size:13px;color:var(--accent);font-weight:700;min-width:44px;text-align:right;}
 .ci-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:2px 5px;}
-.batch-row{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:var(--radius-sm);padding:13px 16px;margin-bottom:12px;}
+.batch-row{display:flex;align-items:center;gap:10px;background:var(--bg);border-radius:var(--rsm);padding:13px 16px;margin-bottom:12px;}
 .batch-label{flex:1;}
 .batch-main{font-size:15px;font-weight:700;}
 .batch-sub{font-size:12px;color:var(--text2);margin-top:2px;}
 .batch-inp{width:78px;background:white;border:2px solid var(--border);border-radius:10px;padding:8px 10px;color:var(--text);font-size:18px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;outline:none;}
 .batch-inp:focus{border-color:var(--accent);}
-.combo-total{background:var(--accent-bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+.combo-total{background:var(--accent-bg);border-radius:var(--rsm);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
 .ct-kcal{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--accent);}
-
-/* SAVED */
-.saved-meal{background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:13px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
+.saved-meal{background:var(--bg);border-radius:var(--rsm);padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:13px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
 .saved-meal:active{border-color:var(--accent);background:var(--accent-bg);}
 .sm-icon{font-size:28px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:white;border-radius:13px;flex-shrink:0;}
 .sm-info{flex:1;}
@@ -208,36 +169,54 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 .sm-remain.low{color:var(--orange);}
 .sm-kcal{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--accent);}
 .sm-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px 6px;}
-
-/* PHOTO */
-.photo-area{border:3px dashed var(--border);border-radius:var(--radius);padding:32px 20px;text-align:center;cursor:pointer;background:var(--bg);}
+.photo-area{border:3px dashed var(--border);border-radius:var(--r);padding:32px 20px;text-align:center;cursor:pointer;background:var(--bg);}
 .photo-area input{display:none;}
 .photo-preview{width:100%;border-radius:12px;margin-bottom:12px;display:none;}
-.ai-box{background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-top:14px;display:none;}
+.ai-box{background:var(--bg);border-radius:var(--rsm);padding:14px;margin-top:14px;display:none;}
 .ai-box.show{display:block;}
 .ai-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);}
 .ai-item:last-child{border-bottom:none;}
 .ai-check{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);background:white;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
 .ai-check.on{background:var(--accent);border-color:var(--accent);}
 
-/* PAGES */
-.home-page{display:block;}
-.home-page.hidden{display:none;}
+/* BARCODE SCANNER */
+.barcode-overlay{display:none;position:fixed;inset:0;z-index:300;background:#000;flex-direction:column;}
+.barcode-overlay.open{display:flex;}
+.barcode-header{padding:20px;display:flex;align-items:center;gap:16px;background:rgba(0,0,0,.6);}
+.barcode-back{background:none;border:none;color:white;font-size:28px;cursor:pointer;line-height:1;}
+.barcode-title{font-size:18px;font-weight:700;color:white;font-family:'Space Grotesk',sans-serif;}
+.barcode-video-wrap{flex:1;position:relative;overflow:hidden;}
+#barcodeVideo{width:100%;height:100%;object-fit:cover;}
+.barcode-frame{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.barcode-rect{width:260px;height:160px;border:3px solid white;border-radius:16px;box-shadow:0 0 0 9999px rgba(0,0,0,.55);}
+.barcode-corners{position:absolute;width:260px;height:160px;}
+.barcode-corner{position:absolute;width:28px;height:28px;border-color:var(--accent);border-style:solid;}
+.bc-tl{top:0;left:0;border-width:4px 0 0 4px;border-radius:8px 0 0 0;}
+.bc-tr{top:0;right:0;border-width:4px 4px 0 0;border-radius:0 8px 0 0;}
+.bc-bl{bottom:0;left:0;border-width:0 0 4px 4px;border-radius:0 0 0 8px;}
+.bc-br{bottom:0;right:0;border-width:0 4px 4px 0;border-radius:0 0 8px 0;}
+.barcode-hint{padding:20px;text-align:center;color:rgba(255,255,255,.8);font-size:15px;background:rgba(0,0,0,.6);}
+.barcode-status{font-size:13px;color:var(--accent);margin-top:6px;font-weight:600;min-height:20px;}
+.barcode-manual{margin-top:12px;display:flex;gap:8px;}
+.barcode-manual input{flex:1;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);border-radius:10px;padding:10px 14px;color:white;font-size:15px;outline:none;}
+.barcode-manual input::placeholder{color:rgba(255,255,255,.5);}
+.barcode-manual button{padding:10px 16px;background:var(--accent);border:none;border-radius:10px;color:white;font-size:15px;font-weight:700;cursor:pointer;}
+
 .page{padding:20px;display:none;}
 .page.active{display:block;}
 .page-title{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;margin-bottom:18px;}
-.history-day{margin-bottom:12px;background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow);}
+.home-page{display:block;}
+.home-page.hidden{display:none;}
+.history-day{margin-bottom:12px;background:var(--card);border-radius:var(--rsm);padding:14px 16px;box-shadow:var(--sh);}
 .hist-title{font-size:14px;font-weight:700;margin-bottom:8px;}
 .hist-bar{height:9px;border-radius:99px;background:var(--bg2);overflow:hidden;margin-bottom:6px;}
 .hist-fill{height:100%;border-radius:99px;}
 .hist-meta{font-size:13px;color:var(--text2);}
-
-.btn{width:100%;padding:16px;border-radius:var(--radius-sm);font-size:16px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
+.btn{width:100%;padding:16px;border-radius:var(--rsm);font-size:16px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
 .btn-primary{background:var(--accent);color:white;box-shadow:0 4px 16px rgba(108,92,231,.3);}
 .btn-primary:active{transform:scale(.98);}
 .btn-secondary{background:var(--bg2);color:var(--text2);margin-top:10px;}
 .s-label{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
-
 .toast{position:fixed;bottom:108px;left:50%;transform:translateX(-50%);background:var(--text);color:white;border-radius:99px;padding:12px 24px;font-size:15px;font-weight:600;z-index:999;white-space:nowrap;animation:tIn .2s ease,tOut .3s ease 1.7s forwards;}
 @keyframes tIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes tOut{to{opacity:0;transform:translateX(-50%) translateY(10px)}}
@@ -252,37 +231,27 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
     <div class="date-label" id="todayLabel"></div>
     <div class="logo">евгения ест</div>
   </div>
-
   <div class="bt-bar" id="btBar" onclick="toggleBT()">
     <div class="bt-dot"></div>
     <div class="bt-bar-text" id="btBarText">Весы не подключены</div>
     <div class="bt-bar-w" id="btBarW">0г</div>
     <div class="bt-bar-act" id="btBarAct">Подключить →</div>
   </div>
-
-  <!-- WIDGETS -->
   <div class="widgets-row">
     <div class="streak-widget">
       <div class="streak-top">
-        <div>
-          <div class="streak-label">Стрик</div>
-          <div class="streak-num" id="streakNum">0</div>
-        </div>
-        <div class="streak-fire" id="streakFire">🔥</div>
+        <div><div class="streak-label">Стрик</div><div class="streak-num" id="streakNum">0</div></div>
+        <div class="streak-fire" id="streakFire">💤</div>
       </div>
       <div class="streak-dots" id="streakDots"></div>
     </div>
-
-    <div class="repeat-widget" id="repeatWidget" onclick="repeatLast()">
-      <div class="repeat-top">
-        <div class="repeat-label">Снова</div>
-        <div class="repeat-icon" id="repeatIcon">➕</div>
-      </div>
-      <div class="repeat-name" id="repeatName">Нет данных</div>
+    <div class="repeat-widget empty" id="repeatWidget" onclick="repeatLast()">
+      <div class="repeat-label">Снова</div>
+      <div class="repeat-icon" id="repeatIcon">➕</div>
+      <div class="repeat-name" id="repeatName">Добавь первую еду</div>
       <div class="repeat-kcal" id="repeatKcal"></div>
     </div>
   </div>
-
   <div class="hero">
     <div class="ring-wrap">
       <svg class="ring-svg" width="170" height="170" viewBox="0 0 170 170">
@@ -301,21 +270,14 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
       <div class="stat-card"><div class="stat-val" id="statP" style="color:var(--orange)">0г</div><div class="stat-label">белок</div></div>
     </div>
   </div>
-
   <div class="macros-card">
     <div class="macros-title">БЖУ сегодня</div>
     <div class="macro-row"><div class="macro-name">Белки</div><div class="macro-track"><div class="macro-fill" id="mPF" style="background:#e17055;width:0%"></div></div><div class="macro-g" id="mP">0/130г</div></div>
     <div class="macro-row"><div class="macro-name">Жиры</div><div class="macro-track"><div class="macro-fill" id="mFF" style="background:#fdcb6e;width:0%"></div></div><div class="macro-g" id="mF">0/55г</div></div>
     <div class="macro-row"><div class="macro-name">Углеводы</div><div class="macro-track"><div class="macro-fill" id="mCF" style="background:#74b9ff;width:0%"></div></div><div class="macro-g" id="mC">0/155г</div></div>
   </div>
-
-  <div class="section-header">
-    <div class="section-title">Сегодня</div>
-    <button class="section-action" onclick="clearToday()">Очистить</button>
-  </div>
-  <div class="log-list" id="logList">
-    <div class="empty-log">Пока ничего не добавлено 🍽<br><span style="font-size:14px">Нажми + чтобы добавить еду</span></div>
-  </div>
+  <div class="section-header"><div class="section-title">Сегодня</div><button class="section-action" onclick="clearToday()">Очистить</button></div>
+  <div class="log-list" id="logList"><div class="empty-log">Пока ничего не добавлено 🍽<br><span style="font-size:14px">Нажми + чтобы добавить еду</span></div></div>
 </div>
 
 <div class="page" id="mealsPage">
@@ -323,7 +285,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
   <div id="savedMealsList"></div>
   <div class="empty-log" id="mealsEmpty" style="display:none">Нет сохранённых блюд.<br>Создай в разделе «Смесь»!</div>
 </div>
-
 <div class="page" id="historyPage">
   <div class="page-title">История</div>
   <div id="historyList"></div>
@@ -370,41 +331,38 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
       <div class="search-wrap">
         <svg class="search-ico" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input class="search-inp" type="text" placeholder="Творог, тунец, хлеб..." id="searchInp" oninput="doSearch(this.value)" autocomplete="off">
-        <button class="barcode-btn" onclick="openBarcode()" title="Штрихкод">📷</button>
+        <button class="barcode-btn" onclick="openBarcode()" title="Сканировать штрихкод">📷</button>
       </div>
       <div id="quickPicks">
-        <div class="quick-section">
-          <div class="quick-title">Часто ем</div>
-          <div class="quick-chips" id="recentChips"></div>
-        </div>
+        <div class="quick-section"><div class="quick-title">Часто ем</div><div class="quick-chips" id="recentChips"></div></div>
         <div class="quick-section">
           <div class="quick-title">Белки</div>
           <div class="quick-chips">
-            <button class="quick-chip" onclick="quickPick('Творог 5%')">🧀 Творог</button>
-            <button class="quick-chip" onclick="quickPick('Тунец в собственном соку')">🐟 Тунец</button>
-            <button class="quick-chip" onclick="quickPick('Куриная грудка')">🍗 Грудка</button>
-            <button class="quick-chip" onclick="quickPick('Яйцо куриное')">🥚 Яйцо</button>
-            <button class="quick-chip" onclick="quickPick('Греческий йогурт 2%')">🥛 Йогурт</button>
+            <button class="qchip" onclick="quickPick('Творог 5%')">🧀 Творог</button>
+            <button class="qchip" onclick="quickPick('Тунец в собственном соку')">🐟 Тунец</button>
+            <button class="qchip" onclick="quickPick('Куриная грудка')">🍗 Грудка</button>
+            <button class="qchip" onclick="quickPick('Яйцо куриное')">🥚 Яйцо</button>
+            <button class="qchip" onclick="quickPick('Греческий йогурт 2%')">🥛 Йогурт</button>
           </div>
         </div>
         <div class="quick-section">
           <div class="quick-title">Хлеб и крупы</div>
           <div class="quick-chips">
-            <button class="quick-chip" onclick="quickPick('Хлеб ржаной')">🍞 Ржаной</button>
-            <button class="quick-chip" onclick="quickPick('Хлеб бородинский')">🍞 Бородинский</button>
-            <button class="quick-chip" onclick="quickPick('Макароны варёные')">🍝 Макароны</button>
-            <button class="quick-chip" onclick="quickPick('Гречка варёная')">🌾 Гречка</button>
-            <button class="quick-chip" onclick="quickPick('Овсянка варёная')">🌾 Овсянка</button>
+            <button class="qchip" onclick="quickPick('Хлеб ржаной')">🍞 Ржаной</button>
+            <button class="qchip" onclick="quickPick('Хлеб бородинский')">🍞 Бородинский</button>
+            <button class="qchip" onclick="quickPick('Макароны варёные')">🍝 Макароны</button>
+            <button class="qchip" onclick="quickPick('Гречка варёная')">🌾 Гречка</button>
+            <button class="qchip" onclick="quickPick('Овсянка варёная')">🌾 Овсянка</button>
           </div>
         </div>
         <div class="quick-section">
           <div class="quick-title">Овощи</div>
           <div class="quick-chips">
-            <button class="quick-chip" onclick="quickPick('Огурец')">🥒 Огурец</button>
-            <button class="quick-chip" onclick="quickPick('Помидор')">🍅 Томат</button>
-            <button class="quick-chip" onclick="quickPick('Брокколи')">🥦 Брокколи</button>
-            <button class="quick-chip" onclick="quickPick('Кабачок')">🥒 Кабачок</button>
-            <button class="quick-chip" onclick="quickPick('Авокадо')">🥑 Авокадо</button>
+            <button class="qchip" onclick="quickPick('Огурец')">🥒 Огурец</button>
+            <button class="qchip" onclick="quickPick('Помидор')">🍅 Томат</button>
+            <button class="qchip" onclick="quickPick('Брокколи')">🥦 Брокколи</button>
+            <button class="qchip" onclick="quickPick('Кабачок')">🥒 Кабачок</button>
+            <button class="qchip" onclick="quickPick('Авокадо')">🥑 Авокадо</button>
           </div>
         </div>
       </div>
@@ -440,7 +398,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
       <label class="photo-area">
         <input type="file" accept="image/*" capture="environment" id="photoInp" onchange="handlePhoto(event)">
         <img class="photo-preview" id="photoPreview">
-        <div id="photoPlaceholder"><div style="font-size:48px;margin-bottom:10px">📸</div><div style="font-size:16px;font-weight:700">Сфотографировать еду</div><div style="font-size:14px;color:var(--text2);margin-top:4px">или выбрать из галереи</div></div>
+        <div id="photoPlaceholder"><div style="font-size:48px;margin-bottom:10px">📸</div><div style="font-size:16px;font-weight:700">Сфотографировать еду</div><div style="font-size:14px;color:var(--text2);margin-top:4px">ИИ распознает и посчитает калории</div></div>
       </label>
       <div class="ai-box" id="aiBox">
         <div id="aiLoad" style="text-align:center;padding:20px;color:var(--text2);font-size:15px"><span class="spinner"></span>ИИ анализирует...</div>
@@ -450,6 +408,36 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
     </div>
 
     <button class="btn btn-secondary" onclick="closeModal()">Отмена</button>
+  </div>
+</div>
+
+<!-- BARCODE SCANNER -->
+<div class="barcode-overlay" id="barcodeOverlay">
+  <div class="barcode-header">
+    <button class="barcode-back" onclick="closeBarcode()">←</button>
+    <div class="barcode-title">Сканировать штрихкод</div>
+  </div>
+  <div class="barcode-video-wrap">
+    <video id="barcodeVideo" playsinline muted></video>
+    <div class="barcode-frame">
+      <div style="position:relative">
+        <div class="barcode-rect"></div>
+        <div class="barcode-corners">
+          <div class="barcode-corner bc-tl"></div>
+          <div class="barcode-corner bc-tr"></div>
+          <div class="barcode-corner bc-bl"></div>
+          <div class="barcode-corner bc-br"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="barcode-hint">
+    Наведи камеру на штрихкод
+    <div class="barcode-status" id="barcodeStatus"></div>
+    <div class="barcode-manual">
+      <input type="number" id="barcodeManual" placeholder="Или введи код вручную...">
+      <button onclick="manualBarcode()">→</button>
+    </div>
   </div>
 </div>
 
@@ -484,28 +472,21 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
     <div class="s-label">Дневная цель (ккал)</div>
     <input class="field" type="number" id="goalInp" value="1700" style="font-size:24px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;margin-bottom:16px">
     <div class="s-label">API ключ Anthropic (для 📸 фото)</div>
-    <input class="field" type="password" id="apiInp" placeholder="sk-ant-...">
-    <div class="s-label" style="margin-top:4px">URL прокси (Cloudflare Worker)</div>
-    <input class="field" type="text" id="proxyInp" placeholder="https://твой-worker.workers.dev" style="margin-bottom:6px">
-    <div style="font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.5">
-      Без прокси фото не работает из-за CORS.<br>
-      Инструкция: workers.cloudflare.com → Create Worker → вставь код из файла worker.js
-    </div>
+    <input class="field" type="password" id="apiInp" placeholder="sk-ant-..." style="margin-bottom:20px">
     <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
     <button class="btn btn-secondary" onclick="document.getElementById('settingsModal').classList.remove('open')">Закрыть</button>
   </div>
 </div>
 
 <script>
-// STATE
-let S=JSON.parse(localStorage.getItem('evg_v5')||'{}');
+const S=JSON.parse(localStorage.getItem('evg_v6')||'{}');
 if(!S.goal)S.goal=1700;
 if(!S.log)S.log={};
 if(!S.meals)S.meals={};
 if(!S.recent)S.recent=[];
 const TODAY=new Date().toISOString().slice(0,10);
 const MAC={p:130,f:55,c:155};
-function save(){localStorage.setItem('evg_v5',JSON.stringify(S));}
+function save(){localStorage.setItem('evg_v6',JSON.stringify(S));}
 
 const FOODS=[
   {name:'Творог 5%',kcal:121,p:17,f:5,c:3,emoji:'🧀'},
@@ -588,45 +569,37 @@ function init(){
   document.getElementById('todayLabel').textContent=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
   document.getElementById('goalInp').value=S.goal;
   document.getElementById('apiInp').value=localStorage.getItem('evg_api')||'';
-  document.getElementById('proxyInp').value=localStorage.getItem('evg_proxy')||'';
   renderHome();
-  renderWidgets();
 }
 
-// STREAK
 function calcStreak(){
   let streak=0;
-  const d=new Date();
-  for(let i=0;i<30;i++){
-    const key=new Date(d.getTime()-i*86400000).toISOString().slice(0,10);
-    const entries=S.log[key]||[];
-    const tot=entries.reduce((s,e)=>s+e.kcal,0);
-    if(i===0&&tot===0)continue; // today not started yet
+  for(let i=1;i<=30;i++){
+    const key=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+    const tot=(S.log[key]||[]).reduce((s,e)=>s+e.kcal,0);
     if(tot>0&&tot<=S.goal)streak++;
-    else if(i>0)break;
+    else break;
   }
   return streak;
 }
 
 function renderWidgets(){
-  // STREAK
   const streak=calcStreak();
   document.getElementById('streakNum').textContent=streak;
   document.getElementById('streakFire').textContent=streak>=7?'🔥':streak>=3?'✨':streak>=1?'⚡':'💤';
   const dots=document.getElementById('streakDots');
-  const last7=[];
+  dots.innerHTML='';
   for(let i=6;i>=0;i--){
     const key=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
     const tot=(S.log[key]||[]).reduce((s,e)=>s+e.kcal,0);
     const ok=tot>0&&tot<=S.goal;
     const isToday=key===TODAY;
-    last7.push({ok,isToday});
+    const div=document.createElement('div');
+    div.className='sdot'+(isToday&&ok?' today':ok?' ok':'');
+    dots.appendChild(div);
   }
-  dots.innerHTML=last7.map(d=>`<div class="streak-dot ${d.isToday&&d.ok?'today-ok':d.ok?'filled':''}"></div>`).join('');
-
-  // LAST FOOD REPEAT
-  const todayEntries=S.log[TODAY]||[];
-  const last=todayEntries.length?todayEntries[todayEntries.length-1]:null;
+  const e=S.log[TODAY]||[];
+  const last=e.length?e[e.length-1]:null;
   const rw=document.getElementById('repeatWidget');
   if(last){
     rw.classList.remove('empty');
@@ -642,10 +615,9 @@ function renderWidgets(){
 }
 
 function repeatLast(){
-  const todayEntries=S.log[TODAY]||[];
-  const last=todayEntries.length?todayEntries[todayEntries.length-1]:null;
+  const e=S.log[TODAY]||[];
+  const last=e.length?e[e.length-1]:null;
   if(!last){openAddModal();return;}
-  // Find food in db or create temp food item
   const food={name:last.name,emoji:last.emoji||'🍽',kcal:Math.round(last.kcal/last.g*100),p:Math.round((last.p||0)/last.g*100*10)/10,f:Math.round((last.f||0)/last.g*100*10)/10,c:Math.round((last.c||0)/last.g*100*10)/10};
   openP(food);
 }
@@ -656,8 +628,7 @@ function renderHome(){
   const prot=e.reduce((s,x)=>s+(x.p||0),0);
   const fat=e.reduce((s,x)=>s+(x.f||0),0);
   const carb=e.reduce((s,x)=>s+(x.c||0),0);
-  const g=S.goal;
-  const circ=452.4;
+  const g=S.goal,circ=452.4;
   document.getElementById('ringFill').style.strokeDashoffset=circ-Math.min(tot/g,1)*circ;
   document.getElementById('ringFill').style.stroke=tot>g?'#d63031':'url(#rg)';
   document.getElementById('ringKcal').textContent=Math.round(tot);
@@ -677,13 +648,7 @@ function renderHome(){
   document.getElementById('mCF').style.width=Math.min(carb/MAC.c*100,100)+'%';
   const ll=document.getElementById('logList');
   if(!e.length){ll.innerHTML='<div class="empty-log">Пока ничего не добавлено 🍽<br><span style="font-size:14px">Нажми + чтобы добавить еду</span></div>';return;}
-  ll.innerHTML=e.map((x,i)=>`
-    <div class="log-entry">
-      <div class="entry-icon">${x.emoji||'🍽'}</div>
-      <div class="entry-info"><div class="entry-name">${x.name}</div><div class="entry-meta">${x.time} · ${x.g}г · Б${Math.round(x.p||0)} Ж${Math.round(x.f||0)} У${Math.round(x.c||0)}</div></div>
-      <div class="entry-kcal">${Math.round(x.kcal)}</div>
-      <button class="entry-del" onclick="delEntry(${i})">×</button>
-    </div>`).join('');
+  ll.innerHTML=e.map((x,i)=>`<div class="log-entry"><div class="entry-icon">${x.emoji||'🍽'}</div><div class="entry-info"><div class="entry-name">${x.name}</div><div class="entry-meta">${x.time} · ${x.g}г · Б${Math.round(x.p||0)} Ж${Math.round(x.f||0)} У${Math.round(x.c||0)}</div></div><div class="entry-kcal">${Math.round(x.kcal)}</div><button class="entry-del" onclick="delEntry(${i})">×</button></div>`).join('');
   renderWidgets();
 }
 
@@ -732,29 +697,20 @@ function mealCards(meals){
     const rem=batch?batch.remainG:null;
     const remPct=rem!==null&&batch.totalG?Math.round(rem/batch.totalG*100):null;
     const remHtml=rem!==null?`<div class="sm-remain ${remPct<25?'low':''}">Осталось: ${Math.round(rem)}г (${remPct}%)</div>`:'';
-    return`<div class="saved-meal" onclick="openSavedP('${m.id}')">
-      <div class="sm-icon">${m.emoji||'🍳'}</div>
-      <div class="sm-info"><div class="sm-name">${m.name}</div><div class="sm-meta">${Math.round(m.kcalPer100)} ккал/100г</div>${remHtml}</div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-        <div class="sm-kcal">${Math.round(m.totalKcal)}</div>
-        <button class="sm-del" onclick="event.stopPropagation();delMeal('${m.id}')">×</button>
-      </div>
-    </div>`;
+    return`<div class="saved-meal" onclick="openSavedP('${m.id}')"><div class="sm-icon">${m.emoji||'🍳'}</div><div class="sm-info"><div class="sm-name">${m.name}</div><div class="sm-meta">${Math.round(m.kcalPer100)} ккал/100г</div>${remHtml}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px"><div class="sm-kcal">${Math.round(m.totalKcal)}</div><button class="sm-del" onclick="event.stopPropagation();delMeal('${m.id}')">×</button></div></div>`;
   }).join('');
 }
 function delMeal(id){if(!confirm('Удалить?'))return;delete S.meals[id];save();renderSavedMeals();}
 
-// RECENT
 function addToRecent(name){S.recent=S.recent.filter(n=>n!==name);S.recent.unshift(name);if(S.recent.length>8)S.recent=S.recent.slice(0,8);save();}
 function renderRecentChips(){
   const el=document.getElementById('recentChips');
   const sec=el.closest('.quick-section');
   if(!S.recent||!S.recent.length){sec.style.display='none';return;}
   sec.style.display='block';
-  el.innerHTML=S.recent.map(n=>{const f=FOODS.find(x=>x.name===n);return`<button class="quick-chip" onclick="quickPick('${n.replace(/'/g,"&#39;")}')">${f?f.emoji:'🍽'} ${n.split(' ')[0]}</button>`;}).join('');
+  el.innerHTML=S.recent.map(n=>{const f=FOODS.find(x=>x.name===n);return`<button class="qchip" onclick="quickPick('${n.replace(/'/g,"&#39;")}')">${f?f.emoji:'🍽'} ${n.split(' ')[0]}</button>`;}).join('');
 }
 
-// MODAL
 let curMode='search',curTime='завтрак',portItem=null;
 function openAddModal(){document.getElementById('addModal').classList.add('open');switchMode('search');document.getElementById('searchInp').value='';showQP();renderRecentChips();}
 function closeModal(){document.getElementById('addModal').classList.remove('open');}
@@ -767,7 +723,6 @@ function switchMode(m){
 }
 function selTime(btn,t){curTime=t;btn.closest('.mtbs').querySelectorAll('.mtb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 
-// SEARCH
 let sTm;
 function doSearch(q){
   clearTimeout(sTm);sTm=setTimeout(()=>{
@@ -782,20 +737,71 @@ function showQP(){document.getElementById('quickPicks').style.display='block';do
 function fHTML(f){return`<div class="food-item" onclick='openP(${JSON.stringify(f).replace(/'/g,"&#39;")})'><div class="food-emoji">${f.emoji}</div><div class="food-name">${f.name}</div><div class="food-right"><div class="food-kcal">${f.kcal}</div><div class="food-per">на 100г</div></div></div>`;}
 function quickPick(name){const f=FOODS.find(x=>x.name===name);if(f)openP(f);}
 
-// BARCODE
-async function openBarcode(){
-  const code=prompt('Введи штрихкод с упаковки:');
-  if(!code)return;
-  showToast('🔍 Ищу продукт...');
+// BARCODE — реальный сканер камерой
+let zxReader=null;
+function openBarcode(){
+  document.getElementById('addModal').classList.remove('open');
+  document.getElementById('barcodeOverlay').classList.add('open');
+  document.getElementById('barcodeStatus').textContent='Инициализация камеры...';
+  startScanner();
+}
+
+function startScanner(){
+  if(typeof ZXing==='undefined'){
+    document.getElementById('barcodeStatus').textContent='Загрузка библиотеки...';
+    setTimeout(startScanner,500);
+    return;
+  }
   try{
-    const resp=await fetch(`https://world.openfoodfacts.org/api/v0/product/${code.trim()}.json`);
+    zxReader=new ZXing.BrowserMultiFormatReader();
+    zxReader.decodeFromVideoDevice(null,'barcodeVideo',function(result,err){
+      if(result){
+        const code=result.getText();
+        document.getElementById('barcodeStatus').textContent='✅ Найдено: '+code;
+        lookupBarcode(code);
+      }
+    });
+    document.getElementById('barcodeStatus').textContent='Наведи на штрихкод';
+  }catch(e){
+    document.getElementById('barcodeStatus').textContent='Ошибка камеры: '+e.message;
+  }
+}
+
+function closeBarcode(){
+  if(zxReader){try{zxReader.reset();}catch(e){}}
+  zxReader=null;
+  document.getElementById('barcodeOverlay').classList.remove('open');
+  document.getElementById('addModal').classList.add('open');
+}
+
+function manualBarcode(){
+  const code=document.getElementById('barcodeManual').value.trim();
+  if(!code)return;
+  lookupBarcode(code);
+}
+
+async function lookupBarcode(barcode){
+  document.getElementById('barcodeStatus').textContent='🔍 Ищу в базе...';
+  try{
+    const resp=await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
     const data=await resp.json();
-    if(data.status!==1){showToast('❌ Продукт не найден');return;}
+    if(data.status!==1){document.getElementById('barcodeStatus').textContent='❌ Продукт не найден';return;}
     const p=data.product;const per=p.nutriments;
-    const food={name:p.product_name_ru||p.product_name||'Продукт',kcal:Math.round(per['energy-kcal_100g']||0),p:Math.round((per.proteins_100g||0)*10)/10,f:Math.round((per.fat_100g||0)*10)/10,c:Math.round((per.carbohydrates_100g||0)*10)/10,emoji:'🛒'};
-    if(!food.kcal){showToast('❌ Нет данных о калориях');return;}
-    showToast(`✅ ${food.name}`);openP(food);
-  }catch(e){showToast('❌ Ошибка поиска');}
+    const food={
+      name:p.product_name_ru||p.product_name||'Продукт',
+      kcal:Math.round(per['energy-kcal_100g']||per['energy-kcal']||0),
+      p:Math.round((per.proteins_100g||0)*10)/10,
+      f:Math.round((per.fat_100g||0)*10)/10,
+      c:Math.round((per.carbohydrates_100g||0)*10)/10,
+      emoji:'🛒'
+    };
+    if(!food.kcal){document.getElementById('barcodeStatus').textContent='❌ Нет данных о калориях';return;}
+    closeBarcode();
+    showToast(`✅ ${food.name}`);
+    openP(food);
+  }catch(e){
+    document.getElementById('barcodeStatus').textContent='❌ Ошибка: '+e.message;
+  }
 }
 
 // BT
@@ -828,8 +834,7 @@ async function toggleBT(){
   }catch(err){document.getElementById('btBarAct').textContent='Подключить →';if(err.name!=='NotFoundError')showToast('Ошибка: '+err.message);}
 }
 function updateBtUI(){
-  const bar=document.getElementById('btBar');
-  bar.classList.toggle('on',btOn);
+  document.getElementById('btBar').classList.toggle('on',btOn);
   document.getElementById('btBarText').textContent=btOn?'Весы подключены':'Весы не подключены';
   document.getElementById('btBarW').textContent=(btWeight||0)+'г';
   document.getElementById('btBarAct').textContent=btOn?'Отключить':'Подключить →';
@@ -844,8 +849,8 @@ function openP(food){
   document.getElementById('pEmoji').textContent=food.emoji||'🍽';
   document.getElementById('pName').textContent=food.name;
   document.getElementById('pMeta').textContent=`${food.kcal} ккал/100г · Б${food.p} Ж${food.f} У${food.c}`;
-  const g=btWeight>0?btWeight:100;
-  syncG(g);updateBtUI();
+  syncG(btWeight>0?btWeight:100);
+  updateBtUI();
   document.getElementById('portionModal').classList.add('open');
 }
 function updateG(g){g=parseInt(g)||0;document.getElementById('gBig').textContent=g;document.getElementById('gInp').value=g;calcG(g);}
@@ -867,7 +872,6 @@ function confirmP(){
 }
 function closePModal(){document.getElementById('portionModal').classList.remove('open');}
 
-// SAVED IN MODAL
 function renderSavedInModal(){
   const meals=Object.values(S.meals||{});
   const el=document.getElementById('savedInModal');
@@ -898,15 +902,7 @@ function doComboSearch(q){
 }
 function addCI(food){cIngs.push({...food,g:100});document.getElementById('comboSearch').value='';document.getElementById('comboSR').style.display='none';renderCI();}
 function renderCI(){
-  document.getElementById('comboIngs').innerHTML=cIngs.map((f,i)=>`
-    <div class="combo-ing">
-      <div style="font-size:18px">${f.emoji}</div>
-      <div class="ci-name">${f.name}</div>
-      <input class="ci-g" type="number" value="${f.g}" min="1" max="3000" onchange="updCI(${i},this.value)">
-      <div class="ci-unit">г</div>
-      <div class="ci-kcal">${Math.round(f.kcal*f.g/100)}</div>
-      <button class="ci-del" onclick="delCI(${i})">×</button>
-    </div>`).join('');
+  document.getElementById('comboIngs').innerHTML=cIngs.map((f,i)=>`<div class="combo-ing"><div style="font-size:18px">${f.emoji}</div><div class="ci-name">${f.name}</div><input class="ci-g" type="number" value="${f.g}" min="1" max="3000" onchange="updCI(${i},this.value)"><div style="font-size:13px;color:var(--text3)">г</div><div class="ci-kcal">${Math.round(f.kcal*f.g/100)}</div><button class="ci-del" onclick="delCI(${i})">×</button></div>`).join('');
   updCT();
 }
 function updCI(i,g){cIngs[i].g=parseInt(g)||0;renderCI();}
@@ -942,7 +938,7 @@ function logComboNow(){
   renderCI();save();renderHome();closeModal();showToast('✅ Добавлено!');
 }
 
-// PHOTO — через прокси
+// PHOTO — прямой запрос к Anthropic API
 let photoB64=null,aiItems=[];
 function resetPhoto(){
   photoB64=null;aiItems=[];
@@ -965,37 +961,30 @@ async function handlePhoto(e){
 }
 async function analyzePhoto(){
   const key=localStorage.getItem('evg_api');
-  const proxy=localStorage.getItem('evg_proxy');
-  const box=document.getElementById('aiBox');const load=document.getElementById('aiLoad');const items=document.getElementById('aiItems');
-  box.classList.add('show');load.style.display='block';items.innerHTML='';
+  const box=document.getElementById('aiBox');const load=document.getElementById('aiLoad');const itemsEl=document.getElementById('aiItems');
+  box.classList.add('show');load.style.display='block';itemsEl.innerHTML='';
   document.getElementById('addPhotoBtn').style.display='none';
-  if(!key){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь API ключ в Настройки</div>';return;}
-  if(!proxy){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь URL прокси в Настройки (Cloudflare Worker)</div>';return;}
+  if(!key){load.style.display='none';itemsEl.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь API ключ в Настройки</div>';return;}
   try{
-    // Используем прокси вместо прямого вызова API — это решает CORS
-    const endpoint=proxy.replace(/\/$/,'')+'/v1/messages';
-    const resp=await fetch(endpoint,{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
-      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},
       body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото. ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. Пустой массив если ничего.'}]}]})
     });
     const data=await resp.json();
-    if(data.error){throw new Error(data.error.message||'API error');}
+    if(data.error)throw new Error(data.error.message);
     aiItems=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,'').trim()).map(it=>({...it,checked:true}));
     renderAI();
-  }catch(err){load.style.display='none';items.innerHTML=`<div style="color:var(--red);padding:10px;font-size:14px">Ошибка: ${err.message}</div>`;}
+  }catch(err){
+    load.style.display='none';
+    itemsEl.innerHTML=`<div style="color:var(--red);padding:10px;font-size:14px">Ошибка: ${err.message}</div>`;
+  }
 }
 function renderAI(){
   document.getElementById('aiLoad').style.display='none';
   const el=document.getElementById('aiItems');
   if(!aiItems.length){el.innerHTML='<div style="color:var(--text2);padding:10px;font-size:15px">Ничего не распознано</div>';return;}
-  el.innerHTML=aiItems.map((it,i)=>`
-    <div class="ai-item">
-      <button class="ai-check ${it.checked?'on':''}" onclick="toggleAI(${i})">${it.checked?'<svg width="14" height="14" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>':''}</button>
-      <div style="font-size:22px">${it.emoji||'🍽'}</div>
-      <div style="flex:1"><div style="font-size:15px;font-weight:600">${it.name}</div><div style="font-size:13px;color:var(--text2)">${it.estimatedG||100}г</div></div>
-      <div style="font-size:16px;font-weight:700;color:var(--accent)">${Math.round(it.kcal*(it.estimatedG||100)/100)} ккал</div>
-    </div>`).join('');
+  el.innerHTML=aiItems.map((it,i)=>`<div class="ai-item"><button class="ai-check ${it.checked?'on':''}" onclick="toggleAI(${i})">${it.checked?'<svg width="14" height="14" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>':''}</button><div style="font-size:22px">${it.emoji||'🍽'}</div><div style="flex:1"><div style="font-size:15px;font-weight:600">${it.name}</div><div style="font-size:13px;color:var(--text2)">${it.estimatedG||100}г</div></div><div style="font-size:16px;font-weight:700;color:var(--accent)">${Math.round(it.kcal*(it.estimatedG||100)/100)} ккал</div></div>`).join('');
   document.getElementById('addPhotoBtn').style.display='block';
 }
 function toggleAI(i){aiItems[i].checked=!aiItems[i].checked;renderAI();}
@@ -1005,18 +994,13 @@ function addPhotoItems(){
   checked.forEach(it=>{const g=it.estimatedG||100;S.log[TODAY].push({name:it.name,emoji:it.emoji||'📸',kcal:Math.round(it.kcal*g/100),p:Math.round(it.p*g/100*10)/10,f:Math.round(it.f*g/100*10)/10,c:Math.round(it.c*g/100*10)/10,g,time:curTime});addToRecent(it.name);});
   save();renderHome();closeModal();showToast('✅ Добавлено!');
 }
-
 function saveSettings(){
   S.goal=parseInt(document.getElementById('goalInp').value)||1700;
   const key=document.getElementById('apiInp').value.trim();
-  const proxy=document.getElementById('proxyInp').value.trim();
-  save();
-  if(key)localStorage.setItem('evg_api',key);
-  if(proxy)localStorage.setItem('evg_proxy',proxy);
+  save();if(key)localStorage.setItem('evg_api',key);
   document.getElementById('settingsModal').classList.remove('open');
   renderHome();showToast('✅ Сохранено');
 }
-
 function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
 ['addModal','portionModal','settingsModal'].forEach(id=>{
   document.getElementById(id).addEventListener('click',e=>{
@@ -1027,7 +1011,6 @@ function showToast(msg){const t=document.createElement('div');t.className='toast
     }
   });
 });
-
 init();
 </script>
 </body>
