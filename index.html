@@ -18,41 +18,69 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:16px;min-height:100dvh;max-width:430px;margin:0 auto;padding-bottom:96px;overflow-x:hidden;}
 
-/* TOP BAR */
 .top-bar{padding:18px 20px 0;display:flex;justify-content:space-between;align-items:center;}
 .date-label{font-size:13px;color:var(--text2);font-weight:500;}
 .logo{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--accent);}
 
-/* BT STATUS BAR — always visible */
-.bt-statusbar{
-  margin:12px 20px 0;
-  display:flex;align-items:center;gap:10px;
-  background:var(--card);border-radius:99px;
-  padding:10px 16px;box-shadow:var(--shadow);
-  cursor:pointer;transition:all .15s;
-}
-.bt-statusbar.connected{background:var(--green-bg);border:1px solid #b2dfdb;}
+/* BT STATUS */
+.bt-bar{margin:12px 20px 0;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:99px;padding:10px 16px;box-shadow:var(--shadow);cursor:pointer;transition:all .15s;}
+.bt-bar.on{background:var(--green-bg);border:1px solid #b2dfdb;}
 .bt-dot{width:10px;height:10px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
-.bt-statusbar.connected .bt-dot{background:var(--green);}
-.bt-statusbar-text{flex:1;font-size:14px;font-weight:600;color:var(--text2);}
-.bt-statusbar.connected .bt-statusbar-text{color:var(--green);}
-.bt-statusbar-weight{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--green);display:none;}
-.bt-statusbar.connected .bt-statusbar-weight{display:block;}
-.bt-statusbar-action{font-size:13px;color:var(--accent);font-weight:600;}
+.bt-bar.on .bt-dot{background:var(--green);}
+.bt-bar-text{flex:1;font-size:14px;font-weight:600;color:var(--text2);}
+.bt-bar.on .bt-bar-text{color:var(--green);}
+.bt-bar-w{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:700;color:var(--green);display:none;}
+.bt-bar.on .bt-bar-w{display:block;}
+.bt-bar-act{font-size:13px;color:var(--accent);font-weight:600;}
+
+/* WIDGETS ROW */
+.widgets-row{display:flex;gap:10px;margin:14px 20px 0;}
+
+/* STREAK WIDGET */
+.streak-widget{
+  flex:1;background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:6px;
+}
+.streak-top{display:flex;align-items:center;justify-content:space-between;}
+.streak-num{font-family:'Space Grotesk',sans-serif;font-size:36px;font-weight:700;color:var(--accent);line-height:1;}
+.streak-fire{font-size:28px;}
+.streak-label{font-size:12px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;}
+.streak-dots{display:flex;gap:4px;margin-top:4px;}
+.streak-dot{width:20px;height:6px;border-radius:99px;background:var(--bg2);}
+.streak-dot.filled{background:var(--accent);}
+.streak-dot.today-ok{background:var(--green);}
+
+/* QUICK REPEAT WIDGET */
+.repeat-widget{
+  flex:1;background:var(--accent);border-radius:var(--radius);padding:14px;box-shadow:0 4px 16px rgba(108,92,231,.3);
+  display:flex;flex-direction:column;gap:8px;cursor:pointer;
+  transition:transform .15s;
+}
+.repeat-widget:active{transform:scale(.97);}
+.repeat-widget.empty{background:var(--card);cursor:default;}
+.repeat-widget.empty:active{transform:none;}
+.repeat-top{display:flex;align-items:center;justify-content:space-between;}
+.repeat-label{font-size:12px;font-weight:700;color:rgba(255,255,255,.8);text-transform:uppercase;letter-spacing:.05em;}
+.repeat-widget.empty .repeat-label{color:var(--text3);}
+.repeat-icon{font-size:24px;}
+.repeat-name{font-size:14px;font-weight:700;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.repeat-widget.empty .repeat-name{color:var(--text3);font-size:13px;}
+.repeat-kcal{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;color:white;}
+.repeat-btn{background:rgba(255,255,255,.2);border:none;border-radius:99px;padding:6px 12px;color:white;font-size:13px;font-weight:700;cursor:pointer;align-self:flex-start;}
 
 /* RING */
-.hero{padding:20px 20px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;}
-.ring-wrap{position:relative;width:180px;height:180px;}
+.hero{padding:16px 20px 14px;display:flex;flex-direction:column;align-items:center;gap:8px;}
+.ring-wrap{position:relative;width:170px;height:170px;}
 .ring-svg{transform:rotate(-90deg);}
-.ring-track{fill:none;stroke:var(--bg2);stroke-width:14;}
-.ring-fill{fill:none;stroke-width:14;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.34,1.56,.64,1);}
+.ring-track{fill:none;stroke:var(--bg2);stroke-width:13;}
+.ring-fill{fill:none;stroke-width:13;stroke-linecap:round;transition:stroke-dashoffset .6s cubic-bezier(.34,1.56,.64,1);}
 .ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;}
-.ring-kcal{font-family:'Space Grotesk',sans-serif;font-size:40px;font-weight:700;letter-spacing:-.03em;line-height:1;}
+.ring-kcal{font-family:'Space Grotesk',sans-serif;font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1;}
 .ring-sub{font-size:13px;color:var(--text2);font-weight:500;}
 .stats-row{display:flex;gap:10px;width:100%;}
-.stat-card{flex:1;background:var(--card);border-radius:var(--radius-sm);padding:12px 10px;text-align:center;box-shadow:var(--shadow);}
+.stat-card{flex:1;background:var(--card);border-radius:var(--radius-sm);padding:12px 8px;text-align:center;box-shadow:var(--shadow);}
 .stat-val{font-family:'Space Grotesk',sans-serif;font-size:20px;font-weight:700;}
-.stat-label{font-size:12px;color:var(--text2);margin-top:2px;}
+.stat-label{font-size:11px;color:var(--text2);margin-top:2px;}
 
 /* MACROS */
 .macros-card{margin:0 20px 14px;background:var(--card);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow);}
@@ -76,7 +104,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .entry-meta{font-size:13px;color:var(--text2);margin-top:2px;}
 .entry-kcal{font-family:'Space Grotesk',sans-serif;font-size:17px;font-weight:700;color:var(--accent);flex-shrink:0;}
 .entry-del{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:4px;flex-shrink:0;}
-.empty-log{text-align:center;padding:36px 20px;color:var(--text3);font-size:15px;line-height:1.7;}
+.empty-log{text-align:center;padding:32px 20px;color:var(--text3);font-size:15px;line-height:1.7;}
 
 /* NAV */
 .nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);border-top:1px solid var(--border);display:flex;padding:10px 0 max(12px,env(safe-area-inset-bottom));z-index:100;box-shadow:0 -2px 16px rgba(0,0,0,0.06);}
@@ -96,28 +124,30 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .modal-handle{width:44px;height:5px;border-radius:3px;background:var(--border);margin:0 auto 18px;}
 .modal-title{font-family:'Space Grotesk',sans-serif;font-size:22px;font-weight:700;margin-bottom:16px;}
 
-/* MEAL TIME */
-.meal-time-btns{display:flex;gap:8px;margin-bottom:16px;}
+.mtbs{display:flex;gap:8px;margin-bottom:16px;}
 .mtb{flex:1;padding:10px;border-radius:10px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
 .mtb.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
 
-/* SEARCH — BIG, front and center */
+.mode-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;}
+.mode-tabs::-webkit-scrollbar{display:none;}
+.mode-tab{flex-shrink:0;padding:9px 16px;border-radius:99px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
+.mode-tab.active{background:var(--accent);border-color:var(--accent);color:white;}
+
+/* SEARCH */
 .search-wrap{position:relative;margin-bottom:12px;}
 .search-inp{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:15px 50px 15px 50px;color:var(--text);font-size:17px;font-weight:500;outline:none;transition:border-color .15s;}
 .search-inp:focus{border-color:var(--accent);background:white;}
 .search-ico{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;}
 .barcode-btn{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--text2);font-size:22px;}
 
-/* QUICK PICKS */
 .quick-section{margin-bottom:14px;}
 .quick-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
 .quick-chips{display:flex;gap:7px;flex-wrap:wrap;}
 .quick-chip{padding:7px 13px;border-radius:99px;background:var(--bg2);border:none;font-size:14px;font-weight:600;color:var(--text);cursor:pointer;transition:all .15s;white-space:nowrap;}
 .quick-chip:active{background:var(--accent-bg);color:var(--accent);}
 
-/* FOOD LIST */
 .food-list{display:flex;flex-direction:column;gap:7px;max-height:360px;overflow-y:auto;}
-.food-item{background:var(--bg);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;cursor:pointer;gap:14px;transition:all .15s;border:2px solid transparent;}
+.food-item{background:var(--bg);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;cursor:pointer;gap:14px;border:2px solid transparent;transition:all .15s;}
 .food-item:active{border-color:var(--accent);background:var(--accent-bg);}
 .food-emoji{font-size:24px;flex-shrink:0;}
 .food-name{flex:1;font-size:15px;font-weight:600;}
@@ -125,25 +155,15 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .food-kcal{font-size:16px;color:var(--accent);font-weight:700;}
 .food-per{font-size:12px;color:var(--text3);}
 
-/* ADD MODE TABS */
-.mode-tabs{display:flex;gap:8px;margin-bottom:16px;overflow-x:auto;scrollbar-width:none;}
-.mode-tabs::-webkit-scrollbar{display:none;}
-.mode-tab{flex-shrink:0;padding:9px 16px;border-radius:99px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;}
-.mode-tab.active{background:var(--accent);border-color:var(--accent);color:white;}
-
 /* PORTION */
-.portion-food{display:flex;align-items:center;gap:14px;margin-bottom:16px;background:var(--bg);border-radius:var(--radius-sm);padding:14px;}
+.portion-food{display:flex;align-items:center;gap:14px;margin-bottom:14px;background:var(--bg);border-radius:var(--radius-sm);padding:14px;}
 .portion-emoji{font-size:34px;}
-.portion-food-name{font-size:17px;font-weight:700;}
-.portion-food-meta{font-size:13px;color:var(--text2);margin-top:3px;}
-
-/* Live BT weight indicator in portion */
+.pf-name{font-size:17px;font-weight:700;}
+.pf-meta{font-size:13px;color:var(--text2);margin-top:3px;}
 .bt-live{display:none;align-items:center;gap:10px;background:var(--green-bg);border:1px solid #b2dfdb;border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:14px;}
 .bt-live.show{display:flex;}
 .bt-live-num{font-family:'Space Grotesk',sans-serif;font-size:28px;font-weight:700;color:var(--green);}
-.bt-live-label{font-size:13px;color:var(--text2);flex:1;}
-.bt-live-use{padding:8px 16px;border-radius:99px;background:var(--green);border:none;color:white;font-size:14px;font-weight:700;cursor:pointer;}
-
+.bt-live-use{padding:8px 16px;border-radius:99px;background:var(--green);border:none;color:white;font-size:14px;font-weight:700;cursor:pointer;flex-shrink:0;}
 .g-big{font-family:'Space Grotesk',sans-serif;font-size:64px;font-weight:700;text-align:center;color:var(--text);line-height:1;margin-bottom:2px;}
 .g-label{font-size:14px;color:var(--text2);text-align:center;margin-bottom:14px;font-weight:500;}
 input[type=range]{width:100%;-webkit-appearance:none;height:8px;background:var(--bg2);border-radius:99px;outline:none;margin-bottom:12px;}
@@ -174,9 +194,8 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 .batch-inp:focus{border-color:var(--accent);}
 .combo-total{background:var(--accent-bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
 .ct-kcal{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700;color:var(--accent);}
-.ct-sub{font-size:13px;color:var(--text2);}
 
-/* SAVED MEALS */
+/* SAVED */
 .saved-meal{background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:9px;display:flex;align-items:center;gap:13px;cursor:pointer;border:2px solid transparent;transition:all .15s;}
 .saved-meal:active{border-color:var(--accent);background:var(--accent-bg);}
 .sm-icon{font-size:28px;width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:white;border-radius:13px;flex-shrink:0;}
@@ -189,7 +208,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 .sm-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:20px;padding:4px 6px;}
 
 /* PHOTO */
-.photo-area{border:3px dashed var(--border);border-radius:var(--radius);padding:36px 20px;text-align:center;cursor:pointer;background:var(--bg);transition:border-color .15s;}
+.photo-area{border:3px dashed var(--border);border-radius:var(--radius);padding:32px 20px;text-align:center;cursor:pointer;background:var(--bg);}
 .photo-area input{display:none;}
 .photo-preview{width:100%;border-radius:12px;margin-bottom:12px;display:none;}
 .ai-box{background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-top:14px;display:none;}
@@ -205,23 +224,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 .page{padding:20px;display:none;}
 .page.active{display:block;}
 .page-title{font-family:'Space Grotesk',sans-serif;font-size:24px;font-weight:700;margin-bottom:18px;}
-.history-day{margin-bottom:14px;background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow);}
+.history-day{margin-bottom:12px;background:var(--card);border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow);}
 .hist-title{font-size:14px;font-weight:700;margin-bottom:8px;}
 .hist-bar{height:9px;border-radius:99px;background:var(--bg2);overflow:hidden;margin-bottom:6px;}
 .hist-fill{height:100%;border-radius:99px;}
 .hist-meta{font-size:13px;color:var(--text2);}
 
-/* BTNS */
 .btn{width:100%;padding:16px;border-radius:var(--radius-sm);font-size:16px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
 .btn-primary{background:var(--accent);color:white;box-shadow:0 4px 16px rgba(108,92,231,.3);}
 .btn-primary:active{transform:scale(.98);}
-.btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 .btn-secondary{background:var(--bg2);color:var(--text2);margin-top:10px;}
-
-/* SETTINGS */
 .s-label{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;}
 
-/* TOAST */
 .toast{position:fixed;bottom:108px;left:50%;transform:translateX(-50%);background:var(--text);color:white;border-radius:99px;padding:12px 24px;font-size:15px;font-weight:600;z-index:999;white-space:nowrap;animation:tIn .2s ease,tOut .3s ease 1.7s forwards;}
 @keyframes tIn{from{opacity:0;transform:translateX(-50%) translateY(10px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 @keyframes tOut{to{opacity:0;transform:translateX(-50%) translateY(10px)}}
@@ -231,26 +245,47 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 </head>
 <body>
 
-<!-- HOME -->
 <div class="home-page" id="homePage">
   <div class="top-bar">
     <div class="date-label" id="todayLabel"></div>
     <div class="logo">евгения ест</div>
   </div>
 
-  <!-- GLOBAL BT STATUS BAR -->
-  <div class="bt-statusbar" id="btStatusBar" onclick="toggleBT()">
-    <div class="bt-dot" id="btDot"></div>
-    <div class="bt-statusbar-text" id="btStatusText">Весы не подключены</div>
-    <div class="bt-statusbar-weight" id="btStatusWeight">0г</div>
-    <div class="bt-statusbar-action" id="btStatusAction">Подключить →</div>
+  <div class="bt-bar" id="btBar" onclick="toggleBT()">
+    <div class="bt-dot"></div>
+    <div class="bt-bar-text" id="btBarText">Весы не подключены</div>
+    <div class="bt-bar-w" id="btBarW">0г</div>
+    <div class="bt-bar-act" id="btBarAct">Подключить →</div>
+  </div>
+
+  <!-- WIDGETS -->
+  <div class="widgets-row">
+    <div class="streak-widget">
+      <div class="streak-top">
+        <div>
+          <div class="streak-label">Стрик</div>
+          <div class="streak-num" id="streakNum">0</div>
+        </div>
+        <div class="streak-fire" id="streakFire">🔥</div>
+      </div>
+      <div class="streak-dots" id="streakDots"></div>
+    </div>
+
+    <div class="repeat-widget" id="repeatWidget" onclick="repeatLast()">
+      <div class="repeat-top">
+        <div class="repeat-label">Снова</div>
+        <div class="repeat-icon" id="repeatIcon">➕</div>
+      </div>
+      <div class="repeat-name" id="repeatName">Нет данных</div>
+      <div class="repeat-kcal" id="repeatKcal"></div>
+    </div>
   </div>
 
   <div class="hero">
     <div class="ring-wrap">
-      <svg class="ring-svg" width="180" height="180" viewBox="0 0 180 180">
-        <circle class="ring-track" cx="90" cy="90" r="76"/>
-        <circle class="ring-fill" id="ringFill" cx="90" cy="90" r="76" stroke="url(#rg)" stroke-dasharray="477.5" stroke-dashoffset="477.5"/>
+      <svg class="ring-svg" width="170" height="170" viewBox="0 0 170 170">
+        <circle class="ring-track" cx="85" cy="85" r="72"/>
+        <circle class="ring-fill" id="ringFill" cx="85" cy="85" r="72" stroke="url(#rg)" stroke-dasharray="452.4" stroke-dashoffset="452.4"/>
         <defs><linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6c5ce7"/><stop offset="100%" stop-color="#a29bfe"/></linearGradient></defs>
       </svg>
       <div class="ring-center">
@@ -281,20 +316,17 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
   </div>
 </div>
 
-<!-- MEALS PAGE -->
 <div class="page" id="mealsPage">
   <div class="page-title">Мои блюда</div>
   <div id="savedMealsList"></div>
   <div class="empty-log" id="mealsEmpty" style="display:none">Нет сохранённых блюд.<br>Создай в разделе «Смесь»!</div>
 </div>
 
-<!-- HISTORY PAGE -->
 <div class="page" id="historyPage">
   <div class="page-title">История</div>
   <div id="historyList"></div>
 </div>
 
-<!-- NAV -->
 <nav class="nav">
   <button class="nav-btn active" id="navHome" onclick="showPage('home')">
     <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
@@ -315,34 +347,29 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
   </button>
 </nav>
 
-<!-- ADD MODAL — SEARCH IS DEFAULT -->
+<!-- ADD MODAL -->
 <div class="modal-overlay" id="addModal">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Добавить еду</div>
-
-    <div class="meal-time-btns">
+    <div class="mtbs">
       <button class="mtb active" onclick="selTime(this,'завтрак')">Завтрак</button>
       <button class="mtb" onclick="selTime(this,'обед')">Обед</button>
       <button class="mtb" onclick="selTime(this,'ужин')">Ужин</button>
     </div>
-
     <div class="mode-tabs">
       <button class="mode-tab active" onclick="switchMode('search')">🔍 Продукты</button>
-      <button class="mode-tab" onclick="switchMode('saved')">⭐ Мои блюда</button>
+      <button class="mode-tab" onclick="switchMode('saved')">⭐ Блюда</button>
       <button class="mode-tab" onclick="switchMode('combo')">🍳 Смесь</button>
       <button class="mode-tab" onclick="switchMode('photo')">📸 Фото</button>
     </div>
 
-    <!-- SEARCH MODE (default) -->
     <div id="modeSearch">
       <div class="search-wrap">
         <svg class="search-ico" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
         <input class="search-inp" type="text" placeholder="Творог, тунец, хлеб..." id="searchInp" oninput="doSearch(this.value)" autocomplete="off">
-        <button class="barcode-btn" onclick="openBarcode()" title="Сканировать штрихкод">📷</button>
+        <button class="barcode-btn" onclick="openBarcode()" title="Штрихкод">📷</button>
       </div>
-
-      <!-- Quick picks when search empty -->
       <div id="quickPicks">
         <div class="quick-section">
           <div class="quick-title">Часто ем</div>
@@ -369,7 +396,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
           </div>
         </div>
         <div class="quick-section">
-          <div class="quick-title">Овощи и салат</div>
+          <div class="quick-title">Овощи</div>
           <div class="quick-chips">
             <button class="quick-chip" onclick="quickPick('Огурец')">🥒 Огурец</button>
             <button class="quick-chip" onclick="quickPick('Помидор')">🍅 Томат</button>
@@ -379,16 +406,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
           </div>
         </div>
       </div>
-
       <div class="food-list" id="foodList" style="display:none"></div>
     </div>
 
-    <!-- SAVED MODE -->
-    <div id="modeSaved" style="display:none">
-      <div id="savedInModal"></div>
-    </div>
+    <div id="modeSaved" style="display:none"><div id="savedInModal"></div></div>
 
-    <!-- COMBO MODE -->
     <div id="modeCombo" style="display:none">
       <div class="flabel">Название блюда</div>
       <input class="field" type="text" placeholder="Рагу, тунец с творогом..." id="comboName">
@@ -400,31 +422,23 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
       <div class="food-list" id="comboSR" style="display:none;max-height:200px;margin-bottom:10px"></div>
       <div class="combo-ings" id="comboIngs"></div>
       <div class="batch-row">
-        <div class="batch-label">
-          <div class="batch-main">Всего приготовила</div>
-          <div class="batch-sub">введи общий вес готового блюда</div>
-        </div>
+        <div class="batch-label"><div class="batch-main">Всего приготовила</div><div class="batch-sub">общий вес готового блюда</div></div>
         <input class="batch-inp" type="number" id="batchG" placeholder="800">
         <div style="font-size:14px;color:var(--text2);font-weight:600;margin-left:2px">г</div>
       </div>
       <div class="combo-total">
-        <div><div class="ct-sub flabel" style="margin-bottom:2px">Итого</div><div class="ct-sub" id="comboIngG">0г</div></div>
+        <div><div class="flabel" style="margin-bottom:2px">Итого</div><div style="font-size:13px;color:var(--text2)" id="comboIngG">0г</div></div>
         <div class="ct-kcal" id="comboKcal">0 ккал</div>
       </div>
       <button class="btn btn-secondary" style="margin-top:0;margin-bottom:10px" onclick="saveCombo()">⭐ Сохранить блюдо</button>
       <button class="btn btn-primary" onclick="logComboNow()">Добавить сейчас →</button>
     </div>
 
-    <!-- PHOTO MODE -->
     <div id="modePhoto" style="display:none">
-      <label class="photo-area" id="photoArea">
+      <label class="photo-area">
         <input type="file" accept="image/*" capture="environment" id="photoInp" onchange="handlePhoto(event)">
         <img class="photo-preview" id="photoPreview">
-        <div id="photoPlaceholder">
-          <div style="font-size:48px;margin-bottom:10px">📸</div>
-          <div style="font-size:16px;font-weight:700">Сфотографировать еду</div>
-          <div style="font-size:14px;color:var(--text2);margin-top:4px">или выбрать из галереи</div>
-        </div>
+        <div id="photoPlaceholder"><div style="font-size:48px;margin-bottom:10px">📸</div><div style="font-size:16px;font-weight:700">Сфотографировать еду</div><div style="font-size:14px;color:var(--text2);margin-top:4px">или выбрать из галереи</div></div>
       </label>
       <div class="ai-box" id="aiBox">
         <div id="aiLoad" style="text-align:center;padding:20px;color:var(--text2);font-size:15px"><span class="spinner"></span>ИИ анализирует...</div>
@@ -443,28 +457,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
     <div class="modal-handle"></div>
     <div class="portion-food">
       <div class="portion-emoji" id="pEmoji"></div>
-      <div>
-        <div class="portion-food-name" id="pName"></div>
-        <div class="portion-food-meta" id="pMeta"></div>
-      </div>
+      <div><div class="pf-name" id="pName"></div><div class="pf-meta" id="pMeta"></div></div>
     </div>
-    <!-- Live BT weight -->
     <div class="bt-live" id="btLive">
-      <div>
-        <div class="bt-live-num" id="btLiveNum">0</div>
-        <div style="font-size:12px;color:var(--text2)">граммов на весах</div>
-      </div>
-      <div class="bt-live-label">Поставь еду на весы и нажми →</div>
-      <button class="bt-live-use" onclick="useLiveWeight()">Взять →</button>
+      <div><div class="bt-live-num" id="btLiveNum">0</div><div style="font-size:12px;color:var(--text2)">г на весах</div></div>
+      <div style="flex:1;font-size:13px;color:var(--text2);padding:0 8px">Поставь еду на весы</div>
+      <button class="bt-live-use" onclick="useLive()">Взять →</button>
     </div>
     <div class="g-big" id="gBig">100</div>
     <div class="g-label">граммов</div>
     <input type="range" id="gSlider" min="5" max="600" value="100" step="5" oninput="updateG(this.value)">
-    <input class="g-inp" type="number" id="gInp" value="100" oninput="syncG(this.value)" placeholder="Введи граммы">
-    <div class="result-card">
-      <div class="result-kcal" id="rKcal">0 ккал</div>
-      <div class="result-bju" id="rBju"></div>
-    </div>
+    <input class="g-inp" type="number" id="gInp" value="100" oninput="syncG(this.value)">
+    <div class="result-card"><div class="result-kcal" id="rKcal">0 ккал</div><div class="result-bju" id="rBju"></div></div>
     <button class="btn btn-primary" onclick="confirmP()">Добавить в дневник ✓</button>
     <button class="btn btn-secondary" onclick="closePModal()">Отмена</button>
   </div>
@@ -478,25 +482,29 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
     <div class="s-label">Дневная цель (ккал)</div>
     <input class="field" type="number" id="goalInp" value="1700" style="font-size:24px;font-family:'Space Grotesk',sans-serif;font-weight:700;text-align:center;margin-bottom:16px">
     <div class="s-label">API ключ Anthropic (для 📸 фото)</div>
-    <input class="field" type="password" id="apiInp" placeholder="sk-ant-..." style="margin-bottom:6px">
-    <div style="font-size:13px;color:var(--text2);margin-bottom:20px">console.anthropic.com → API Keys</div>
+    <input class="field" type="password" id="apiInp" placeholder="sk-ant-...">
+    <div class="s-label" style="margin-top:4px">URL прокси (Cloudflare Worker)</div>
+    <input class="field" type="text" id="proxyInp" placeholder="https://твой-worker.workers.dev" style="margin-bottom:6px">
+    <div style="font-size:12px;color:var(--text2);margin-bottom:20px;line-height:1.5">
+      Без прокси фото не работает из-за CORS.<br>
+      Инструкция: workers.cloudflare.com → Create Worker → вставь код из файла worker.js
+    </div>
     <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
     <button class="btn btn-secondary" onclick="document.getElementById('settingsModal').classList.remove('open')">Закрыть</button>
   </div>
 </div>
 
 <script>
-// ===== STATE =====
-let S=JSON.parse(localStorage.getItem('evg_v4')||'{}');
+// STATE
+let S=JSON.parse(localStorage.getItem('evg_v5')||'{}');
 if(!S.goal)S.goal=1700;
 if(!S.log)S.log={};
 if(!S.meals)S.meals={};
 if(!S.recent)S.recent=[];
 const TODAY=new Date().toISOString().slice(0,10);
 const MAC={p:130,f:55,c:155};
-function save(){localStorage.setItem('evg_v4',JSON.stringify(S));}
+function save(){localStorage.setItem('evg_v5',JSON.stringify(S));}
 
-// ===== FOODS =====
 const FOODS=[
   {name:'Творог 5%',kcal:121,p:17,f:5,c:3,emoji:'🧀'},
   {name:'Творог 0%',kcal:71,p:16,f:0.5,c:2,emoji:'🧀'},
@@ -555,28 +563,22 @@ const FOODS=[
   {name:'Апельсин',kcal:47,p:0.9,f:0.1,c:12,emoji:'🍊'},
   {name:'Черника',kcal:57,p:0.7,f:0.3,c:14,emoji:'🫐'},
   {name:'Клубника',kcal:33,p:0.7,f:0.3,c:8,emoji:'🍓'},
-  {name:'Виноград',kcal:67,p:0.6,f:0.4,c:17,emoji:'🍇'},
   {name:'Арахисовая паста',kcal:588,p:25,f:50,c:20,emoji:'🥜'},
   {name:'Грецкий орех',kcal:654,p:15,f:65,c:14,emoji:'🥜'},
   {name:'Миндаль',kcal:576,p:21,f:49,c:22,emoji:'🥜'},
-  {name:'Чечевица варёная',kcal:116,p:9,f:0.4,c:20,emoji:'🫘'},
-  {name:'Нут варёный',kcal:164,p:8.9,f:2.6,c:27,emoji:'🫘'},
   {name:'Мёд',kcal:304,p:0.3,f:0,c:82,emoji:'🍯'},
   {name:'Шоколад тёмный 70%',kcal:546,p:5,f:31,c:62,emoji:'🍫'},
-  // Магнит / Пятёрочка СТМ
   {name:'Йогурт Активиа натуральный',kcal:60,p:4,f:2.5,c:5.5,emoji:'🥛'},
   {name:'Творог Простоквашино 5%',kcal:121,p:16,f:5,c:3,emoji:'🧀'},
   {name:'Кефир Простоквашино 1%',kcal:40,p:3,f:1,c:4,emoji:'🥛'},
-  {name:'Молоко Простоквашино 2.5%',kcal:52,p:2.8,f:2.5,c:4.7,emoji:'🥛'},
-  {name:'Куриные котлеты (готовые)',kcal:218,p:15,f:15,c:7,emoji:'🍗'},
   {name:'Сосиски молочные',kcal:266,p:11,f:23,c:1.9,emoji:'🌭'},
-  {name:'Колбаса варёная докторская',kcal:257,p:13,f:22,c:1.5,emoji:'🥩'},
+  {name:'Колбаса докторская',kcal:257,p:13,f:22,c:1.5,emoji:'🥩'},
   {name:'Гречка Магнит',kcal:329,p:12.6,f:3.3,c:62,emoji:'🌾'},
   {name:'Овсянка Геркулес',kcal:352,p:12,f:6,c:62,emoji:'🌾'},
-  {name:'Рис Краснодарский',kcal:344,p:7,f:1,c:76,emoji:'🍚'},
+  {name:'Чечевица варёная',kcal:116,p:9,f:0.4,c:20,emoji:'🫘'},
+  {name:'Нут варёный',kcal:164,p:8.9,f:2.6,c:27,emoji:'🫘'},
 ];
 
-// ===== INIT =====
 function init(){
   const days=['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'];
   const months=['января','февраля','марта','апреля','мая','июня','июля','августа','сентября','октября','ноября','декабря'];
@@ -584,11 +586,68 @@ function init(){
   document.getElementById('todayLabel').textContent=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
   document.getElementById('goalInp').value=S.goal;
   document.getElementById('apiInp').value=localStorage.getItem('evg_api')||'';
+  document.getElementById('proxyInp').value=localStorage.getItem('evg_proxy')||'';
   renderHome();
-  renderRecentChips();
+  renderWidgets();
 }
 
-// ===== HOME =====
+// STREAK
+function calcStreak(){
+  let streak=0;
+  const d=new Date();
+  for(let i=0;i<30;i++){
+    const key=new Date(d.getTime()-i*86400000).toISOString().slice(0,10);
+    const entries=S.log[key]||[];
+    const tot=entries.reduce((s,e)=>s+e.kcal,0);
+    if(i===0&&tot===0)continue; // today not started yet
+    if(tot>0&&tot<=S.goal)streak++;
+    else if(i>0)break;
+  }
+  return streak;
+}
+
+function renderWidgets(){
+  // STREAK
+  const streak=calcStreak();
+  document.getElementById('streakNum').textContent=streak;
+  document.getElementById('streakFire').textContent=streak>=7?'🔥':streak>=3?'✨':streak>=1?'⚡':'💤';
+  const dots=document.getElementById('streakDots');
+  const last7=[];
+  for(let i=6;i>=0;i--){
+    const key=new Date(Date.now()-i*86400000).toISOString().slice(0,10);
+    const tot=(S.log[key]||[]).reduce((s,e)=>s+e.kcal,0);
+    const ok=tot>0&&tot<=S.goal;
+    const isToday=key===TODAY;
+    last7.push({ok,isToday});
+  }
+  dots.innerHTML=last7.map(d=>`<div class="streak-dot ${d.isToday&&d.ok?'today-ok':d.ok?'filled':''}"></div>`).join('');
+
+  // LAST FOOD REPEAT
+  const todayEntries=S.log[TODAY]||[];
+  const last=todayEntries.length?todayEntries[todayEntries.length-1]:null;
+  const rw=document.getElementById('repeatWidget');
+  if(last){
+    rw.classList.remove('empty');
+    document.getElementById('repeatIcon').textContent=last.emoji||'🍽';
+    document.getElementById('repeatName').textContent=last.name;
+    document.getElementById('repeatKcal').textContent=last.kcal+' ккал · '+last.g+'г';
+  } else {
+    rw.classList.add('empty');
+    document.getElementById('repeatIcon').textContent='➕';
+    document.getElementById('repeatName').textContent='Добавь первую еду';
+    document.getElementById('repeatKcal').textContent='';
+  }
+}
+
+function repeatLast(){
+  const todayEntries=S.log[TODAY]||[];
+  const last=todayEntries.length?todayEntries[todayEntries.length-1]:null;
+  if(!last){openAddModal();return;}
+  // Find food in db or create temp food item
+  const food={name:last.name,emoji:last.emoji||'🍽',kcal:Math.round(last.kcal/last.g*100),p:Math.round((last.p||0)/last.g*100*10)/10,f:Math.round((last.f||0)/last.g*100*10)/10,c:Math.round((last.c||0)/last.g*100*10)/10};
+  openP(food);
+}
+
 function renderHome(){
   const e=S.log[TODAY]||[];
   const tot=e.reduce((s,x)=>s+x.kcal,0);
@@ -596,9 +655,8 @@ function renderHome(){
   const fat=e.reduce((s,x)=>s+(x.f||0),0);
   const carb=e.reduce((s,x)=>s+(x.c||0),0);
   const g=S.goal;
-  const circ=477.5;
-  const pct=Math.min(tot/g,1);
-  document.getElementById('ringFill').style.strokeDashoffset=circ-pct*circ;
+  const circ=452.4;
+  document.getElementById('ringFill').style.strokeDashoffset=circ-Math.min(tot/g,1)*circ;
   document.getElementById('ringFill').style.stroke=tot>g?'#d63031':'url(#rg)';
   document.getElementById('ringKcal').textContent=Math.round(tot);
   document.getElementById('ringKcal').style.color=tot>g?'#d63031':tot>g*.9?'#e17055':'#1a1a2e';
@@ -620,18 +678,16 @@ function renderHome(){
   ll.innerHTML=e.map((x,i)=>`
     <div class="log-entry">
       <div class="entry-icon">${x.emoji||'🍽'}</div>
-      <div class="entry-info">
-        <div class="entry-name">${x.name}</div>
-        <div class="entry-meta">${x.time} · ${x.g}г · Б${Math.round(x.p||0)} Ж${Math.round(x.f||0)} У${Math.round(x.c||0)}</div>
-      </div>
+      <div class="entry-info"><div class="entry-name">${x.name}</div><div class="entry-meta">${x.time} · ${x.g}г · Б${Math.round(x.p||0)} Ж${Math.round(x.f||0)} У${Math.round(x.c||0)}</div></div>
       <div class="entry-kcal">${Math.round(x.kcal)}</div>
       <button class="entry-del" onclick="delEntry(${i})">×</button>
     </div>`).join('');
+  renderWidgets();
 }
+
 function delEntry(i){S.log[TODAY].splice(i,1);save();renderHome();}
 function clearToday(){if(!confirm('Очистить весь день?'))return;S.log[TODAY]=[];save();renderHome();}
 
-// ===== PAGES =====
 function showPage(p){
   document.getElementById('homePage').classList.toggle('hidden',p!=='home');
   document.getElementById('mealsPage').classList.toggle('active',p==='meals');
@@ -651,16 +707,11 @@ function renderHistory(){
   const dn=['вс','пн','вт','ср','чт','пт','сб'];
   const mn=['янв','фев','мар','апр','май','июн','июл','авг','сен','окт','ноя','дек'];
   hl.innerHTML=days.map(d=>{
-    const e=S.log[d]||[];
-    const tot=e.reduce((s,x)=>s+x.kcal,0);
+    const e=S.log[d]||[];const tot=e.reduce((s,x)=>s+x.kcal,0);
     const pct=Math.min(tot/S.goal*100,100);
     const col=tot>S.goal?'#d63031':tot>S.goal*.9?'#e17055':'#6c5ce7';
     const dt=new Date(d+'T12:00:00');
-    return`<div class="history-day">
-      <div class="hist-title">${dn[dt.getDay()]} ${dt.getDate()} ${mn[dt.getMonth()]}${d===TODAY?' · сегодня':''}</div>
-      <div class="hist-bar"><div class="hist-fill" style="width:${pct}%;background:${col}"></div></div>
-      <div class="hist-meta">${Math.round(tot)} / ${S.goal} ккал · ${e.length} приёмов</div>
-    </div>`;
+    return`<div class="history-day"><div class="hist-title">${dn[dt.getDay()]} ${dt.getDate()} ${mn[dt.getMonth()]}${d===TODAY?' · сегодня':''}</div><div class="hist-bar"><div class="hist-fill" style="width:${pct}%;background:${col}"></div></div><div class="hist-meta">${Math.round(tot)} / ${S.goal} ккал · ${e.length} приёмов</div></div>`;
   }).join('');
 }
 
@@ -670,23 +721,18 @@ function renderSavedMeals(){
   const empty=document.getElementById('mealsEmpty');
   if(!meals.length){el.innerHTML='';empty.style.display='block';return;}
   empty.style.display='none';
-  el.innerHTML=renderMealCards(meals,false);
+  el.innerHTML=mealCards(meals);
 }
 
-function renderMealCards(meals,inModal){
+function mealCards(meals){
   return meals.map(m=>{
     const batch=(m.batchLog||[]).find(b=>b.date===TODAY)||null;
     const rem=batch?batch.remainG:null;
     const remPct=rem!==null&&batch.totalG?Math.round(rem/batch.totalG*100):null;
     const remHtml=rem!==null?`<div class="sm-remain ${remPct<25?'low':''}">Осталось: ${Math.round(rem)}г (${remPct}%)</div>`:'';
-    const fn=inModal?`openSavedP('${m.id}',true)`:`openSavedP('${m.id}')`;
-    return`<div class="saved-meal" onclick="${fn}">
+    return`<div class="saved-meal" onclick="openSavedP('${m.id}')">
       <div class="sm-icon">${m.emoji||'🍳'}</div>
-      <div class="sm-info">
-        <div class="sm-name">${m.name}</div>
-        <div class="sm-meta">${Math.round(m.kcalPer100)} ккал/100г</div>
-        ${remHtml}
-      </div>
+      <div class="sm-info"><div class="sm-name">${m.name}</div><div class="sm-meta">${Math.round(m.kcalPer100)} ккал/100г</div>${remHtml}</div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
         <div class="sm-kcal">${Math.round(m.totalKcal)}</div>
         <button class="sm-del" onclick="event.stopPropagation();delMeal('${m.id}')">×</button>
@@ -696,225 +742,139 @@ function renderMealCards(meals,inModal){
 }
 function delMeal(id){if(!confirm('Удалить?'))return;delete S.meals[id];save();renderSavedMeals();}
 
-// ===== RECENT =====
-function addToRecent(name){
-  S.recent=S.recent.filter(n=>n!==name);
-  S.recent.unshift(name);
-  if(S.recent.length>8)S.recent=S.recent.slice(0,8);
-  save();
-}
+// RECENT
+function addToRecent(name){S.recent=S.recent.filter(n=>n!==name);S.recent.unshift(name);if(S.recent.length>8)S.recent=S.recent.slice(0,8);save();}
 function renderRecentChips(){
   const el=document.getElementById('recentChips');
   const sec=el.closest('.quick-section');
   if(!S.recent||!S.recent.length){sec.style.display='none';return;}
   sec.style.display='block';
-  el.innerHTML=S.recent.map(n=>{
-    const f=FOODS.find(x=>x.name===n);
-    return`<button class="quick-chip" onclick="quickPick('${n.replace(/'/g,"&#39;")}')">${f?f.emoji:'🍽'} ${n.split(' ')[0]}</button>`;
-  }).join('');
+  el.innerHTML=S.recent.map(n=>{const f=FOODS.find(x=>x.name===n);return`<button class="quick-chip" onclick="quickPick('${n.replace(/'/g,"&#39;")}')">${f?f.emoji:'🍽'} ${n.split(' ')[0]}</button>`;}).join('');
 }
 
-// ===== MODAL =====
+// MODAL
 let curMode='search',curTime='завтрак',portItem=null;
-
-function openAddModal(){
-  document.getElementById('addModal').classList.add('open');
-  switchMode('search');
-  document.getElementById('searchInp').value='';
-  showQuickPicks();
-  renderRecentChips();
-}
+function openAddModal(){document.getElementById('addModal').classList.add('open');switchMode('search');document.getElementById('searchInp').value='';showQP();renderRecentChips();}
 function closeModal(){document.getElementById('addModal').classList.remove('open');}
 function switchMode(m){
   curMode=m;
-  ['search','saved','combo','photo'].forEach(x=>{
-    document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1)).style.display=x===m?'block':'none';
-  });
+  ['search','saved','combo','photo'].forEach(x=>{document.getElementById('mode'+x.charAt(0).toUpperCase()+x.slice(1)).style.display=x===m?'block':'none';});
   document.querySelectorAll('.mode-tab').forEach((el,i)=>el.classList.toggle('active',['search','saved','combo','photo'][i]===m));
   if(m==='saved')renderSavedInModal();
   if(m==='photo')resetPhoto();
 }
-function selTime(btn,t){curTime=t;btn.closest('.meal-time-btns').querySelectorAll('.mtb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function selTime(btn,t){curTime=t;btn.closest('.mtbs').querySelectorAll('.mtb').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 
-// ===== SEARCH =====
+// SEARCH
 let sTm;
 function doSearch(q){
   clearTimeout(sTm);sTm=setTimeout(()=>{
-    if(q.length<1){showQuickPicks();return;}
+    if(q.length<1){showQP();return;}
     document.getElementById('quickPicks').style.display='none';
-    const fl=document.getElementById('foodList');
-    fl.style.display='flex';
+    const fl=document.getElementById('foodList');fl.style.display='flex';
     const hits=FOODS.filter(f=>f.name.toLowerCase().includes(q.toLowerCase())).slice(0,20);
-    if(!hits.length){fl.innerHTML='<div style="color:var(--text3);padding:12px;font-size:15px;text-align:center">Не найдено — попробуй по-другому</div>';return;}
-    fl.innerHTML=hits.map(f=>foodItemHTML(f)).join('');
+    fl.innerHTML=hits.length?hits.map(f=>fHTML(f)).join(''):'<div style="color:var(--text3);padding:12px;text-align:center">Не найдено</div>';
   },150);
 }
-function showQuickPicks(){
-  document.getElementById('quickPicks').style.display='block';
-  document.getElementById('foodList').style.display='none';
-}
-function foodItemHTML(f){
-  return`<div class="food-item" onclick='openP(${JSON.stringify(f).replace(/'/g,"&#39;")})'>
-    <div class="food-emoji">${f.emoji}</div>
-    <div class="food-name">${f.name}</div>
-    <div class="food-right"><div class="food-kcal">${f.kcal}</div><div class="food-per">на 100г</div></div>
-  </div>`;
-}
-function quickPick(name){
-  const f=FOODS.find(x=>x.name===name);
-  if(f)openP(f);
-}
+function showQP(){document.getElementById('quickPicks').style.display='block';document.getElementById('foodList').style.display='none';}
+function fHTML(f){return`<div class="food-item" onclick='openP(${JSON.stringify(f).replace(/'/g,"&#39;")})'><div class="food-emoji">${f.emoji}</div><div class="food-name">${f.name}</div><div class="food-right"><div class="food-kcal">${f.kcal}</div><div class="food-per">на 100г</div></div></div>`;}
+function quickPick(name){const f=FOODS.find(x=>x.name===name);if(f)openP(f);}
 
-// ===== BARCODE =====
+// BARCODE
 async function openBarcode(){
-  // Use camera + ZXing via CDN for barcode scanning
-  showToast('📷 Наведи камеру на штрихкод...');
-  // Fallback: prompt manual barcode entry
   const code=prompt('Введи штрихкод с упаковки:');
   if(!code)return;
-  await lookupBarcode(code.trim());
-}
-async function lookupBarcode(barcode){
   showToast('🔍 Ищу продукт...');
   try{
-    const resp=await fetch(`https://world.openfoodfacts.org/api/v0/product/${barcode}.json`);
+    const resp=await fetch(`https://world.openfoodfacts.org/api/v0/product/${code.trim()}.json`);
     const data=await resp.json();
-    if(data.status!==1||!data.product){showToast('❌ Продукт не найден');return;}
-    const p=data.product;
-    const n=p.product_name_ru||p.product_name||'Продукт';
-    const per=p.nutriments;
-    const food={
-      name:n,
-      kcal:Math.round(per['energy-kcal_100g']||per['energy-kcal']||0),
-      p:Math.round((per.proteins_100g||0)*10)/10,
-      f:Math.round((per.fat_100g||0)*10)/10,
-      c:Math.round((per.carbohydrates_100g||0)*10)/10,
-      emoji:'🛒'
-    };
+    if(data.status!==1){showToast('❌ Продукт не найден');return;}
+    const p=data.product;const per=p.nutriments;
+    const food={name:p.product_name_ru||p.product_name||'Продукт',kcal:Math.round(per['energy-kcal_100g']||0),p:Math.round((per.proteins_100g||0)*10)/10,f:Math.round((per.fat_100g||0)*10)/10,c:Math.round((per.carbohydrates_100g||0)*10)/10,emoji:'🛒'};
     if(!food.kcal){showToast('❌ Нет данных о калориях');return;}
-    showToast(`✅ Найдено: ${food.name}`);
-    openP(food);
+    showToast(`✅ ${food.name}`);openP(food);
   }catch(e){showToast('❌ Ошибка поиска');}
 }
 
-// ===== BLUETOOTH =====
+// BT
 let btDev=null,btWeight=0,btOn=false;
-
 async function toggleBT(){
   if(btOn&&btDev){btDev.gatt.disconnect();return;}
   if(!navigator.bluetooth){showToast('⚠️ Нужен Chrome на Android');return;}
   try{
-    document.getElementById('btStatusAction').textContent='Поиск...';
-    btDev=await navigator.bluetooth.requestDevice({
-      filters:[{namePrefix:'Kitchen Scale'},{namePrefix:'Futula'}],
-      optionalServices:['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']
-    });
+    document.getElementById('btBarAct').textContent='Поиск...';
+    btDev=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'Kitchen Scale'},{namePrefix:'Futula'}],optionalServices:['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']});
     const server=await btDev.gatt.connect();
-    let service=null;
-    for(const uuid of['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']){
-      try{service=await server.getPrimaryService(uuid);break;}catch(e){}
-    }
-    if(!service)throw new Error('Сервис не найден');
-    const chars=await service.getCharacteristics();
+    let svc=null;
+    for(const u of['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']){try{svc=await server.getPrimaryService(u);break;}catch(e){}}
+    if(!svc)throw new Error('Сервис не найден');
+    const chars=await svc.getCharacteristics();
     for(const ch of chars){
       if(ch.properties.notify){
         await ch.startNotifications();
         ch.addEventListener('characteristicvaluechanged',e=>{
-          const d=e.target.value;
-          let w=0;
+          const d=e.target.value;let w=0;
           if(d.byteLength>=6)w=(d.getUint8(4)*256+d.getUint8(5))/10;
           else if(d.byteLength>=2)w=(d.getUint8(0)*256+d.getUint8(1))/10;
-          if(w>0&&w<5000){
-            btWeight=Math.round(w);
-            updateBtUI();
-            // Auto-update portion modal
-            if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);
-          }
-        });
-        break;
+          if(w>0&&w<5000){btWeight=Math.round(w);updateBtUI();if(document.getElementById('portionModal').classList.contains('open'))syncG(btWeight);}
+        });break;
       }
     }
-    btOn=true;
-    updateBtUI();
+    btOn=true;updateBtUI();
     btDev.addEventListener('gattserverdisconnected',()=>{btOn=false;btDev=null;btWeight=0;updateBtUI();showToast('Весы отключились');});
     showToast('✅ Весы подключены!');
-  }catch(err){
-    document.getElementById('btStatusAction').textContent='Подключить →';
-    if(err.name!=='NotFoundError')showToast('Ошибка: '+err.message);
-  }
+  }catch(err){document.getElementById('btBarAct').textContent='Подключить →';if(err.name!=='NotFoundError')showToast('Ошибка: '+err.message);}
 }
-
 function updateBtUI(){
-  const bar=document.getElementById('btStatusBar');
-  bar.classList.toggle('connected',btOn);
-  document.getElementById('btStatusText').textContent=btOn?'Весы подключены':'Весы не подключены';
-  document.getElementById('btStatusWeight').textContent=(btWeight||0)+'г';
-  document.getElementById('btStatusAction').textContent=btOn?'Отключить':'Подключить →';
-  // Live in portion modal
+  const bar=document.getElementById('btBar');
+  bar.classList.toggle('on',btOn);
+  document.getElementById('btBarText').textContent=btOn?'Весы подключены':'Весы не подключены';
+  document.getElementById('btBarW').textContent=(btWeight||0)+'г';
+  document.getElementById('btBarAct').textContent=btOn?'Отключить':'Подключить →';
   const live=document.getElementById('btLive');
-  if(live){
-    live.classList.toggle('show',btOn);
-    if(btOn){document.getElementById('btLiveNum').textContent=btWeight||0;}
-  }
+  if(live){live.classList.toggle('show',btOn);if(btOn)document.getElementById('btLiveNum').textContent=btWeight||0;}
 }
+function useLive(){if(btWeight>0)syncG(btWeight);}
 
-function useLiveWeight(){if(btWeight>0)syncG(btWeight);}
-
-// ===== PORTION =====
+// PORTION
 function openP(food){
   portItem=food;
   document.getElementById('pEmoji').textContent=food.emoji||'🍽';
   document.getElementById('pName').textContent=food.name;
-  document.getElementById('pMeta').textContent=`${food.kcal} ккал / 100г · Б${food.p} Ж${food.f} У${food.c}`;
-  const initG=btWeight>0?btWeight:100;
-  document.getElementById('gSlider').value=Math.min(initG,600);
-  document.getElementById('gInp').value=initG;
-  document.getElementById('gBig').textContent=initG;
-  calcG(initG);
-  updateBtUI();
+  document.getElementById('pMeta').textContent=`${food.kcal} ккал/100г · Б${food.p} Ж${food.f} У${food.c}`;
+  const g=btWeight>0?btWeight:100;
+  syncG(g);updateBtUI();
   document.getElementById('portionModal').classList.add('open');
 }
 function updateG(g){g=parseInt(g)||0;document.getElementById('gBig').textContent=g;document.getElementById('gInp').value=g;calcG(g);}
-function syncG(g){g=parseInt(g)||0;document.getElementById('gBig').textContent=g;document.getElementById('gSlider').value=Math.min(g,600);document.getElementById('gInp').value=g;calcG(g);if(document.getElementById('btLiveNum'))document.getElementById('btLiveNum').textContent=btWeight||0;}
-function calcG(g){
-  if(!portItem)return;
-  const k=Math.round(portItem.kcal*g/100);
-  document.getElementById('rKcal').textContent=k+' ккал';
-  document.getElementById('rBju').textContent=`Белки ${Math.round(portItem.p*g/100*10)/10}г · Жиры ${Math.round(portItem.f*g/100*10)/10}г · Углеводы ${Math.round(portItem.c*g/100*10)/10}г`;
-}
+function syncG(g){g=parseInt(g)||0;document.getElementById('gBig').textContent=g;document.getElementById('gSlider').value=Math.min(g,600);document.getElementById('gInp').value=g;calcG(g);}
+function calcG(g){if(!portItem)return;document.getElementById('rKcal').textContent=Math.round(portItem.kcal*g/100)+' ккал';document.getElementById('rBju').textContent=`Белки ${Math.round(portItem.p*g/100*10)/10}г · Жиры ${Math.round(portItem.f*g/100*10)/10}г · Углеводы ${Math.round(portItem.c*g/100*10)/10}г`;}
 function confirmP(){
-  const g=parseInt(document.getElementById('gInp').value)||0;
-  if(!g)return;
+  const g=parseInt(document.getElementById('gInp').value)||0;if(!g)return;
   const f=portItem;
   if(!S.log[TODAY])S.log[TODAY]=[];
   const entry={name:f.name,emoji:f.emoji||'🍽',kcal:Math.round(f.kcal*g/100),p:Math.round(f.p*g/100*10)/10,f:Math.round(f.f*g/100*10)/10,c:Math.round(f.c*g/100*10)/10,g,time:curTime};
   if(f.isMeal&&f.id&&S.meals[f.id]){
-    const m=S.meals[f.id];
-    if(!m.batchLog)m.batchLog=[];
+    const m=S.meals[f.id];if(!m.batchLog)m.batchLog=[];
     let batch=m.batchLog.find(b=>b.date===TODAY);
     if(!batch){batch={date:TODAY,totalG:m.totalIngG,remainG:m.totalIngG};m.batchLog.push(batch);}
     batch.remainG=Math.max(0,batch.remainG-g);
   }
-  S.log[TODAY].push(entry);
-  addToRecent(f.name);
+  S.log[TODAY].push(entry);addToRecent(f.name);
   save();renderHome();closePModal();closeModal();showToast('✅ Добавлено!');
 }
 function closePModal(){document.getElementById('portionModal').classList.remove('open');}
 
-// ===== SAVED IN MODAL =====
+// SAVED IN MODAL
 function renderSavedInModal(){
   const meals=Object.values(S.meals||{});
   const el=document.getElementById('savedInModal');
-  if(!meals.length){el.innerHTML='<div class="empty-log">Нет сохранённых блюд.<br>Создай их в разделе «Смесь»!</div>';return;}
-  el.innerHTML=renderMealCards(meals,true);
+  if(!meals.length){el.innerHTML='<div class="empty-log">Нет сохранённых блюд.<br>Создай в разделе «Смесь»!</div>';return;}
+  el.innerHTML=mealCards(meals);
 }
-function openSavedP(id,fromModal=false){
+function openSavedP(id){
   const m=S.meals[id];if(!m)return;
-  portItem={name:m.name,emoji:m.emoji||'🍳',id,isMeal:true,
-    kcal:m.kcalPer100,
-    p:(m.totalP||0)/m.totalIngG*100,
-    f:(m.totalF||0)/m.totalIngG*100,
-    c:(m.totalC||0)/m.totalIngG*100};
+  portItem={name:m.name,emoji:m.emoji||'🍳',id,isMeal:true,kcal:m.kcalPer100,p:(m.totalP||0)/m.totalIngG*100,f:(m.totalF||0)/m.totalIngG*100,c:(m.totalC||0)/m.totalIngG*100};
   const batch=(m.batchLog||[]).find(b=>b.date===TODAY);
   const defG=btWeight>0?btWeight:(batch?Math.min(batch.remainG,300):200);
   document.getElementById('pEmoji').textContent=m.emoji||'🍳';
@@ -925,7 +885,7 @@ function openSavedP(id,fromModal=false){
   document.getElementById('portionModal').classList.add('open');
 }
 
-// ===== COMBO =====
+// COMBO
 let cIngs=[];
 function doComboSearch(q){
   const fl=document.getElementById('comboSR');
@@ -967,22 +927,20 @@ function getCD(){
 }
 function saveCombo(){
   if(!cIngs.length){showToast('Добавь ингредиенты');return;}
-  const d=getCD();
-  const id='m'+Date.now();
+  const d=getCD();const id='m'+Date.now();
   S.meals[id]={id,name:d.name,emoji:'🍳',ingredients:[...cIngs],totalKcal:d.tk,totalIngG:d.bg,totalP:d.tp,totalF:d.tf,totalC:d.tc,kcalPer100:d.kp100,batchLog:[]};
   save();showToast('⭐ Блюдо сохранено!');
 }
 function logComboNow(){
   if(!cIngs.length){showToast('Добавь ингредиенты');return;}
-  const d=getCD();
-  const g=btWeight>0?btWeight:d.bg;
+  const d=getCD();const g=btWeight>0?btWeight:d.bg;
   if(!S.log[TODAY])S.log[TODAY]=[];
   S.log[TODAY].push({name:d.name,emoji:'🍳',kcal:Math.round(d.kp100*g/100),p:Math.round(d.tp/d.bg*g*10)/10,f:Math.round(d.tf/d.bg*g*10)/10,c:Math.round(d.tc/d.bg*g*10)/10,g,time:curTime});
   cIngs=[];document.getElementById('comboName').value='';document.getElementById('batchG').value='';
   renderCI();save();renderHome();closeModal();showToast('✅ Добавлено!');
 }
 
-// ===== PHOTO =====
+// PHOTO — через прокси
 let photoB64=null,aiItems=[];
 function resetPhoto(){
   photoB64=null;aiItems=[];
@@ -1005,16 +963,25 @@ async function handlePhoto(e){
 }
 async function analyzePhoto(){
   const key=localStorage.getItem('evg_api');
+  const proxy=localStorage.getItem('evg_proxy');
   const box=document.getElementById('aiBox');const load=document.getElementById('aiLoad');const items=document.getElementById('aiItems');
   box.classList.add('show');load.style.display='block';items.innerHTML='';
   document.getElementById('addPhotoBtn').style.display='none';
   if(!key){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь API ключ в Настройки</div>';return;}
+  if(!proxy){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь URL прокси в Настройки (Cloudflare Worker)</div>';return;}
   try{
-    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото. ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. Пустой массив если ничего.'}]}]})});
+    // Используем прокси вместо прямого вызова API — это решает CORS
+    const endpoint=proxy.replace(/\/$/,'')+'/v1/messages';
+    const resp=await fetch(endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото. ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. Пустой массив если ничего.'}]}]})
+    });
     const data=await resp.json();
+    if(data.error){throw new Error(data.error.message||'API error');}
     aiItems=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,'').trim()).map(it=>({...it,checked:true}));
     renderAI();
-  }catch(err){load.style.display='none';items.innerHTML='<div style="color:var(--red);padding:10px">Ошибка. Проверь API ключ.</div>';}
+  }catch(err){load.style.display='none';items.innerHTML=`<div style="color:var(--red);padding:10px;font-size:14px">Ошибка: ${err.message}</div>`;}
 }
 function renderAI(){
   document.getElementById('aiLoad').style.display='none';
@@ -1037,30 +1004,15 @@ function addPhotoItems(){
   save();renderHome();closeModal();showToast('✅ Добавлено!');
 }
 
-// ===== SETTINGS =====
 function saveSettings(){
   S.goal=parseInt(document.getElementById('goalInp').value)||1700;
   const key=document.getElementById('apiInp').value.trim();
-  save();if(key)localStorage.setItem('evg_api',key);
+  const proxy=document.getElementById('proxyInp').value.trim();
+  save();
+  if(key)localStorage.setItem('evg_api',key);
+  if(proxy)localStorage.setItem('evg_proxy',proxy);
   document.getElementById('settingsModal').classList.remove('open');
   renderHome();showToast('✅ Сохранено');
 }
 
-// ===== TOAST =====
 function showToast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
-
-// ===== OVERLAY CLOSE =====
-['addModal','portionModal','settingsModal'].forEach(id=>{
-  document.getElementById(id).addEventListener('click',e=>{
-    if(e.target===document.getElementById(id)){
-      if(id==='portionModal')closePModal();
-      else if(id==='addModal')closeModal();
-      else document.getElementById(id).classList.remove('open');
-    }
-  });
-});
-
-init();
-</script>
-</body>
-</html>
