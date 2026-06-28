@@ -308,12 +308,15 @@ async function resizeImage(dataUrl,maxDim=1024){
 async function analyzeWithClaude(dataUrl){
   const key=getApiKey();
   if(!key)return null;
+  const ctrl=new AbortController();
+  const timer=setTimeout(()=>ctrl.abort(),10000);
   try{
     const small=await resizeImage(dataUrl);
     const comma=small.indexOf(',');
     const mediaType=small.slice(5,small.indexOf(';'));
     const base64=small.slice(comma+1);
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      signal:ctrl.signal,
       method:'POST',
       headers:{
         'x-api-key':key,
@@ -334,6 +337,7 @@ async function analyzeWithClaude(dataUrl){
     if(data.content&&data.content[0]&&data.content[0].text)return data.content[0].text;
     return null;
   }catch(e){return null;}
+  finally{clearTimeout(timer);}
 }
 
 // ===== PAGES =====
