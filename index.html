@@ -942,10 +942,6 @@ async function connectScaleForPortion(){
 
 function onScaleData(e){
   const d=e.target.value;
-  const bytes=[];
-  for(let i=0;i<d.byteLength;i++)bytes.push(d.getUint8(i).toString(16).padStart(2,'0'));
-  const dbg=document.getElementById('btRaw');
-  if(dbg)dbg.textContent='RAW: '+bytes.join(' ');
   const w=parseScaleWeight(d);
   if(w!==null){
     btWeight=w;
@@ -957,22 +953,12 @@ function onScaleData(e){
   }
 }
 
-// Try common BLE kitchen-scale byte layouts (Kitchen Scale / Futula):
-// big- and little-endian 16-bit value at offsets 4-5 or 0-1, in 0.1 g or 1 g units
+// Packet format confirmed from RAW: ca 00 00 [weight_lo] [weight_hi] ...
+// Weight is little-endian 16-bit at bytes 3-4, unit = 1g
 function parseScaleWeight(d){
-  const cand=[];
-  const push=(v)=>{if(isFinite(v)&&v>0&&v<5000)cand.push(v);};
-  if(d.byteLength>=6){
-    push((d.getUint8(4)*256+d.getUint8(5))/10);
-    push((d.getUint8(5)*256+d.getUint8(4))/10);
-    push(d.getUint8(4)*256+d.getUint8(5));
-    push(d.getUint8(5)*256+d.getUint8(4));
-  }
-  if(d.byteLength>=2){
-    push((d.getUint8(0)*256+d.getUint8(1))/10);
-    push((d.getUint8(1)*256+d.getUint8(0))/10);
-  }
-  return cand.length?Math.round(cand[0]):null;
+  if(d.byteLength<5)return null;
+  const w=d.getUint8(3)+d.getUint8(4)*256;
+  return(w>0&&w<5000)?w:null;
 }
 
 function updateBtUI(){}
