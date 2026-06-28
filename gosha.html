@@ -34,6 +34,10 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .dino-emoji{font-size:72px;display:block;animation:bounce 2.2s ease-in-out infinite;line-height:1.1;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
 .dino-say{margin-top:10px;font-size:16px;color:var(--text2);font-weight:600;}
+.dino-chips{display:flex;justify-content:center;gap:8px;margin-top:10px;flex-wrap:wrap;}
+.dino-chip{border-radius:99px;padding:6px 16px;font-size:15px;font-weight:800;}
+.dino-chip.fire{background:rgba(251,191,36,.15);color:var(--yellow);}
+.dino-chip.spark{background:rgba(167,139,250,.15);color:var(--accent);}
 
 /* Big photo button */
 .big-btn{width:100%;background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;border-radius:var(--radius);padding:26px;font-size:22px;font-weight:800;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px;box-shadow:0 4px 28px rgba(124,58,237,.45);transition:transform .1s;font-family:'Space Grotesk',sans-serif;}
@@ -49,6 +53,8 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .meal-card-label{position:absolute;bottom:0;left:0;right:0;background:rgba(13,13,43,.85);padding:6px 10px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;}
 .meal-card-time{margin-left:auto;font-size:11px;color:var(--text2);}
 .meal-card-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.meal-card-cal{padding:7px 9px;font-size:13px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:5px;border-top:1px solid rgba(255,255,255,.06);}
+.meal-card-cal b{font-size:15px;}
 .meal-card-analysis{padding:7px 9px;font-size:11px;color:var(--text2);line-height:1.4;border-top:1px solid rgba(255,255,255,.06);}
 .empty-state{text-align:center;padding:28px 0;color:var(--text2);font-size:15px;font-weight:600;grid-column:span 2;}
 .empty-emoji{font-size:44px;display:block;margin-bottom:10px;}
@@ -91,19 +97,23 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .export-btn:active{background:rgba(167,139,250,.15);}
 
 /* Celebrate */
-.celebrate{position:fixed;inset:0;background:rgba(13,13,43,.93);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.celebrate{position:fixed;inset:0;background:rgba(13,13,43,.93);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0;pointer-events:none;transition:opacity .3s;}
 .celebrate.show{opacity:1;pointer-events:all;}
 .celeb-dino{font-size:110px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;}
 @keyframes popIn{from{transform:scale(0) rotate(-30deg);}to{transform:scale(1) rotate(0deg);}}
 .celeb-text{font-size:30px;font-weight:800;color:var(--green);text-align:center;}
 .celeb-sub{font-size:15px;color:var(--text2);text-align:center;}
-.celeb-tap{margin-top:8px;font-size:13px;color:var(--text2);opacity:.7;}
+.celeb-tap{margin-top:4px;font-size:13px;color:var(--text2);opacity:.7;}
 .celeb-loading{font-size:15px;color:var(--accent);font-weight:700;}
 .celeb-loading::after{content:'';animation:dots 1.4s steps(4,end) infinite;}
 @keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%{content:'...';}100%{content:'';}}
-.celeb-ai-box{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);border-radius:16px;padding:14px 18px;max-width:290px;text-align:center;}
-.celeb-ai-label{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
-.celeb-ai-text{font-size:14px;color:var(--text);line-height:1.55;}
+
+/* AI result card in celebrate */
+.celeb-ai-box{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:16px 24px;text-align:center;min-width:220px;}
+.celeb-food-emoji{font-size:54px;line-height:1;margin-bottom:6px;}
+.celeb-cal{font-size:36px;font-weight:800;color:var(--yellow);line-height:1;margin-bottom:6px;}
+.celeb-cal-unit{font-size:16px;font-weight:700;color:var(--yellow);opacity:.8;}
+.celeb-cheer{font-size:18px;font-weight:700;color:var(--green);}
 
 /* Settings */
 .settings-note{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px;text-align:center;}
@@ -113,7 +123,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .save-btn{width:100%;background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;color:white;cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;}
 .skip-btn{width:100%;background:none;border:none;padding:10px;font-size:14px;color:var(--text2);cursor:pointer;font-family:'Space Grotesk',sans-serif;}
 
-/* Confetti dots */
+/* Confetti */
 .confetti{position:absolute;width:10px;height:10px;border-radius:50%;animation:fall var(--d) linear forwards;}
 @keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
 
@@ -137,6 +147,7 @@ input[type=file]{display:none;}
   <div class="dino-box">
     <span class="dino-emoji" id="dinoEmoji">🦕</span>
     <div class="dino-say" id="dinoSay">Привет! Сфотографируй свою еду!</div>
+    <div class="dino-chips" id="dinoChips"></div>
   </div>
   <button class="big-btn" onclick="startAddMeal()">
     <span>📸</span><span>Сфотографировать еду!</span>
@@ -204,10 +215,11 @@ input[type=file]{display:none;}
   <div class="celeb-dino" id="celebDino">🦕</div>
   <div class="celeb-text" id="celebText">Молодец, Гоша!</div>
   <div class="celeb-sub" id="celebSub">Дино рад!</div>
-  <div class="celeb-loading" id="celebLoading" style="display:none">Дино смотрит на твою еду</div>
+  <div class="celeb-loading" id="celebLoading" style="display:none">Дино считает калории</div>
   <div class="celeb-ai-box" id="celebAiBox" style="display:none">
-    <div class="celeb-ai-label">🦕 Дино говорит:</div>
-    <div class="celeb-ai-text" id="celebAiText"></div>
+    <div class="celeb-food-emoji" id="celebFoodEmoji">🍽️</div>
+    <div class="celeb-cal"><span id="celebCalNum">0</span><span class="celeb-cal-unit"> ккал</span></div>
+    <div class="celeb-cheer" id="celebCheer"></div>
   </div>
   <div class="celeb-tap" id="celebTap">Нажми чтобы продолжить</div>
 </div>
@@ -273,10 +285,22 @@ function fmtTime(ts){
   const d=new Date(ts);
   return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
 }
+function calcStreak(meals){
+  const dates=new Set(meals.map(m=>m.date));
+  let streak=0;
+  const d=new Date(TODAY);
+  while(dates.has(d.toISOString().slice(0,10))){
+    streak++;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+function todayCalories(meals){
+  return meals.filter(m=>m.date===TODAY&&m.cal).reduce((s,m)=>s+(m.cal||0),0);
+}
 
 // ===== API KEY =====
 function getApiKey(){return localStorage.getItem('goshaApiKey')||'';}
-
 function openSettings(){
   document.getElementById('apiKeyInput').value=getApiKey();
   document.getElementById('settingsModal').classList.add('open');
@@ -286,7 +310,7 @@ function doSaveApiKey(){
   const k=document.getElementById('apiKeyInput').value.trim();
   if(k)localStorage.setItem('goshaApiKey',k);
   closeSettings();
-  if(k)alert('Ключ сохранён! Теперь дино будет анализировать еду 🦕');
+  if(k)alert('Ключ сохранён! Теперь дино будет считать калории 🦕');
 }
 
 // ===== CLAUDE VISION =====
@@ -329,13 +353,20 @@ async function analyzeWithClaude(dataUrl){
         max_tokens:200,
         messages:[{role:'user',content:[
           {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-          {type:'text',text:'Что на этом фото? Опиши еду коротко и весело для ребёнка. На русском языке. 1-2 предложения.'}
+          {type:'text',text:'Посмотри на фото с едой. Ответь ТОЛЬКО одной строкой JSON без объяснений:\n{"food":"название 1-3 слова","cal":число_калорий_целое,"emoji":"один emoji еды","cheer":"мотивация 2-3 слова + emoji"}'}
         ]}]
       })
     });
     const data=await resp.json();
-    if(data.content&&data.content[0]&&data.content[0].text)return data.content[0].text;
-    return null;
+    if(!data.content||!data.content[0])return null;
+    const raw=data.content[0].text.trim().replace(/```json?\s*/g,'').replace(/```/g,'').trim();
+    const j=JSON.parse(raw);
+    return {
+      food:String(j.food||'').slice(0,40),
+      cal:Math.max(0,Math.round(Number(j.cal)||0)),
+      emoji:String(j.emoji||'🍽️').slice(0,4),
+      cheer:String(j.cheer||'').slice(0,30)
+    };
   }catch(e){return null;}
   finally{clearTimeout(timer);}
 }
@@ -350,6 +381,12 @@ function showPage(p){
 }
 
 // ===== MAIN =====
+function mealCardExtra(m){
+  if(m.cal)return `<div class="meal-card-cal">${m.foodEmoji||'🍽️'} <b>${m.cal}</b> ккал</div>`;
+  if(m.note)return `<div class="meal-card-analysis">🤖 ${m.note}</div>`;
+  return '';
+}
+
 function renderToday(meals){
   const today=meals.filter(m=>m.date===TODAY);
   const grid=document.getElementById('todayGrid');
@@ -361,7 +398,7 @@ function renderToday(meals){
         <img src="${m.photo}" alt="${MEAL[m.type].name}">
         <div class="meal-card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="meal-card-time">${fmtTime(m.ts)}</span></div>
         <button class="meal-card-del" onclick="deleteMeal(${m.id})">✕</button>
-        ${m.note?`<div class="meal-card-analysis">🤖 ${m.note}</div>`:''}
+        ${mealCardExtra(m)}
       </div>`).join('');
   }
   const msgs=['Привет! Сфотографируй свою еду!','Одно фото — отлично! 🌟','Два фото — ты звезда! 🚀','Три фото — дино в восторге! 🦕','Четыре фото — чемпион! 🏆','Уже пять фото! Космос! 🌌'];
@@ -369,6 +406,13 @@ function renderToday(meals){
   const i=Math.min(today.length,msgs.length-1);
   document.getElementById('dinoSay').textContent=msgs[i];
   document.getElementById('dinoEmoji').textContent=dinos[i];
+  // Streak + daily cal chips
+  const streak=calcStreak(meals);
+  const cal=todayCalories(meals);
+  let chips='';
+  if(streak>1)chips+=`<div class="dino-chip fire">🔥 ${streak} дней</div>`;
+  if(cal>0)chips+=`<div class="dino-chip spark">⚡ ${cal} ккал</div>`;
+  document.getElementById('dinoChips').innerHTML=chips;
 }
 
 // ===== ADD MEAL =====
@@ -376,7 +420,6 @@ function startAddMeal(){
   document.querySelectorAll('.mt-btn').forEach(b=>b.classList.remove('selected'));
   document.getElementById('mealTypeModal').classList.add('open');
 }
-
 function selectMealType(type,btn){
   pendingType=type;
   document.querySelectorAll('.mt-btn').forEach(b=>b.classList.remove('selected'));
@@ -393,23 +436,27 @@ document.getElementById('photoInput').addEventListener('change',async function()
   reader.onload=async e=>{
     const dataUrl=e.target.result;
     this.value='';
-
     const hasKey=!!getApiKey();
     showCelebrate(hasKey);
-
-    let note='';
+    let ai=null;
     if(hasKey){
-      note=await analyzeWithClaude(dataUrl)||'';
-      if(note){
-        document.getElementById('celebAiText').textContent=note;
+      ai=await analyzeWithClaude(dataUrl);
+      if(ai&&ai.cal){
+        document.getElementById('celebFoodEmoji').textContent=ai.emoji;
+        document.getElementById('celebCalNum').textContent=ai.cal;
+        document.getElementById('celebCheer').textContent=ai.cheer;
         document.getElementById('celebAiBox').style.display='block';
       }
       document.getElementById('celebLoading').style.display='none';
       document.getElementById('celebTap').style.display='block';
       celebLoading=false;
     }
-
-    await dbAdd({date:TODAY,type,photo:dataUrl,ts:Date.now(),note});
+    await dbAdd({
+      date:TODAY,type,photo:dataUrl,ts:Date.now(),
+      note:ai?ai.food:'',
+      cal:ai?ai.cal:0,
+      foodEmoji:ai?ai.emoji:''
+    });
     renderToday(await dbAll());
   };
   reader.readAsDataURL(this.files[0]);
@@ -452,25 +499,31 @@ async function renderHistory(){
   const days=new Set(meals.map(m=>m.date)).size;
   const cnt={breakfast:0,lunch:0,dinner:0,snack:0};
   meals.forEach(m=>{if(cnt[m.type]!==undefined)cnt[m.type]++;});
+  const calMeals=meals.filter(m=>m.cal);
+  const totalCal=calMeals.reduce((s,m)=>s+(m.cal||0),0);
+  const calDays=new Set(calMeals.map(m=>m.date)).size;
+  const avgCal=calDays?Math.round(totalCal/calDays):0;
   document.getElementById('statsRow').innerHTML=`
     <div class="stat-card"><span class="stat-val">${meals.length}</span><span class="stat-lbl">Фото</span></div>
     <div class="stat-card"><span class="stat-val">${days}</span><span class="stat-lbl">Дней</span></div>
-    <div class="stat-card"><span class="stat-val">${cnt.breakfast+cnt.lunch+cnt.dinner}</span><span class="stat-lbl">Приёмов</span></div>
-    <div class="stat-card"><span class="stat-val">${cnt.snack}</span><span class="stat-lbl">Перекусов</span></div>`;
+    <div class="stat-card"><span class="stat-val">${calcStreak(meals)}🔥</span><span class="stat-lbl">Стрик</span></div>
+    <div class="stat-card"><span class="stat-val">${avgCal||'—'}</span><span class="stat-lbl">ккал/день</span></div>`;
   const byDate={};
   meals.forEach(m=>{(byDate[m.date]=byDate[m.date]||[]).push(m);});
   const dates=Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
-  document.getElementById('historyList').innerHTML=dates.map(d=>`
-    <div class="hist-day">
-      <div class="hist-day-title">${d===TODAY?'🌟 Сегодня':fmtDate(d)}</div>
+  document.getElementById('historyList').innerHTML=dates.map(d=>{
+    const dayCal=byDate[d].filter(m=>m.cal).reduce((s,m)=>s+(m.cal||0),0);
+    return `<div class="hist-day">
+      <div class="hist-day-title">${d===TODAY?'🌟 Сегодня':fmtDate(d)}${dayCal?` <span style="color:var(--yellow);font-size:12px;">⚡${dayCal} ккал</span>`:''}</div>
       <div class="meal-grid">${byDate[d].map(m=>`
         <div class="meal-card">
           <img src="${m.photo}" alt="${MEAL[m.type].name}">
           <div class="meal-card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="meal-card-time">${fmtTime(m.ts)}</span></div>
-          ${m.note?`<div class="meal-card-analysis">🤖 ${m.note}</div>`:''}
+          ${mealCardExtra(m)}
         </div>`).join('')}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ===== EXPORT =====
@@ -482,6 +535,10 @@ async function exportForDoctor(){
   const dates=Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
   const total=meals.length;
   const days=dates.length;
+  const calMeals=meals.filter(m=>m.cal);
+  const totalCal=calMeals.reduce((s,m)=>s+(m.cal||0),0);
+  const calDays=new Set(calMeals.map(m=>m.date)).size;
+  const avgCal=calDays?Math.round(totalCal/calDays):0;
   const html=`<!DOCTYPE html>
 <html lang="ru"><head><meta charset="UTF-8">
 <title>Гоша — дневник питания</title>
@@ -493,13 +550,15 @@ h1{color:#7c3aed;margin-bottom:4px;}
 .stat{background:#f3f0ff;border-radius:12px;padding:12px 20px;text-align:center;min-width:100px;}
 .stat b{display:block;font-size:26px;color:#7c3aed;}
 .stat span{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.04em;}
-h2{color:#555;border-bottom:2px solid #ede9fe;padding-bottom:8px;margin:24px 0 12px;}
+h2{color:#555;border-bottom:2px solid #ede9fe;padding-bottom:8px;margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
+.day-cal{font-size:13px;color:#d97706;font-weight:normal;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:8px;}
 .card{border-radius:12px;overflow:hidden;border:1px solid #e5e5e5;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
 .card-label{padding:8px 10px;font-size:13px;font-weight:bold;background:#fafafa;border-top:1px solid #f0f0f0;}
 .card-time{font-size:11px;color:#aaa;font-weight:normal;margin-left:4px;}
-.card-ai{padding:8px 10px;font-size:12px;color:#555;background:#faf5ff;border-top:1px solid #ede9fe;line-height:1.5;}
+.card-cal{padding:7px 10px;font-size:13px;font-weight:700;color:#d97706;background:#fffbeb;border-top:1px solid #fef3c7;}
+.card-note{padding:7px 10px;font-size:12px;color:#555;background:#faf5ff;border-top:1px solid #ede9fe;line-height:1.5;}
 </style></head><body>
 <h1>🦕 Гоша — дневник питания</h1>
 <div class="meta">Создан: ${new Date().toLocaleDateString('ru-RU')} · Всего фото: ${total} · Дней: ${days}</div>
@@ -510,13 +569,19 @@ h2{color:#555;border-bottom:2px solid #ede9fe;padding-bottom:8px;margin:24px 0 1
   <div class="stat"><b>${meals.filter(m=>m.type==='lunch').length}</b><span>Обедов</span></div>
   <div class="stat"><b>${meals.filter(m=>m.type==='dinner').length}</b><span>Ужинов</span></div>
   <div class="stat"><b>${meals.filter(m=>m.type==='snack').length}</b><span>Перекусов</span></div>
+  ${avgCal?`<div class="stat"><b>${avgCal}</b><span>ккал/день</span></div>`:''}
+  ${totalCal?`<div class="stat"><b>${totalCal}</b><span>ккал всего</span></div>`:''}
 </div>
-${dates.map(d=>`<h2>${fmtDate(d)}${d===TODAY?' (сегодня)':''}</h2>
-<div class="grid">${byDate[d].map(m=>`
+${dates.map(d=>{
+  const dayCal=byDate[d].filter(m=>m.cal).reduce((s,m)=>s+(m.cal||0),0);
+  return `<h2>${fmtDate(d)}${d===TODAY?' (сегодня)':''}${dayCal?`<span class="day-cal">⚡ ${dayCal} ккал за день</span>`:''}
+  </h2>
+  <div class="grid">${byDate[d].map(m=>`
   <div class="card"><img src="${m.photo}">
   <div class="card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="card-time">${fmtTime(m.ts)}</span></div>
-  ${m.note?`<div class="card-ai">🤖 ${m.note}</div>`:''}
-  </div>`).join('')}</div>`).join('')}
+  ${m.cal?`<div class="card-cal">${m.foodEmoji||'🍽️'} ${m.note||''} · ${m.cal} ккал</div>`:(m.note?`<div class="card-note">🤖 ${m.note}</div>`:'')}
+  </div>`).join('')}</div>`;
+}).join('')}
 </body></html>`;
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
