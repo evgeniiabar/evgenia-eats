@@ -458,6 +458,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
         <div style="flex:1;font-size:13px;color:var(--text2)">Поставь еду на весы — вес обновится</div>
         <button onclick="useLiveWeight()" style="padding:10px 16px;border-radius:99px;background:var(--green);border:none;color:white;font-size:14px;font-weight:700;cursor:pointer;">Использовать →</button>
       </div>
+      <div id="btRaw" style="margin-top:6px;font-family:monospace;font-size:11px;color:var(--text3);word-break:break-all;"></div>
     </div>
     <div class="g-big" id="gBig">100</div>
     <div class="g-label">граммов</div>
@@ -891,28 +892,17 @@ async function connectScaleForPortion(){
     }
     if(!service)throw new Error('Сервис не найден');
     const chars=await service.getCharacteristics();
+    let subscribed=0;
     for(const ch of chars){
-      if(ch.properties.notify){
-        await ch.startNotifications();
-        ch.addEventListener('characteristicvaluechanged',e=>{
-          const d=e.target.value;
-          let w=0;
-          if(d.byteLength>=6)w=(d.getUint8(4)*256+d.getUint8(5))/10;
-          else if(d.byteLength>=2)w=(d.getUint8(0)*256+d.getUint8(1))/10;
-          if(w>0&&w<5000){
-            btWeight=Math.round(w);
-            // Show weight display
-            const wd=document.getElementById('btWeightDisplay');
-            if(wd){wd.style.display='flex';}
-            const lnum=document.getElementById('btLiveNum');
-            if(lnum)lnum.textContent=btWeight;
-            // Auto-sync to grams field
-            syncG(btWeight);
-          }
-        });
-        break;
+      if(ch.properties.notify||ch.properties.indicate){
+        try{
+          await ch.startNotifications();
+          ch.addEventListener('characteristicvaluechanged',onScaleData);
+          subscribed++;
+        }catch(e){}
       }
     }
+    if(!subscribed)throw new Error('Нет notify-характеристик');
     btOn=true;
     lbl.textContent='⚖️ '+( btWeight||'...')+'г · Отключить';
     btn.style.background='var(--green-bg)';
@@ -930,6 +920,41 @@ async function connectScaleForPortion(){
     btn.style.borderColor='';
     if(err.name!=='NotFoundError')showToast('Ошибка: '+err.message);
   }
+}
+
+function onScaleData(e){
+  const d=e.target.value;
+  const bytes=[];
+  for(let i=0;i<d.byteLength;i++)bytes.push(d.getUint8(i).toString(16).padStart(2,'0'));
+  const dbg=document.getElementById('btRaw');
+  if(dbg)dbg.textContent='RAW: '+bytes.join(' ');
+  const w=parseScaleWeight(d);
+  if(w!==null){
+    btWeight=w;
+    const wd=document.getElementById('btWeightDisplay');
+    if(wd)wd.style.display='flex';
+    const lnum=document.getElementById('btLiveNum');
+    if(lnum)lnum.textContent=btWeight;
+    syncG(btWeight);
+  }
+}
+
+// Try common BLE kitchen-scale byte layouts (Kitchen Scale / Futula):
+// big- and little-endian 16-bit value at offsets 4-5 or 0-1, in 0.1 g or 1 g units
+function parseScaleWeight(d){
+  const cand=[];
+  const push=(v)=>{if(isFinite(v)&&v>0&&v<5000)cand.push(v);};
+  if(d.byteLength>=6){
+    push((d.getUint8(4)*256+d.getUint8(5))/10);
+    push((d.getUint8(5)*256+d.getUint8(4))/10);
+    push(d.getUint8(4)*256+d.getUint8(5));
+    push(d.getUint8(5)*256+d.getUint8(4));
+  }
+  if(d.byteLength>=2){
+    push((d.getUint8(0)*256+d.getUint8(1))/10);
+    push((d.getUint8(1)*256+d.getUint8(0))/10);
+  }
+  return cand.length?Math.round(cand[0]):null;
 }
 
 function updateBtUI(){}
