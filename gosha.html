@@ -9,12 +9,11 @@
 :root{
   --bg:#0d0d2b;--bg2:#16163a;--card:#1e1e4a;
   --accent:#a78bfa;--green:#4ade80;--yellow:#fbbf24;
-  --text:#f0f0ff;--text2:#a0a0cc;--radius:20px;
+  --red:#f87171;--text:#f0f0ff;--text2:#a0a0cc;--radius:20px;
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
 
-/* Stars */
 .stars{position:fixed;top:0;left:0;right:0;bottom:0;pointer-events:none;z-index:0;}
 .star{position:absolute;background:white;border-radius:50%;animation:twinkle var(--d) infinite alternate;}
 @keyframes twinkle{from{opacity:.1;}to{opacity:1;}}
@@ -29,7 +28,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .settings-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;opacity:.6;transition:opacity .15s;}
 .settings-btn:active{opacity:1;}
 
-/* Dino mascot */
+/* Dino */
 .dino-box{text-align:center;margin-bottom:22px;}
 .dino-emoji{font-size:72px;display:block;animation:bounce 2.2s ease-in-out infinite;line-height:1.1;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
@@ -43,23 +42,30 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .big-btn{width:100%;background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;border-radius:var(--radius);padding:26px;font-size:22px;font-weight:800;color:white;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:22px;box-shadow:0 4px 28px rgba(124,58,237,.45);transition:transform .1s;font-family:'Space Grotesk',sans-serif;}
 .big-btn:active{transform:scale(.96);}
 
-/* Section title */
 .section-title{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;margin-bottom:12px;}
 
-/* Meal grid */
+/* Meal cards */
 .meal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px;}
-.meal-card{background:var(--card);border-radius:16px;overflow:hidden;position:relative;}
+.meal-card{background:var(--card);border-radius:16px;overflow:hidden;position:relative;transition:opacity .25s;}
+.meal-card.loading{opacity:.45;}
 .meal-card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
 .meal-card-label{position:absolute;bottom:0;left:0;right:0;background:rgba(13,13,43,.85);padding:6px 10px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;}
 .meal-card-time{margin-left:auto;font-size:11px;color:var(--text2);}
 .meal-card-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.meal-card-cal{padding:7px 9px;font-size:13px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:5px;border-top:1px solid rgba(255,255,255,.06);}
-.meal-card-cal b{font-size:15px;}
+/* below-image info rows */
+.meal-card-cal{padding:6px 9px;font-size:12px;font-weight:700;color:var(--yellow);display:flex;align-items:center;gap:5px;border-top:1px solid rgba(255,255,255,.06);}
+.meal-card-cal .wt{margin-left:auto;color:var(--text2);font-size:11px;font-weight:600;}
+.eaten-badge{font-size:10px;color:var(--green);background:rgba(74,222,128,.12);border-radius:5px;padding:1px 5px;margin-left:3px;}
+.orig-strike{text-decoration:line-through;opacity:.45;font-size:11px;font-weight:400;}
+.meal-card-nutrition{padding:4px 9px 7px;display:flex;gap:5px;border-top:1px solid rgba(255,255,255,.06);}
+.nut{font-size:11px;font-weight:700;background:rgba(255,255,255,.07);border-radius:6px;padding:2px 6px;color:var(--text2);}
+.meal-card-partial-btn{width:100%;background:none;border:none;border-top:1px solid rgba(255,255,255,.06);padding:7px 9px;font-size:12px;color:var(--text2);cursor:pointer;text-align:left;font-family:'Space Grotesk',sans-serif;font-weight:700;display:flex;align-items:center;gap:5px;}
+.meal-card-partial-btn:active{background:rgba(255,255,255,.05);}
 .meal-card-analysis{padding:7px 9px;font-size:11px;color:var(--text2);line-height:1.4;border-top:1px solid rgba(255,255,255,.06);}
 .empty-state{text-align:center;padding:28px 0;color:var(--text2);font-size:15px;font-weight:600;grid-column:span 2;}
 .empty-emoji{font-size:44px;display:block;margin-bottom:10px;}
 
-/* Bottom nav */
+/* Nav */
 .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid rgba(255,255,255,.08);display:flex;padding:8px 0 calc(8px + env(safe-area-inset-bottom));z-index:100;}
 .nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;cursor:pointer;padding:6px 0;color:var(--text2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;transition:color .15s;font-family:'Space Grotesk',sans-serif;}
 .nav-btn.active{color:var(--accent);}
@@ -72,8 +78,6 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .modal-overlay.open .modal{transform:translateY(0);}
 .modal-handle{width:40px;height:4px;background:rgba(255,255,255,.2);border-radius:99px;margin:0 auto 20px;}
 .modal-title{font-size:22px;font-weight:800;margin-bottom:20px;text-align:center;}
-
-/* Meal type grid */
 .meal-type-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
 .mt-btn{background:var(--card);border:2px solid transparent;border-radius:16px;padding:20px 12px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;transition:all .15s;font-family:'Space Grotesk',sans-serif;color:var(--text);}
 .mt-btn:active{transform:scale(.96);}
@@ -83,37 +87,39 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 
 /* History */
 .hist-day{margin-bottom:24px;}
-.hist-day-title{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.hist-day-title{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .hist-day-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.08);}
 
-/* Stats row */
+/* Stats */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px;}
 .stat-card{background:var(--card);border-radius:14px;padding:12px 6px;text-align:center;}
 .stat-val{font-size:22px;font-weight:800;color:var(--accent);display:block;}
 .stat-lbl{font-size:10px;color:var(--text2);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
-
-/* Export button */
 .export-btn{width:100%;background:var(--card);border:2px solid var(--accent);border-radius:var(--radius);padding:16px;font-size:16px;font-weight:700;color:var(--accent);cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-top:4px;transition:all .15s;}
 .export-btn:active{background:rgba(167,139,250,.15);}
 
 /* Celebrate */
-.celebrate{position:fixed;inset:0;background:rgba(13,13,43,.93);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;opacity:0;pointer-events:none;transition:opacity .3s;}
+.celebrate{position:fixed;inset:0;background:rgba(13,13,43,.93);z-index:300;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;opacity:0;pointer-events:none;transition:opacity .3s;}
 .celebrate.show{opacity:1;pointer-events:all;}
-.celeb-dino{font-size:110px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;}
+.celeb-dino{font-size:100px;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both;}
 @keyframes popIn{from{transform:scale(0) rotate(-30deg);}to{transform:scale(1) rotate(0deg);}}
-.celeb-text{font-size:30px;font-weight:800;color:var(--green);text-align:center;}
-.celeb-sub{font-size:15px;color:var(--text2);text-align:center;}
-.celeb-tap{margin-top:4px;font-size:13px;color:var(--text2);opacity:.7;}
+.celeb-text{font-size:28px;font-weight:800;color:var(--green);text-align:center;}
+.celeb-sub{font-size:14px;color:var(--text2);text-align:center;}
+.celeb-tap{font-size:13px;color:var(--text2);opacity:.7;}
 .celeb-loading{font-size:15px;color:var(--accent);font-weight:700;}
 .celeb-loading::after{content:'';animation:dots 1.4s steps(4,end) infinite;}
 @keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%{content:'...';}100%{content:'';}}
-
-/* AI result card in celebrate */
-.celeb-ai-box{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:16px 24px;text-align:center;min-width:220px;}
-.celeb-food-emoji{font-size:54px;line-height:1;margin-bottom:6px;}
-.celeb-cal{font-size:36px;font-weight:800;color:var(--yellow);line-height:1;margin-bottom:6px;}
-.celeb-cal-unit{font-size:16px;font-weight:700;color:var(--yellow);opacity:.8;}
-.celeb-cheer{font-size:18px;font-weight:700;color:var(--green);}
+/* AI result in celebrate */
+.celeb-ai-box{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);border-radius:20px;padding:14px 20px 16px;text-align:center;min-width:240px;}
+.celeb-food-emoji{font-size:52px;line-height:1;margin-bottom:6px;}
+.celeb-nums{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.celeb-num-val{font-size:30px;font-weight:800;line-height:1;}
+.celeb-num-val.yellow{color:var(--yellow);}
+.celeb-num-val.accent{color:var(--accent);}
+.celeb-num-lbl{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;opacity:.65;margin-top:2px;}
+.celeb-macros{display:flex;gap:8px;justify-content:center;margin-bottom:8px;}
+.celeb-macro{background:rgba(255,255,255,.08);border-radius:8px;padding:4px 9px;font-size:13px;font-weight:700;}
+.celeb-cheer{font-size:17px;font-weight:700;color:var(--green);}
 
 /* Settings */
 .settings-note{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px;text-align:center;}
@@ -123,10 +129,8 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .save-btn{width:100%;background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;color:white;cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;}
 .skip-btn{width:100%;background:none;border:none;padding:10px;font-size:14px;color:var(--text2);cursor:pointer;font-family:'Space Grotesk',sans-serif;}
 
-/* Confetti */
 .confetti{position:absolute;width:10px;height:10px;border-radius:50%;animation:fall var(--d) linear forwards;}
 @keyframes fall{0%{transform:translateY(-20px) rotate(0deg);opacity:1;}100%{transform:translateY(100vh) rotate(720deg);opacity:0;}}
-
 input[type=file]{display:none;}
 </style>
 </head>
@@ -141,7 +145,7 @@ input[type=file]{display:none;}
     <div class="logo">🚀 Гоша ест!</div>
     <div class="header-right">
       <div class="date-chip" id="todayLabel"></div>
-      <button class="settings-btn" onclick="openSettings()" title="Настройки">⚙️</button>
+      <button class="settings-btn" onclick="openSettings()">⚙️</button>
     </div>
   </div>
   <div class="dino-box">
@@ -158,9 +162,7 @@ input[type=file]{display:none;}
 
 <!-- HISTORY PAGE -->
 <div class="page" id="pageHistory" style="display:none">
-  <div class="header">
-    <div class="logo">📅 История</div>
-  </div>
+  <div class="header"><div class="logo">📅 История</div></div>
   <div class="stats-row" id="statsRow"></div>
   <div id="historyList"></div>
   <button class="export-btn" onclick="exportForDoctor()">📋 Скачать для врача</button>
@@ -182,18 +184,10 @@ input[type=file]{display:none;}
     <div class="modal-handle"></div>
     <div class="modal-title">Что это за еда? 🦖</div>
     <div class="meal-type-grid">
-      <button class="mt-btn" onclick="selectMealType('breakfast',this)">
-        <span class="mt-emoji">🌅</span><span class="mt-name">Завтрак</span>
-      </button>
-      <button class="mt-btn" onclick="selectMealType('lunch',this)">
-        <span class="mt-emoji">☀️</span><span class="mt-name">Обед</span>
-      </button>
-      <button class="mt-btn" onclick="selectMealType('dinner',this)">
-        <span class="mt-emoji">🌙</span><span class="mt-name">Ужин</span>
-      </button>
-      <button class="mt-btn" onclick="selectMealType('snack',this)">
-        <span class="mt-emoji">🍎</span><span class="mt-name">Перекус</span>
-      </button>
+      <button class="mt-btn" onclick="selectMealType('breakfast',this)"><span class="mt-emoji">🌅</span><span class="mt-name">Завтрак</span></button>
+      <button class="mt-btn" onclick="selectMealType('lunch',this)"><span class="mt-emoji">☀️</span><span class="mt-name">Обед</span></button>
+      <button class="mt-btn" onclick="selectMealType('dinner',this)"><span class="mt-emoji">🌙</span><span class="mt-name">Ужин</span></button>
+      <button class="mt-btn" onclick="selectMealType('snack',this)"><span class="mt-emoji">🍎</span><span class="mt-name">Перекус</span></button>
     </div>
   </div>
 </div>
@@ -203,7 +197,7 @@ input[type=file]{display:none;}
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title">Настройки 🔐</div>
-    <div class="settings-note">Введи API ключ Anthropic — тогда дино будет рассказывать, что Гоша съел! Ключ хранится только на этом устройстве.</div>
+    <div class="settings-note">Введи API ключ Anthropic — тогда дино будет считать калории! Ключ хранится только на этом устройстве.</div>
     <input class="api-input" id="apiKeyInput" type="password" placeholder="sk-ant-api03-..." autocomplete="off">
     <button class="save-btn" onclick="doSaveApiKey()">✅ Сохранить</button>
     <button class="skip-btn" onclick="closeSettings()">Закрыть</button>
@@ -218,7 +212,15 @@ input[type=file]{display:none;}
   <div class="celeb-loading" id="celebLoading" style="display:none">Дино считает калории</div>
   <div class="celeb-ai-box" id="celebAiBox" style="display:none">
     <div class="celeb-food-emoji" id="celebFoodEmoji">🍽️</div>
-    <div class="celeb-cal"><span id="celebCalNum">0</span><span class="celeb-cal-unit"> ккал</span></div>
+    <div class="celeb-nums">
+      <div><div class="celeb-num-val yellow" id="celebCal">0</div><div class="celeb-num-lbl">ккал</div></div>
+      <div><div class="celeb-num-val accent" id="celebWt">0</div><div class="celeb-num-lbl">грамм</div></div>
+    </div>
+    <div class="celeb-macros">
+      <div class="celeb-macro" id="celebProt"></div>
+      <div class="celeb-macro" id="celebFat"></div>
+      <div class="celeb-macro" id="celebCarb"></div>
+    </div>
     <div class="celeb-cheer" id="celebCheer"></div>
   </div>
   <div class="celeb-tap" id="celebTap">Нажми чтобы продолжить</div>
@@ -252,10 +254,24 @@ function openDB(){
     r.onerror=()=>rej(r.error);
   });
 }
-const tx=(mode)=>db.transaction('meals',mode).objectStore('meals');
-function dbAdd(m){return new Promise((res,rej)=>{const r=tx('readwrite').add(m);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
-function dbAll(){return new Promise((res,rej)=>{const r=tx('readonly').getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
-function dbDel(id){return new Promise((res,rej)=>{const r=tx('readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error);});}
+const txStore=(mode)=>{const t=db.transaction('meals',mode);return t.objectStore('meals');};
+function dbAdd(m){return new Promise((res,rej)=>{const r=txStore('readwrite').add(m);r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+function dbAll(){return new Promise((res,rej)=>{const r=txStore('readonly').getAll();r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error);});}
+function dbDel(id){return new Promise((res,rej)=>{const r=txStore('readwrite').delete(id);r.onsuccess=()=>res();r.onerror=()=>rej(r.error);});}
+function dbUpdate(id,changes){
+  return new Promise((res,rej)=>{
+    const t=db.transaction('meals','readwrite');
+    const s=t.objectStore('meals');
+    const get=s.get(id);
+    get.onsuccess=()=>{
+      const obj=Object.assign({},get.result,changes);
+      const put=s.put(obj);
+      put.onsuccess=()=>res();
+      put.onerror=()=>rej(put.error);
+    };
+    get.onerror=()=>rej(get.error);
+  });
+}
 
 // ===== CONSTANTS =====
 const MEAL={
@@ -273,6 +289,7 @@ const CELEBRATES=[
 ];
 const TODAY=new Date().toISOString().slice(0,10);
 let pendingType=null;
+let pendingPartialId=null;
 let celebLoading=false;
 
 // ===== HELPERS =====
@@ -289,86 +306,97 @@ function calcStreak(meals){
   const dates=new Set(meals.map(m=>m.date));
   let streak=0;
   const d=new Date(TODAY);
-  while(dates.has(d.toISOString().slice(0,10))){
-    streak++;
-    d.setDate(d.getDate()-1);
-  }
+  while(dates.has(d.toISOString().slice(0,10))){streak++;d.setDate(d.getDate()-1);}
   return streak;
 }
-function todayCalories(meals){
-  return meals.filter(m=>m.date===TODAY&&m.cal).reduce((s,m)=>s+(m.cal||0),0);
-}
+function effectiveCal(m){return m.partial?m.eatenCal:(m.cal||0);}
+function effectiveWt(m){return m.partial?m.eatenWeight:(m.weight||0);}
+function todayCalories(meals){return meals.filter(m=>m.date===TODAY).reduce((s,m)=>s+effectiveCal(m),0);}
 
 // ===== API KEY =====
 function getApiKey(){return localStorage.getItem('goshaApiKey')||'';}
-function openSettings(){
-  document.getElementById('apiKeyInput').value=getApiKey();
-  document.getElementById('settingsModal').classList.add('open');
-}
+function openSettings(){document.getElementById('apiKeyInput').value=getApiKey();document.getElementById('settingsModal').classList.add('open');}
 function closeSettings(){document.getElementById('settingsModal').classList.remove('open');}
 function doSaveApiKey(){
   const k=document.getElementById('apiKeyInput').value.trim();
   if(k)localStorage.setItem('goshaApiKey',k);
   closeSettings();
-  if(k)alert('Ключ сохранён! Теперь дино будет считать калории 🦕');
+  if(k)alert('Ключ сохранён! Теперь дино считает калории 🦕');
 }
 
-// ===== CLAUDE VISION =====
+// ===== CLAUDE HELPERS =====
 async function resizeImage(dataUrl,maxDim=1024){
   return new Promise(res=>{
     const img=new Image();
     img.onload=()=>{
       const scale=Math.min(1,maxDim/img.width,maxDim/img.height);
       const c=document.createElement('canvas');
-      c.width=Math.round(img.width*scale);
-      c.height=Math.round(img.height*scale);
+      c.width=Math.round(img.width*scale);c.height=Math.round(img.height*scale);
       c.getContext('2d').drawImage(img,0,0,c.width,c.height);
       res(c.toDataURL('image/jpeg',0.85));
     };
     img.src=dataUrl;
   });
 }
-
-async function analyzeWithClaude(dataUrl){
-  const key=getApiKey();
-  if(!key)return null;
+function extractBase64(dataUrl){
+  const comma=dataUrl.indexOf(',');
+  return {mediaType:dataUrl.slice(5,dataUrl.indexOf(';')),base64:dataUrl.slice(comma+1)};
+}
+async function claudePost(messages,maxTokens=300){
+  const key=getApiKey();if(!key)return null;
   const ctrl=new AbortController();
-  const timer=setTimeout(()=>ctrl.abort(),10000);
+  const timer=setTimeout(()=>ctrl.abort(),12000);
   try{
-    const small=await resizeImage(dataUrl);
-    const comma=small.indexOf(',');
-    const mediaType=small.slice(5,small.indexOf(';'));
-    const base64=small.slice(comma+1);
     const resp=await fetch('https://api.anthropic.com/v1/messages',{
-      signal:ctrl.signal,
-      method:'POST',
-      headers:{
-        'x-api-key':key,
-        'anthropic-version':'2023-06-01',
-        'content-type':'application/json',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-opus-4-8',
-        max_tokens:200,
-        messages:[{role:'user',content:[
-          {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
-          {type:'text',text:'Посмотри на фото с едой. Ответь ТОЛЬКО одной строкой JSON без объяснений:\n{"food":"название 1-3 слова","cal":число_калорий_целое,"emoji":"один emoji еды","cheer":"мотивация 2-3 слова + emoji"}'}
-        ]}]
-      })
+      signal:ctrl.signal,method:'POST',
+      headers:{'x-api-key':key,'anthropic-version':'2023-06-01','content-type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-opus-4-8',max_tokens:maxTokens,messages})
     });
     const data=await resp.json();
     if(!data.content||!data.content[0])return null;
-    const raw=data.content[0].text.trim().replace(/```json?\s*/g,'').replace(/```/g,'').trim();
+    return data.content[0].text.trim().replace(/```json?\s*/g,'').replace(/```/g,'').trim();
+  }catch(e){return null;}
+  finally{clearTimeout(timer);}
+}
+
+// ===== ANALYZE NEW PHOTO =====
+async function analyzeWithClaude(dataUrl){
+  const small=await resizeImage(dataUrl);
+  const {mediaType,base64}=extractBase64(small);
+  const raw=await claudePost([{role:'user',content:[
+    {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+    {type:'text',text:'Посмотри на фото с едой. Ответь ТОЛЬКО одной строкой JSON без объяснений:\n{"food":"название 1-3 слова","cal":число_ккал,"weight":вес_г,"protein":белки_г,"fat":жиры_г,"carbs":углеводы_г,"emoji":"один emoji","cheer":"мотивация 2-3 слова + emoji"}'}
+  ]}]);
+  if(!raw)return null;
+  try{
     const j=JSON.parse(raw);
     return {
       food:String(j.food||'').slice(0,40),
       cal:Math.max(0,Math.round(Number(j.cal)||0)),
+      weight:Math.max(0,Math.round(Number(j.weight)||0)),
+      protein:Math.max(0,Math.round(Number(j.protein)||0)),
+      fat:Math.max(0,Math.round(Number(j.fat)||0)),
+      carbs:Math.max(0,Math.round(Number(j.carbs)||0)),
       emoji:String(j.emoji||'🍽️').slice(0,4),
       cheer:String(j.cheer||'').slice(0,30)
     };
-  }catch(e){return null;}
-  finally{clearTimeout(timer);}
+  }catch{return null;}
+}
+
+// ===== ANALYZE LEFTOVERS =====
+async function analyzeLeftovers(meal,dataUrl){
+  const small=await resizeImage(dataUrl);
+  const {mediaType,base64}=extractBase64(small);
+  const ctx=`"${meal.note||meal.type}", ~${meal.weight||'?'}г, ~${meal.cal||'?'} ккал`;
+  const raw=await claudePost([{role:'user',content:[
+    {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+    {type:'text',text:`На фото — остатки после еды. Блюдо: ${ctx}. Оцени, сколько ОСТАЛОСЬ на тарелке. Ответь ТОЛЬКО одной строкой JSON:\n{"leftCal":оставшиеся_ккал,"leftWeight":оставшийся_вес_г}`}
+  ]},150]);
+  if(!raw)return null;
+  try{
+    const j=JSON.parse(raw);
+    return {leftCal:Math.max(0,Math.round(Number(j.leftCal)||0)),leftWeight:Math.max(0,Math.round(Number(j.leftWeight)||0))};
+  }catch{return null;}
 }
 
 // ===== PAGES =====
@@ -380,25 +408,44 @@ function showPage(p){
   if(p==='history')renderHistory();
 }
 
-// ===== MAIN =====
-function mealCardExtra(m){
-  if(m.cal)return `<div class="meal-card-cal">${m.foodEmoji||'🍽️'} <b>${m.cal}</b> ккал</div>`;
-  if(m.note)return `<div class="meal-card-analysis">🤖 ${m.note}</div>`;
-  return '';
+// ===== MEAL CARD BUILDER =====
+function mealCardBottom(m,withDel){
+  let html='';
+  const cal=effectiveCal(m);
+  const wt=effectiveWt(m);
+  if(m.cal){
+    const calStr=m.partial
+      ?`<span class="orig-strike">${m.cal}</span> <b>${m.eatenCal}</b><span class="eaten-badge">съел</span>`
+      :`<b>${m.cal}</b>`;
+    const wtStr=m.partial&&m.eatenWeight!=null
+      ?`<span class="orig-strike">${m.weight}г</span> ${m.eatenWeight}г`
+      :(m.weight?`${m.weight}г`:'');
+    html+=`<div class="meal-card-cal">${m.foodEmoji||'🍽️'} ${calStr} ккал<span class="wt">${wtStr}</span></div>`;
+    if(m.protein||m.fat||m.carbs){
+      html+=`<div class="meal-card-nutrition"><span class="nut">💪${m.protein}г</span><span class="nut">🧈${m.fat}г</span><span class="nut">🌾${m.carbs}г</span></div>`;
+    }
+    if(!m.partial&&m.cal){
+      html+=`<button class="meal-card-partial-btn" onclick="startPartialMeal(${m.id})">🍽️ Осталось?</button>`;
+    }
+  }else if(m.note){
+    html+=`<div class="meal-card-analysis">🤖 ${m.note}</div>`;
+  }
+  return html;
 }
 
+// ===== RENDER TODAY =====
 function renderToday(meals){
   const today=meals.filter(m=>m.date===TODAY);
   const grid=document.getElementById('todayGrid');
   if(!today.length){
     grid.innerHTML='<div class="empty-state"><span class="empty-emoji">🍽️</span>Ещё нет фото — сфотографируй первую еду!</div>';
-  } else {
+  }else{
     grid.innerHTML=today.map(m=>`
-      <div class="meal-card">
+      <div class="meal-card" data-id="${m.id}">
         <img src="${m.photo}" alt="${MEAL[m.type].name}">
         <div class="meal-card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="meal-card-time">${fmtTime(m.ts)}</span></div>
         <button class="meal-card-del" onclick="deleteMeal(${m.id})">✕</button>
-        ${mealCardExtra(m)}
+        ${mealCardBottom(m,true)}
       </div>`).join('');
   }
   const msgs=['Привет! Сфотографируй свою еду!','Одно фото — отлично! 🌟','Два фото — ты звезда! 🚀','Три фото — дино в восторге! 🦕','Четыре фото — чемпион! 🏆','Уже пять фото! Космос! 🌌'];
@@ -406,7 +453,6 @@ function renderToday(meals){
   const i=Math.min(today.length,msgs.length-1);
   document.getElementById('dinoSay').textContent=msgs[i];
   document.getElementById('dinoEmoji').textContent=dinos[i];
-  // Streak + daily cal chips
   const streak=calcStreak(meals);
   const cal=todayCalories(meals);
   let chips='';
@@ -427,9 +473,43 @@ function selectMealType(type,btn){
   document.getElementById('mealTypeModal').classList.remove('open');
   setTimeout(()=>document.getElementById('photoInput').click(),250);
 }
+function startPartialMeal(id){
+  pendingPartialId=id;
+  document.getElementById('photoInput').click();
+}
 
 document.getElementById('photoInput').addEventListener('change',async function(){
-  if(!this.files||!this.files[0]||!pendingType)return;
+  if(!this.files||!this.files[0])return;
+
+  // ---- LEFTOVERS MODE ----
+  if(pendingPartialId!==null){
+    const mealId=pendingPartialId;
+    pendingPartialId=null;
+    const reader=new FileReader();
+    reader.onload=async e=>{
+      const dataUrl=e.target.result;
+      this.value='';
+      const card=document.querySelector(`[data-id="${mealId}"]`);
+      if(card)card.classList.add('loading');
+      const meals=await dbAll();
+      const meal=meals.find(m=>m.id===mealId);
+      if(meal){
+        const left=await analyzeLeftovers(meal,dataUrl);
+        if(left){
+          const eatenCal=Math.max(0,(meal.cal||0)-left.leftCal);
+          const eatenWeight=Math.max(0,(meal.weight||0)-left.leftWeight);
+          await dbUpdate(mealId,{partial:true,eatenCal,eatenWeight});
+        }
+      }
+      renderToday(await dbAll());
+      if(document.getElementById('pageHistory').style.display!=='none')renderHistory();
+    };
+    reader.readAsDataURL(this.files[0]);
+    return;
+  }
+
+  // ---- NEW MEAL MODE ----
+  if(!pendingType)return;
   const type=pendingType;
   pendingType=null;
   const reader=new FileReader();
@@ -443,7 +523,11 @@ document.getElementById('photoInput').addEventListener('change',async function()
       ai=await analyzeWithClaude(dataUrl);
       if(ai&&ai.cal){
         document.getElementById('celebFoodEmoji').textContent=ai.emoji;
-        document.getElementById('celebCalNum').textContent=ai.cal;
+        document.getElementById('celebCal').textContent=ai.cal;
+        document.getElementById('celebWt').textContent=ai.weight;
+        document.getElementById('celebProt').textContent=`💪 ${ai.protein}г`;
+        document.getElementById('celebFat').textContent=`🧈 ${ai.fat}г`;
+        document.getElementById('celebCarb').textContent=`🌾 ${ai.carbs}г`;
         document.getElementById('celebCheer').textContent=ai.cheer;
         document.getElementById('celebAiBox').style.display='block';
       }
@@ -454,7 +538,8 @@ document.getElementById('photoInput').addEventListener('change',async function()
     await dbAdd({
       date:TODAY,type,photo:dataUrl,ts:Date.now(),
       note:ai?ai.food:'',
-      cal:ai?ai.cal:0,
+      cal:ai?ai.cal:0,weight:ai?ai.weight:0,
+      protein:ai?ai.protein:0,fat:ai?ai.fat:0,carbs:ai?ai.carbs:0,
       foodEmoji:ai?ai.emoji:''
     });
     renderToday(await dbAll());
@@ -466,6 +551,7 @@ async function deleteMeal(id){
   if(!confirm('Удалить это фото?'))return;
   await dbDel(id);
   renderToday(await dbAll());
+  if(document.getElementById('pageHistory').style.display!=='none')renderHistory();
 }
 
 // ===== CELEBRATE =====
@@ -497,10 +583,8 @@ function hideCelebrate(){
 async function renderHistory(){
   const meals=await dbAll();
   const days=new Set(meals.map(m=>m.date)).size;
-  const cnt={breakfast:0,lunch:0,dinner:0,snack:0};
-  meals.forEach(m=>{if(cnt[m.type]!==undefined)cnt[m.type]++;});
   const calMeals=meals.filter(m=>m.cal);
-  const totalCal=calMeals.reduce((s,m)=>s+(m.cal||0),0);
+  const totalCal=calMeals.reduce((s,m)=>s+effectiveCal(m),0);
   const calDays=new Set(calMeals.map(m=>m.date)).size;
   const avgCal=calDays?Math.round(totalCal/calDays):0;
   document.getElementById('statsRow').innerHTML=`
@@ -512,14 +596,15 @@ async function renderHistory(){
   meals.forEach(m=>{(byDate[m.date]=byDate[m.date]||[]).push(m);});
   const dates=Object.keys(byDate).sort((a,b)=>b.localeCompare(a));
   document.getElementById('historyList').innerHTML=dates.map(d=>{
-    const dayCal=byDate[d].filter(m=>m.cal).reduce((s,m)=>s+(m.cal||0),0);
+    const dayCal=byDate[d].reduce((s,m)=>s+effectiveCal(m),0);
     return `<div class="hist-day">
-      <div class="hist-day-title">${d===TODAY?'🌟 Сегодня':fmtDate(d)}${dayCal?` <span style="color:var(--yellow);font-size:12px;">⚡${dayCal} ккал</span>`:''}</div>
+      <div class="hist-day-title">${d===TODAY?'🌟 Сегодня':fmtDate(d)}${dayCal?`<span style="color:var(--yellow);font-size:12px;font-weight:700;">⚡${dayCal} ккал</span>`:''}</div>
       <div class="meal-grid">${byDate[d].map(m=>`
-        <div class="meal-card">
+        <div class="meal-card" data-id="${m.id}">
           <img src="${m.photo}" alt="${MEAL[m.type].name}">
           <div class="meal-card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="meal-card-time">${fmtTime(m.ts)}</span></div>
-          ${mealCardExtra(m)}
+          <button class="meal-card-del" onclick="deleteMeal(${m.id})">✕</button>
+          ${mealCardBottom(m,true)}
         </div>`).join('')}
       </div>
     </div>`;
@@ -536,28 +621,30 @@ async function exportForDoctor(){
   const total=meals.length;
   const days=dates.length;
   const calMeals=meals.filter(m=>m.cal);
-  const totalCal=calMeals.reduce((s,m)=>s+(m.cal||0),0);
+  const totalCal=calMeals.reduce((s,m)=>s+effectiveCal(m),0);
   const calDays=new Set(calMeals.map(m=>m.date)).size;
   const avgCal=calDays?Math.round(totalCal/calDays):0;
   const html=`<!DOCTYPE html>
 <html lang="ru"><head><meta charset="UTF-8">
 <title>Гоша — дневник питания</title>
 <style>
-body{font-family:Arial,sans-serif;max-width:860px;margin:0 auto;padding:24px;color:#333;background:#fafafa;}
+body{font-family:Arial,sans-serif;max-width:900px;margin:0 auto;padding:24px;color:#333;background:#fafafa;}
 h1{color:#7c3aed;margin-bottom:4px;}
 .meta{color:#888;font-size:14px;margin-bottom:20px;}
 .stats{display:flex;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
 .stat{background:#f3f0ff;border-radius:12px;padding:12px 20px;text-align:center;min-width:100px;}
 .stat b{display:block;font-size:26px;color:#7c3aed;}
 .stat span{font-size:12px;color:#888;text-transform:uppercase;letter-spacing:.04em;}
-h2{color:#555;border-bottom:2px solid #ede9fe;padding-bottom:8px;margin:24px 0 12px;display:flex;align-items:center;gap:10px;}
-.day-cal{font-size:13px;color:#d97706;font-weight:normal;}
+h2{color:#555;border-bottom:2px solid #ede9fe;padding-bottom:8px;margin:24px 0 12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.day-cal{font-size:13px;color:#d97706;font-weight:bold;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:8px;}
 .card{border-radius:12px;overflow:hidden;border:1px solid #e5e5e5;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
-.card-label{padding:8px 10px;font-size:13px;font-weight:bold;background:#fafafa;border-top:1px solid #f0f0f0;}
-.card-time{font-size:11px;color:#aaa;font-weight:normal;margin-left:4px;}
-.card-cal{padding:7px 10px;font-size:13px;font-weight:700;color:#d97706;background:#fffbeb;border-top:1px solid #fef3c7;}
+.card-label{padding:8px 10px;font-size:13px;font-weight:bold;background:#fafafa;border-top:1px solid #f0f0f0;display:flex;justify-content:space-between;}
+.card-time{font-size:11px;color:#aaa;font-weight:normal;}
+.card-cal{padding:7px 10px;font-size:13px;font-weight:700;color:#d97706;background:#fffbeb;border-top:1px solid #fef3c7;display:flex;justify-content:space-between;align-items:center;}
+.card-cal .eaten{font-size:11px;color:#059669;background:#d1fae5;border-radius:4px;padding:1px 5px;}
+.card-macros{padding:6px 10px;font-size:11px;color:#666;background:#f8f8f8;border-top:1px solid #f0f0f0;display:flex;gap:8px;}
 .card-note{padding:7px 10px;font-size:12px;color:#555;background:#faf5ff;border-top:1px solid #ede9fe;line-height:1.5;}
 </style></head><body>
 <h1>🦕 Гоша — дневник питания</h1>
@@ -573,14 +660,26 @@ h2{color:#555;border-bottom:2px solid #ede9fe;padding-bottom:8px;margin:24px 0 1
   ${totalCal?`<div class="stat"><b>${totalCal}</b><span>ккал всего</span></div>`:''}
 </div>
 ${dates.map(d=>{
-  const dayCal=byDate[d].filter(m=>m.cal).reduce((s,m)=>s+(m.cal||0),0);
-  return `<h2>${fmtDate(d)}${d===TODAY?' (сегодня)':''}${dayCal?`<span class="day-cal">⚡ ${dayCal} ккал за день</span>`:''}
-  </h2>
-  <div class="grid">${byDate[d].map(m=>`
-  <div class="card"><img src="${m.photo}">
-  <div class="card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="card-time">${fmtTime(m.ts)}</span></div>
-  ${m.cal?`<div class="card-cal">${m.foodEmoji||'🍽️'} ${m.note||''} · ${m.cal} ккал</div>`:(m.note?`<div class="card-note">🤖 ${m.note}</div>`:'')}
-  </div>`).join('')}</div>`;
+  const dayCal=byDate[d].reduce((s,m)=>s+effectiveCal(m),0);
+  return `<h2>${fmtDate(d)}${d===TODAY?' (сегодня)':''}${dayCal?`<span class="day-cal">⚡ ${dayCal} ккал за день</span>`:''}</h2>
+  <div class="grid">${byDate[d].map(m=>{
+    const eCal=effectiveCal(m);
+    const eWt=effectiveWt(m);
+    let bottom='';
+    if(m.cal){
+      const calStr=m.partial?`<span style="text-decoration:line-through;opacity:.5">${m.cal}</span> → <b>${m.eatenCal}</b>`:`<b>${m.cal}</b>`;
+      const wtStr=m.partial&&m.eatenWeight!=null?`${m.weight}г → ${m.eatenWeight}г`:(m.weight?`${m.weight}г`:'');
+      bottom+=`<div class="card-cal">${m.foodEmoji||'🍽️'} ${calStr} ккал${m.partial?'<span class="eaten">съел</span>':''}<span>${wtStr}</span></div>`;
+      if(m.protein||m.fat||m.carbs){
+        bottom+=`<div class="card-macros"><span>💪 Белки: ${m.protein}г</span><span>🧈 Жиры: ${m.fat}г</span><span>🌾 Углеводы: ${m.carbs}г</span></div>`;
+      }
+    }else if(m.note){
+      bottom+=`<div class="card-note">🤖 ${m.note}</div>`;
+    }
+    return `<div class="card"><img src="${m.photo}">
+    <div class="card-label"><span>${MEAL[m.type].emoji} ${MEAL[m.type].name}</span><span class="card-time">${fmtTime(m.ts)}</span></div>
+    ${bottom}</div>`;
+  }).join('')}</div>`;
 }).join('')}
 </body></html>`;
   const a=document.createElement('a');
