@@ -881,28 +881,46 @@ async function connectScaleForPortion(){
     lbl.textContent='Поиск весов...';
     btn.style.borderColor='var(--accent)';
     btDev=await navigator.bluetooth.requestDevice({
-      filters:[{namePrefix:'Kitchen Scale'},{namePrefix:'Futula'}],
-      optionalServices:['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']
+      filters:[{namePrefix:'Kitchen Scale'},{namePrefix:'Futula'},{namePrefix:'Scale'},{namePrefix:'SCALE'}],
+      optionalServices:[
+        '0000fff0-0000-1000-8000-00805f9b34fb',
+        '0000ffb0-0000-1000-8000-00805f9b34fb',
+        '0000ffe0-0000-1000-8000-00805f9b34fb',
+        '0000fee0-0000-1000-8000-00805f9b34fb'
+      ]
     });
     lbl.textContent='Подключение...';
     const server=await btDev.gatt.connect();
-    let service=null;
-    for(const uuid of['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb']){
-      try{service=await server.getPrimaryService(uuid);break;}catch(e){}
-    }
+    // Find whichever service the scale actually exposes
+    let service=null,serviceUUID='';
+    for(const uuid of[
+      '0000fff0-0000-1000-8000-00805f9b34fb',
+      '0000ffb0-0000-1000-8000-00805f9b34fb',
+      '0000ffe0-0000-1000-8000-00805f9b34fb',
+      '0000fee0-0000-1000-8000-00805f9b34fb'
+    ]){try{service=await server.getPrimaryService(uuid);serviceUUID=uuid.slice(4,8);break;}catch(e){}}
     if(!service)throw new Error('Сервис не найден');
     const chars=await service.getCharacteristics();
-    let subscribed=0;
+    // Build char summary for debug
+    const charInfo=chars.map(c=>{
+      const props=Object.keys(c.properties).filter(k=>c.properties[k]).join(',');
+      return c.uuid.slice(4,8)+':'+props;
+    }).join(' | ');
+    const dbg=document.getElementById('btRaw');
+    if(dbg)dbg.textContent='SVC:'+serviceUUID+' | '+charInfo;
+    let subscribed=0,writeChar=null;
     for(const ch of chars){
       if(ch.properties.notify||ch.properties.indicate){
-        try{
-          await ch.startNotifications();
-          ch.addEventListener('characteristicvaluechanged',onScaleData);
-          subscribed++;
-        }catch(e){}
+        try{await ch.startNotifications();ch.addEventListener('characteristicvaluechanged',onScaleData);subscribed++;}catch(e){}
       }
+      if(!writeChar&&(ch.properties.write||ch.properties.writeWithoutResponse))writeChar=ch;
     }
-    if(!subscribed)throw new Error('Нет notify-характеристик');
+    if(!subscribed)throw new Error('Нет notify-характеристик ('+charInfo+')');
+    // Send activation commands — many BLE scales stay silent until poked
+    if(writeChar){
+      const cmds=[[0xFD,0x09],[0xFD,0x0A],[0x10,0x00,0x00,0x00,0x00],[0x03,0x09]];
+      for(const cmd of cmds){try{await writeChar.writeValue(new Uint8Array(cmd));}catch(e){}}
+    }
     btOn=true;
     lbl.textContent='⚖️ '+( btWeight||'...')+'г · Отключить';
     btn.style.background='var(--green-bg)';
