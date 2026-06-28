@@ -24,7 +24,10 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 /* Header */
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
 .logo{font-size:22px;font-weight:800;color:var(--accent);}
+.header-right{display:flex;align-items:center;gap:8px;}
 .date-chip{background:var(--card);border-radius:99px;padding:6px 14px;font-size:13px;color:var(--text2);font-weight:700;}
+.settings-btn{background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px;opacity:.6;transition:opacity .15s;}
+.settings-btn:active{opacity:1;}
 
 /* Dino mascot */
 .dino-box{text-align:center;margin-bottom:22px;}
@@ -46,6 +49,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .meal-card-label{position:absolute;bottom:0;left:0;right:0;background:rgba(13,13,43,.85);padding:6px 10px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:5px;}
 .meal-card-time{margin-left:auto;font-size:11px;color:var(--text2);}
 .meal-card-del{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.6);border:none;color:white;border-radius:50%;width:28px;height:28px;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.meal-card-analysis{padding:7px 9px;font-size:11px;color:var(--text2);line-height:1.4;border-top:1px solid rgba(255,255,255,.06);}
 .empty-state{text-align:center;padding:28px 0;color:var(--text2);font-size:15px;font-weight:600;grid-column:span 2;}
 .empty-emoji{font-size:44px;display:block;margin-bottom:10px;}
 
@@ -94,6 +98,20 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--tex
 .celeb-text{font-size:30px;font-weight:800;color:var(--green);text-align:center;}
 .celeb-sub{font-size:15px;color:var(--text2);text-align:center;}
 .celeb-tap{margin-top:8px;font-size:13px;color:var(--text2);opacity:.7;}
+.celeb-loading{font-size:15px;color:var(--accent);font-weight:700;}
+.celeb-loading::after{content:'';animation:dots 1.4s steps(4,end) infinite;}
+@keyframes dots{0%{content:'';}25%{content:'.';}50%{content:'..';}75%{content:'...';}100%{content:'';}}
+.celeb-ai-box{background:rgba(167,139,250,.12);border:1px solid rgba(167,139,250,.3);border-radius:16px;padding:14px 18px;max-width:290px;text-align:center;}
+.celeb-ai-label{font-size:11px;color:var(--accent);font-weight:700;margin-bottom:6px;text-transform:uppercase;letter-spacing:.05em;}
+.celeb-ai-text{font-size:14px;color:var(--text);line-height:1.55;}
+
+/* Settings */
+.settings-note{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:16px;text-align:center;}
+.api-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:14px;font-size:14px;color:var(--text);font-family:'Space Grotesk',sans-serif;margin-bottom:12px;outline:none;}
+.api-input::placeholder{color:var(--text2);}
+.api-input:focus{border-color:var(--accent);}
+.save-btn{width:100%;background:linear-gradient(135deg,#7c3aed,#a78bfa);border:none;border-radius:14px;padding:16px;font-size:16px;font-weight:700;color:white;cursor:pointer;font-family:'Space Grotesk',sans-serif;margin-bottom:10px;}
+.skip-btn{width:100%;background:none;border:none;padding:10px;font-size:14px;color:var(--text2);cursor:pointer;font-family:'Space Grotesk',sans-serif;}
 
 /* Confetti dots */
 .confetti{position:absolute;width:10px;height:10px;border-radius:50%;animation:fall var(--d) linear forwards;}
@@ -111,7 +129,10 @@ input[type=file]{display:none;}
 <div class="page" id="pageMain">
   <div class="header">
     <div class="logo">🚀 Гоша ест!</div>
-    <div class="date-chip" id="todayLabel"></div>
+    <div class="header-right">
+      <div class="date-chip" id="todayLabel"></div>
+      <button class="settings-btn" onclick="openSettings()" title="Настройки">⚙️</button>
+    </div>
   </div>
   <div class="dino-box">
     <span class="dino-emoji" id="dinoEmoji">🦕</span>
@@ -166,12 +187,29 @@ input[type=file]{display:none;}
   </div>
 </div>
 
+<!-- Settings modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Настройки 🔐</div>
+    <div class="settings-note">Введи API ключ Anthropic — тогда дино будет рассказывать, что Гоша съел! Ключ хранится только на этом устройстве.</div>
+    <input class="api-input" id="apiKeyInput" type="password" placeholder="sk-ant-api03-..." autocomplete="off">
+    <button class="save-btn" onclick="doSaveApiKey()">✅ Сохранить</button>
+    <button class="skip-btn" onclick="closeSettings()">Закрыть</button>
+  </div>
+</div>
+
 <!-- Celebrate overlay -->
 <div class="celebrate" id="celebrate" onclick="hideCelebrate()">
   <div class="celeb-dino" id="celebDino">🦕</div>
   <div class="celeb-text" id="celebText">Молодец, Гоша!</div>
   <div class="celeb-sub" id="celebSub">Дино рад!</div>
-  <div class="celeb-tap">Нажми чтобы продолжить</div>
+  <div class="celeb-loading" id="celebLoading" style="display:none">Дино смотрит на твою еду</div>
+  <div class="celeb-ai-box" id="celebAiBox" style="display:none">
+    <div class="celeb-ai-label">🦕 Дино говорит:</div>
+    <div class="celeb-ai-text" id="celebAiText"></div>
+  </div>
+  <div class="celeb-tap" id="celebTap">Нажми чтобы продолжить</div>
 </div>
 
 <script>
@@ -223,6 +261,7 @@ const CELEBRATES=[
 ];
 const TODAY=new Date().toISOString().slice(0,10);
 let pendingType=null;
+let celebLoading=false;
 
 // ===== HELPERS =====
 function fmtDate(d){
@@ -233,6 +272,68 @@ function fmtDate(d){
 function fmtTime(ts){
   const d=new Date(ts);
   return d.getHours().toString().padStart(2,'0')+':'+d.getMinutes().toString().padStart(2,'0');
+}
+
+// ===== API KEY =====
+function getApiKey(){return localStorage.getItem('goshaApiKey')||'';}
+
+function openSettings(){
+  document.getElementById('apiKeyInput').value=getApiKey();
+  document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings(){document.getElementById('settingsModal').classList.remove('open');}
+function doSaveApiKey(){
+  const k=document.getElementById('apiKeyInput').value.trim();
+  if(k)localStorage.setItem('goshaApiKey',k);
+  closeSettings();
+  if(k)alert('Ключ сохранён! Теперь дино будет анализировать еду 🦕');
+}
+
+// ===== CLAUDE VISION =====
+async function resizeImage(dataUrl,maxDim=1024){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const scale=Math.min(1,maxDim/img.width,maxDim/img.height);
+      const c=document.createElement('canvas');
+      c.width=Math.round(img.width*scale);
+      c.height=Math.round(img.height*scale);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      res(c.toDataURL('image/jpeg',0.85));
+    };
+    img.src=dataUrl;
+  });
+}
+
+async function analyzeWithClaude(dataUrl){
+  const key=getApiKey();
+  if(!key)return null;
+  try{
+    const small=await resizeImage(dataUrl);
+    const comma=small.indexOf(',');
+    const mediaType=small.slice(5,small.indexOf(';'));
+    const base64=small.slice(comma+1);
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'content-type':'application/json',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-opus-4-8',
+        max_tokens:200,
+        messages:[{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:mediaType,data:base64}},
+          {type:'text',text:'Что на этом фото? Опиши еду коротко и весело для ребёнка. На русском языке. 1-2 предложения.'}
+        ]}]
+      })
+    });
+    const data=await resp.json();
+    if(data.content&&data.content[0]&&data.content[0].text)return data.content[0].text;
+    return null;
+  }catch(e){return null;}
 }
 
 // ===== PAGES =====
@@ -256,6 +357,7 @@ function renderToday(meals){
         <img src="${m.photo}" alt="${MEAL[m.type].name}">
         <div class="meal-card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="meal-card-time">${fmtTime(m.ts)}</span></div>
         <button class="meal-card-del" onclick="deleteMeal(${m.id})">✕</button>
+        ${m.note?`<div class="meal-card-analysis">🤖 ${m.note}</div>`:''}
       </div>`).join('');
   }
   const msgs=['Привет! Сфотографируй свою еду!','Одно фото — отлично! 🌟','Два фото — ты звезда! 🚀','Три фото — дино в восторге! 🦕','Четыре фото — чемпион! 🏆','Уже пять фото! Космос! 🌌'];
@@ -281,12 +383,30 @@ function selectMealType(type,btn){
 
 document.getElementById('photoInput').addEventListener('change',async function(){
   if(!this.files||!this.files[0]||!pendingType)return;
+  const type=pendingType;
+  pendingType=null;
   const reader=new FileReader();
   reader.onload=async e=>{
-    await dbAdd({date:TODAY,type:pendingType,photo:e.target.result,ts:Date.now()});
-    this.value='';pendingType=null;
+    const dataUrl=e.target.result;
+    this.value='';
+
+    const hasKey=!!getApiKey();
+    showCelebrate(hasKey);
+
+    let note='';
+    if(hasKey){
+      note=await analyzeWithClaude(dataUrl)||'';
+      if(note){
+        document.getElementById('celebAiText').textContent=note;
+        document.getElementById('celebAiBox').style.display='block';
+      }
+      document.getElementById('celebLoading').style.display='none';
+      document.getElementById('celebTap').style.display='block';
+      celebLoading=false;
+    }
+
+    await dbAdd({date:TODAY,type,photo:dataUrl,ts:Date.now(),note});
     renderToday(await dbAll());
-    showCelebrate();
   };
   reader.readAsDataURL(this.files[0]);
 });
@@ -298,12 +418,15 @@ async function deleteMeal(id){
 }
 
 // ===== CELEBRATE =====
-function showCelebrate(){
+function showCelebrate(loading){
+  celebLoading=!!loading;
   const c=CELEBRATES[Math.floor(Math.random()*CELEBRATES.length)];
   document.getElementById('celebDino').textContent=c.dino;
   document.getElementById('celebText').textContent=c.text;
   document.getElementById('celebSub').textContent=c.sub;
-  // Confetti
+  document.getElementById('celebLoading').style.display=loading?'block':'none';
+  document.getElementById('celebAiBox').style.display='none';
+  document.getElementById('celebTap').style.display=loading?'none':'block';
   const cel=document.getElementById('celebrate');
   cel.querySelectorAll('.confetti').forEach(e=>e.remove());
   const colors=['#a78bfa','#4ade80','#fbbf24','#f87171','#60a5fa','#f472b6'];
@@ -314,7 +437,10 @@ function showCelebrate(){
   }
   cel.classList.add('show');
 }
-function hideCelebrate(){document.getElementById('celebrate').classList.remove('show');}
+function hideCelebrate(){
+  if(celebLoading)return;
+  document.getElementById('celebrate').classList.remove('show');
+}
 
 // ===== HISTORY =====
 async function renderHistory(){
@@ -337,6 +463,7 @@ async function renderHistory(){
         <div class="meal-card">
           <img src="${m.photo}" alt="${MEAL[m.type].name}">
           <div class="meal-card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="meal-card-time">${fmtTime(m.ts)}</span></div>
+          ${m.note?`<div class="meal-card-analysis">🤖 ${m.note}</div>`:''}
         </div>`).join('')}
       </div>
     </div>`).join('');
@@ -368,6 +495,7 @@ h2{color:#555;border-bottom:2px solid #ede9fe;padding-bottom:8px;margin:24px 0 1
 .card img{width:100%;aspect-ratio:1;object-fit:cover;display:block;}
 .card-label{padding:8px 10px;font-size:13px;font-weight:bold;background:#fafafa;border-top:1px solid #f0f0f0;}
 .card-time{font-size:11px;color:#aaa;font-weight:normal;margin-left:4px;}
+.card-ai{padding:8px 10px;font-size:12px;color:#555;background:#faf5ff;border-top:1px solid #ede9fe;line-height:1.5;}
 </style></head><body>
 <h1>🦕 Гоша — дневник питания</h1>
 <div class="meta">Создан: ${new Date().toLocaleDateString('ru-RU')} · Всего фото: ${total} · Дней: ${days}</div>
@@ -383,6 +511,7 @@ ${dates.map(d=>`<h2>${fmtDate(d)}${d===TODAY?' (сегодня)':''}</h2>
 <div class="grid">${byDate[d].map(m=>`
   <div class="card"><img src="${m.photo}">
   <div class="card-label">${MEAL[m.type].emoji} ${MEAL[m.type].name}<span class="card-time">${fmtTime(m.ts)}</span></div>
+  ${m.note?`<div class="card-ai">🤖 ${m.note}</div>`:''}
   </div>`).join('')}</div>`).join('')}
 </body></html>`;
   const a=document.createElement('a');
@@ -396,6 +525,7 @@ ${dates.map(d=>`<h2>${fmtDate(d)}${d===TODAY?' (сегодня)':''}</h2>
   document.getElementById('todayLabel').textContent=fmtDate(TODAY);
   await openDB();
   renderToday(await dbAll());
+  if(!getApiKey())setTimeout(openSettings,800);
 })();
 </script>
 </body>
