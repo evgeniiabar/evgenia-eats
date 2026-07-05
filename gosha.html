@@ -380,7 +380,7 @@ async function analyzeWithClaude(dataUrl){
       emoji:String(j.emoji||'🍽️').slice(0,4),
       cheer:String(j.cheer||'').slice(0,30)
     };
-  }catch{return null;}
+  }catch(e){return null;}
 }
 
 // ===== ANALYZE LEFTOVERS =====
@@ -396,7 +396,7 @@ async function analyzeLeftovers(meal,dataUrl){
   try{
     const j=JSON.parse(raw);
     return {leftCal:Math.max(0,Math.round(Number(j.leftCal)||0)),leftWeight:Math.max(0,Math.round(Number(j.leftWeight)||0))};
-  }catch{return null;}
+  }catch(e){return null;}
 }
 
 // ===== PAGES =====
