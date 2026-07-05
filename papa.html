@@ -22,15 +22,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica
 .today-date{font-size:15px;opacity:0.85;margin-top:3px;}
 .settings-ico{background:none;border:none;color:rgba(255,255,255,0.85);font-size:28px;cursor:pointer;padding:2px 4px;line-height:1;}
 
-/* SCALE BAR */
-.scale-bar{margin:14px 14px 0;background:var(--card);border-radius:12px;padding:14px 18px;display:flex;align-items:center;gap:12px;box-shadow:var(--shadow);cursor:pointer;border:2px solid var(--border);transition:all .2s;}
-.scale-bar.connected{background:var(--green-bg);border-color:#86efac;}
-.scale-dot{width:12px;height:12px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s;}
-.scale-bar.connected .scale-dot{background:var(--green);}
-.scale-text{flex:1;font-size:17px;font-weight:600;color:var(--text2);}
-.scale-bar.connected .scale-text{color:var(--green);}
-.scale-wt{font-size:22px;font-weight:700;color:var(--green);display:none;}
-.scale-bar.connected .scale-wt{display:block;}
 
 /* HERO */
 .hero{margin:14px 14px 0;background:var(--card);border-radius:var(--radius);padding:24px 20px 20px;box-shadow:var(--shadow);text-align:center;}
@@ -76,10 +67,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica
 .modal-handle{width:44px;height:5px;background:var(--border);border-radius:3px;margin:0 auto 20px;}
 .modal-title{font-size:24px;font-weight:700;margin-bottom:18px;}
 
-/* TIME BTNS */
-.time-btns{display:flex;gap:10px;margin-bottom:18px;}
-.time-btn{flex:1;padding:14px 6px;border-radius:12px;border:2px solid var(--border);background:var(--bg);color:var(--text2);font-size:16px;font-weight:700;cursor:pointer;transition:all .15s;text-align:center;}
-.time-btn.active{border-color:var(--accent);color:var(--accent);background:var(--accent-bg);}
 
 /* BIG MODE BUTTONS */
 .mode-btns{display:flex;flex-direction:column;gap:14px;}
@@ -118,9 +105,6 @@ body{background:var(--bg);color:var(--text);font-family:-apple-system,'Helvetica
 .portion-emoji{font-size:36px;}
 .portion-name{font-size:19px;font-weight:700;}
 .portion-sub{font-size:15px;color:var(--text2);margin-top:3px;}
-.scale-live-block{display:none;background:var(--green-bg);border:2px solid #86efac;border-radius:12px;padding:16px;margin-bottom:14px;align-items:center;gap:14px;}
-.scale-live-block.show{display:flex;}
-.scale-live-num{font-size:52px;font-weight:700;color:var(--green);line-height:1;}
 .g-big{font-size:76px;font-weight:700;text-align:center;color:var(--text);line-height:1;margin-bottom:4px;}
 .g-label{font-size:18px;color:var(--text2);text-align:center;margin-bottom:14px;}
 input[type=range]{width:100%;-webkit-appearance:none;height:10px;background:var(--border);border-radius:99px;outline:none;margin-bottom:14px;}
@@ -177,12 +161,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:36px;heigh
       <div class="today-date" id="todayLabel"></div>
     </div>
     <button class="settings-ico" onclick="showPage('settings')">⚙️</button>
-  </div>
-
-  <div class="scale-bar" id="scaleBar" onclick="connectScale()">
-    <div class="scale-dot" id="scaleDot"></div>
-    <div class="scale-text" id="scaleText">⚖️ Подключить весы</div>
-    <div class="scale-wt" id="scaleWt"></div>
   </div>
 
   <div class="hero">
@@ -254,12 +232,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:36px;heigh
     <div class="modal-handle"></div>
     <div class="modal-title">Добавить еду</div>
 
-    <div class="time-btns">
-      <button class="time-btn active" onclick="selTime(this,'завтрак')">☀️ Завтрак</button>
-      <button class="time-btn" onclick="selTime(this,'обед')">🌤 Обед</button>
-      <button class="time-btn" onclick="selTime(this,'ужин')">🌙 Ужин</button>
-    </div>
-
     <!-- CHOICE -->
     <div id="modeChoice" class="mode-btns">
       <button class="mode-big-btn" onclick="switchMode('photo')">
@@ -321,17 +293,6 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:36px;heigh
       </div>
     </div>
 
-    <button id="scalePBtn" onclick="connectScale()" style="width:100%;padding:16px;border-radius:12px;background:var(--bg);border:2px solid var(--border);color:var(--text2);font-size:17px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:14px;transition:all .2s;">
-      ⚖️ <span id="scalePLabel">Взвесить на весах</span>
-    </button>
-    <div class="scale-live-block" id="scaleLive">
-      <div>
-        <div class="scale-live-num" id="scaleLiveNum">0</div>
-        <div style="font-size:15px;color:var(--text2)">граммов</div>
-      </div>
-      <div style="flex:1;font-size:15px;color:var(--text2)">Поставьте еду на весы</div>
-      <button onclick="useLiveWeight()" style="padding:12px 22px;border-radius:99px;background:var(--green);border:none;color:white;font-size:17px;font-weight:700;cursor:pointer;">OK</button>
-    </div>
     <div class="g-big" id="gBig">100</div>
     <div class="g-label">граммов</div>
     <input type="range" id="gSlider" min="5" max="600" value="100" step="5" oninput="updateG(this.value)">
@@ -606,106 +567,18 @@ function printReport() {
   w.print();
 }
 
-// ===== BLUETOOTH SCALE =====
-var btDev = null, btWeight = 0, btOn = false;
-
-async function connectScale() {
-  if (!navigator.bluetooth) { showToast('⚠️ Нужен Chrome на Android'); return; }
-  if (btOn && btDev) { btDev.gatt.disconnect(); return; }
-  try {
-    document.getElementById('scaleText').textContent = '🔍 Поиск весов...';
-    btDev = await navigator.bluetooth.requestDevice({
-      filters: [{namePrefix:'Kitchen Scale'},{namePrefix:'Futula'},{namePrefix:'Scale'},{namePrefix:'SCALE'}],
-      optionalServices: [
-        '0000fff0-0000-1000-8000-00805f9b34fb',
-        '0000ffb0-0000-1000-8000-00805f9b34fb',
-        '0000ffe0-0000-1000-8000-00805f9b34fb',
-        '0000fee0-0000-1000-8000-00805f9b34fb'
-      ]
-    });
-    document.getElementById('scaleText').textContent = 'Подключение...';
-    var server = await btDev.gatt.connect();
-    var service = null;
-    var uuids = ['0000fff0-0000-1000-8000-00805f9b34fb','0000ffb0-0000-1000-8000-00805f9b34fb','0000ffe0-0000-1000-8000-00805f9b34fb','0000fee0-0000-1000-8000-00805f9b34fb'];
-    for (var ui = 0; ui < uuids.length; ui++) {
-      try { service = await server.getPrimaryService(uuids[ui]); break; } catch(e) {}
-    }
-    if (!service) throw new Error('Весы не поддерживаются');
-    var chars = await service.getCharacteristics();
-    var writeChar = null;
-    for (var ci = 0; ci < chars.length; ci++) {
-      var ch = chars[ci];
-      if (ch.properties.notify || ch.properties.indicate) {
-        try { await ch.startNotifications(); ch.addEventListener('characteristicvaluechanged', onScaleData); } catch(e) {}
-      }
-      if (!writeChar && (ch.properties.write || ch.properties.writeWithoutResponse)) writeChar = ch;
-    }
-    if (writeChar) {
-      var cmds = [[0xFD,0x09],[0xFD,0x0A],[0x10,0x00,0x00,0x00,0x00],[0x03,0x09]];
-      for (var k = 0; k < cmds.length; k++) { try { await writeChar.writeValue(new Uint8Array(cmds[k])); } catch(e) {} }
-    }
-    btOn = true;
-    updateScaleUI();
-    btDev.addEventListener('gattserverdisconnected', function() {
-      btOn = false; btDev = null; btWeight = 0;
-      updateScaleUI();
-    });
-  } catch(err) {
-    document.getElementById('scaleText').textContent = '⚖️ Подключить весы';
-    if (err.name !== 'NotFoundError') showToast('Ошибка: ' + err.message);
-  }
-}
-
-function onScaleData(e) {
-  var d = e.target.value;
-  if (d.byteLength < 5) return;
-  var w = d.getUint8(3) + d.getUint8(4) * 256;
-  if (w > 0 && w < 5000) {
-    btWeight = w;
-    updateScaleUI();
-    var ln = document.getElementById('scaleLiveNum');
-    if (ln) ln.textContent = btWeight;
-    var sl = document.getElementById('scaleLive');
-    if (sl) sl.classList.add('show');
-    syncG(btWeight);
-  }
-}
-
-function updateScaleUI() {
-  var bar = document.getElementById('scaleBar');
-  var text = document.getElementById('scaleText');
-  var wt = document.getElementById('scaleWt');
-  var btn = document.getElementById('scalePBtn');
-  var lbl = document.getElementById('scalePLabel');
-  if (btOn) {
-    bar.classList.add('connected');
-    text.textContent = 'Весы подключены';
-    wt.textContent = btWeight + ' г';
-    if (btn) { btn.style.background = 'var(--green-bg)'; btn.style.borderColor = '#86efac'; btn.style.color = 'var(--green)'; }
-    if (lbl) lbl.textContent = btWeight > 0 ? 'Вес: ' + btWeight + ' г' : 'Весы подключены';
-  } else {
-    bar.classList.remove('connected');
-    text.textContent = '⚖️ Подключить весы';
-    if (btn) { btn.style.background = ''; btn.style.borderColor = ''; btn.style.color = ''; }
-    if (lbl) lbl.textContent = 'Взвесить на весах';
-    var sl = document.getElementById('scaleLive');
-    if (sl) sl.classList.remove('show');
-  }
-}
-function useLiveWeight() { if (btWeight > 0) syncG(btWeight); }
-
 // ===== ADD MODAL =====
-var curTime = 'завтрак';
+function nowTime() {
+  var d = new Date();
+  var h = d.getHours().toString().padStart(2,'0');
+  var m = d.getMinutes().toString().padStart(2,'0');
+  return h + ':' + m;
+}
 function openAddModal() {
   document.getElementById('addModal').classList.add('open');
   switchMode('choice');
 }
 function closeAddModal() { document.getElementById('addModal').classList.remove('open'); }
-function selTime(btn, t) {
-  curTime = t;
-  btn.closest('.time-btns').querySelectorAll('.time-btn').forEach(function(b) { b.classList.remove('active'); });
-  btn.classList.add('active');
-}
 function switchMode(m) {
   document.getElementById('modeChoice').style.display = m === 'choice' ? 'flex' : 'none';
   document.getElementById('modePhoto').style.display = m === 'photo' ? 'block' : 'none';
@@ -811,7 +684,7 @@ function confirmPhoto() {
   if (!aiPhotoResult) return;
   var r = aiPhotoResult;
   if (!S.log[TODAY]) S.log[TODAY] = [];
-  S.log[TODAY].push({name:r.food||'Фото',emoji:r.emoji||'📸',kcal:r.cal||0,p:r.protein||0,f:r.fat||0,c:r.carbs||0,g:r.weight||0,time:curTime});
+  S.log[TODAY].push({name:r.food||'Фото',emoji:r.emoji||'📸',kcal:r.cal||0,p:r.protein||0,f:r.fat||0,c:r.carbs||0,g:r.weight||0,time:nowTime()});
   save(); renderHome(); closeAddModal(); showToast('✅ Добавлено!');
 }
 
@@ -845,7 +718,7 @@ function openPortion(food) {
   document.getElementById('pEmoji').textContent = food.emoji || '🍽';
   document.getElementById('pName').textContent = food.name;
   document.getElementById('pMeta').textContent = food.kcal + ' ккал / 100 г  ·  Б' + food.p + '  Ж' + food.f + '  У' + food.c;
-  var initG = btWeight > 0 ? btWeight : 100;
+  var initG = 100;
   document.getElementById('gSlider').value = Math.min(initG, 600);
   document.getElementById('gInp').value = initG;
   document.getElementById('gBig').textContent = initG;
@@ -873,7 +746,7 @@ function confirmPortion() {
     p: Math.round(portItem.p*g/100*10)/10,
     f: Math.round(portItem.f*g/100*10)/10,
     c: Math.round(portItem.c*g/100*10)/10,
-    g: g, time: curTime
+    g: g, time: nowTime()
   });
   save(); renderHome(); closePortion(); closeAddModal(); showToast('✅ Добавлено!');
 }
