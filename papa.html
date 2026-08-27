@@ -253,6 +253,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:36px;heigh
     <!-- PHOTO MODE -->
     <div id="modePhoto" style="display:none">
       <button class="back-btn" onclick="switchMode('choice')">← Назад</button>
+      <textarea class="search-inp" id="photoDesc" rows="2" placeholder="Напишите, что за еда — так точнее (напр.: борщ со сметаной, 2 куска хлеба)" style="resize:vertical;font-family:inherit;line-height:1.4"></textarea>
       <label class="photo-area" id="photoArea">
         <input type="file" accept="image/*" capture="environment" id="photoInp" onchange="handlePhoto(event)">
         <img class="photo-preview" id="photoPreview">
@@ -262,6 +263,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:36px;heigh
           <div style="font-size:16px;color:var(--text2);margin-top:6px">или выбрать из галереи</div>
         </div>
       </label>
+      <button class="btn btn-secondary" id="redoPhotoBtn" onclick="analyzePhoto()" style="display:none;margin-top:14px">🔄 Пересчитать с описанием</button>
       <div class="ai-loading" id="aiLoading"><span class="spinner"></span>ИИ анализирует фото...</div>
       <div class="ai-result" id="aiResult">
         <div class="ai-food-name" id="aiFoodName"></div>
@@ -599,6 +601,8 @@ function resetPhoto() {
   document.getElementById('aiResult').classList.remove('show');
   document.getElementById('aiLoading').style.display = 'none';
   document.getElementById('addPhotoBtn').style.display = 'none';
+  document.getElementById('redoPhotoBtn').style.display = 'none';
+  document.getElementById('photoDesc').value = '';
   document.getElementById('photoInp').value = '';
 }
 
@@ -610,13 +614,16 @@ function handlePhoto(e) {
     photoB64 = url.split(',')[1];
     var prev = document.getElementById('photoPreview'); prev.src = url; prev.style.display = 'block';
     document.getElementById('photoPlaceholder').style.display = 'none';
+    document.getElementById('redoPhotoBtn').style.display = 'block';
     analyzePhoto();
   };
   reader.readAsDataURL(file);
 }
 
 async function analyzePhoto() {
+  if (!photoB64) return;
   var key = localStorage.getItem('papa_api');
+  var desc = document.getElementById('photoDesc').value.trim();
   document.getElementById('aiLoading').style.display = 'block';
   document.getElementById('aiResult').classList.remove('show');
   document.getElementById('addPhotoBtn').style.display = 'none';
@@ -646,7 +653,7 @@ async function analyzePhoto() {
         max_tokens: 300,
         messages: [{role:'user', content:[
           {type:'image', source:{type:'base64', media_type:'image/jpeg', data:photoB64}},
-          {type:'text', text:'На фото еда. Ответь ТОЛЬКО одной строкой JSON без пояснений:\n{"food":"название 1-3 слова","cal":число_ккал,"weight":вес_г,"protein":белки_г,"fat":жиры_г,"carbs":углеводы_г,"emoji":"один emoji"}'}
+          {type:'text', text:'На фото еда.' + (desc ? ' Пользователь описал её так: "' + desc + '". Считай описание достоверным и приоритетным (название, ингредиенты, способ приготовления, вес и порция), фото используй только для уточнения того, чего нет в описании.' : '') + ' Ответь ТОЛЬКО одной строкой JSON без пояснений:\n{"food":"название 1-3 слова","cal":число_ккал,"weight":вес_г,"protein":белки_г,"fat":жиры_г,"carbs":углеводы_г,"emoji":"один emoji"}\nВсе числа — для всей порции целиком, а не на 100 г.'}
         ]}]
       })
     });

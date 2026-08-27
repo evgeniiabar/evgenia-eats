@@ -414,6 +414,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
 
     <!-- PHOTO MODE -->
     <div id="modePhoto" style="display:none">
+      <textarea class="field" id="photoDesc" rows="2" placeholder="Опиши еду — так точнее (напр.: борщ со сметаной, гречка ~150 г, кофе с молоком)" style="resize:vertical;font-family:inherit;line-height:1.4"></textarea>
       <label class="photo-area" id="photoArea">
         <input type="file" accept="image/*" capture="environment" id="photoInp" onchange="handlePhoto(event)">
         <img class="photo-preview" id="photoPreview">
@@ -423,6 +424,7 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
           <div style="font-size:14px;color:var(--text2);margin-top:4px">или выбрать из галереи</div>
         </div>
       </label>
+      <button class="btn btn-secondary" id="redoPhotoBtn" onclick="analyzePhoto()" style="display:none">🔄 Пересчитать с описанием</button>
       <div class="ai-box" id="aiBox">
         <div id="aiLoad" style="text-align:center;padding:20px;color:var(--text2);font-size:15px"><span class="spinner"></span>ИИ анализирует...</div>
         <div id="aiItems"></div>
@@ -1094,6 +1096,8 @@ function resetPhoto(){
   document.getElementById('photoPlaceholder').style.display='block';
   document.getElementById('aiBox').classList.remove('show');
   document.getElementById('addPhotoBtn').style.display='none';
+  document.getElementById('redoPhotoBtn').style.display='none';
+  document.getElementById('photoDesc').value='';
   document.getElementById('photoInp').value='';
 }
 async function handlePhoto(e){
@@ -1103,18 +1107,21 @@ async function handlePhoto(e){
     const url=ev.target.result;photoB64=url.split(',')[1];
     const prev=document.getElementById('photoPreview');prev.src=url;prev.style.display='block';
     document.getElementById('photoPlaceholder').style.display='none';
+    document.getElementById('redoPhotoBtn').style.display='block';
     await analyzePhoto();
   };
   reader.readAsDataURL(file);
 }
 async function analyzePhoto(){
+  if(!photoB64)return;
   const key=localStorage.getItem('evg_api');
+  const desc=document.getElementById('photoDesc').value.trim();
   const box=document.getElementById('aiBox');const load=document.getElementById('aiLoad');const items=document.getElementById('aiItems');
   box.classList.add('show');load.style.display='block';items.innerHTML='';
   document.getElementById('addPhotoBtn').style.display='none';
   if(!key){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь API ключ в Настройки</div>';return;}
   try{
-    const resp=await fetch('https://divine-pine-6f4f.evgenia-barakshina.workers.dev/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото. ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. Пустой массив если ничего.'}]}]})});
+    const resp=await fetch('https://divine-pine-6f4f.evgenia-barakshina.workers.dev/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото.'+(desc?' Пользователь описал эту еду так: "'+desc+'". Считай описание достоверным и приоритетным (названия, ингредиенты, способ приготовления, вес и порции), фото используй только для уточнения того, чего нет в описании.':'')+' ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. kcal/p/f/c — на 100 г. Пустой массив если ничего.'}]}]})});
     const data=await resp.json();
     aiItems=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,'').trim()).map(it=>({...it,checked:true}));
     renderAI();
