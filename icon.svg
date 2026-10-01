@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b7cf6"/>
+      <stop offset="1" stop-color="#5b4bd6"/>
+    </linearGradient>
+    <radialGradient id="lens" cx="0.4" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#6d5bd0"/>
+      <stop offset="1" stop-color="#1f1a3d"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <!-- sparkles -->
+  <path d="M398 96 l9 24 24 9 -24 9 -9 24 -9 -24 -24 -9 24 -9z" fill="#ffe66d"/>
+  <path d="M112 150 l5 14 14 5 -14 5 -5 14 -5 -14 -14 -5 14 -5z" fill="#fff" opacity=".85"/>
+  <g transform="rotate(-10 256 262)">
+    <!-- shadow -->
+    <ellipse cx="262" cy="440" rx="112" ry="14" fill="#2d2470" opacity=".25"/>
+    <!-- avocado -->
+    <path d="M256 84C203 84 189 146 176 198C159 250 124 288 124 338C124 400 182 436 256 436C330 436 388 400 388 338C388 288 353 250 336 198C323 146 309 84 256 84Z" fill="#3f7d3a"/>
+    <path d="M256 106C217 106 207 156 196 204C181 252 146 292 146 338C146 388 194 416 256 416C318 416 366 388 366 338C366 292 331 252 316 204C305 156 295 106 256 106Z" fill="#e3f08a"/>
+    <path d="M256 106C217 106 207 156 196 204C181 252 146 292 146 338C146 388 194 416 256 416C240 400 190 380 180 330C176 290 210 250 222 204C232 160 238 120 256 106Z" fill="#cfe26a"/>
+    <!-- face -->
+    <circle cx="230" cy="186" r="10" fill="#2a2440"/>
+    <circle cx="282" cy="186" r="10" fill="#2a2440"/>
+    <circle cx="233" cy="183" r="3.5" fill="#fff"/>
+    <circle cx="285" cy="183" r="3.5" fill="#fff"/>
+    <path d="M238 210Q256 230 274 210" fill="none" stroke="#2a2440" stroke-width="7" stroke-linecap="round"/>
+    <circle cx="212" cy="208" r="10" fill="#ff8fa3" opacity=".7"/>
+    <circle cx="300" cy="208" r="10" fill="#ff8fa3" opacity=".7"/>
+    <!-- pit = camera lens -->
+    <circle cx="256" cy="328" r="66" fill="#8a5a33"/>
+    <circle cx="256" cy="328" r="54" fill="#2a2440"/>
+    <circle cx="256" cy="328" r="42" fill="url(#lens)"/>
+    <circle cx="256" cy="328" r="20" fill="#14102b"/>
+    <circle cx="240" cy="311" r="10" fill="#fff" opacity=".9"/>
+    <circle cx="270" cy="344" r="4.5" fill="#fff" opacity=".6"/>
+  </g>
+</svg>

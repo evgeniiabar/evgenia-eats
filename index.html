@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#f2f2f5">
 <meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-180.png">
 <title>Евгения ест</title>
 <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
 <script src="https://unpkg.com/@zxing/library@0.18.6/umd/index.min.js"></script>
@@ -485,6 +488,18 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:28px;heigh
     <div class="s-label">API ключ Anthropic (для 📸 фото)</div>
     <input class="field" type="password" id="apiInp" placeholder="sk-ant-..." style="margin-bottom:6px">
     <div style="font-size:13px;color:var(--text2);margin-bottom:20px">console.anthropic.com → API Keys</div>
+    <div class="s-label">Кто распознаёт фото</div>
+    <select class="field" id="provInp" onchange="toggleGigaFields()">
+      <option value="claude">Claude (Anthropic)</option>
+      <option value="giga">GigaChat (Сбер)</option>
+    </select>
+    <div id="gigaFields" style="display:none">
+      <div class="s-label">Ключ авторизации GigaChat</div>
+      <input class="field" type="password" id="gigaKeyInp" placeholder="Authorization key" style="margin-bottom:6px">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:12px">developers.sber.ru/studio → проект GigaChat API → Настройки API</div>
+      <div class="s-label">Адрес прокси GigaChat</div>
+      <input class="field" type="url" id="gigaUrlInp" placeholder="https://..." style="margin-bottom:20px">
+    </div>
     <button class="btn btn-primary" onclick="saveSettings()">Сохранить</button>
     <button class="btn btn-secondary" onclick="document.getElementById('settingsModal').classList.remove('open')">Закрыть</button>
   </div>
@@ -627,6 +642,10 @@ function init(){
   document.getElementById('todayLabel').textContent=`${days[d.getDay()]}, ${d.getDate()} ${months[d.getMonth()]}`;
   document.getElementById('goalInp').value=S.goal;
   document.getElementById('apiInp').value=localStorage.getItem('evg_api')||'';
+  document.getElementById('provInp').value=localStorage.getItem('evg_provider')||'claude';
+  document.getElementById('gigaKeyInp').value=localStorage.getItem('evg_giga_key')||'';
+  document.getElementById('gigaUrlInp').value=localStorage.getItem('evg_giga_url')||GIGA_URL;
+  toggleGigaFields();
   renderHome();
   renderRecentChips();
 }
@@ -1090,6 +1109,7 @@ function logComboNow(){
 
 // ===== PHOTO =====
 let photoB64=null,aiItems=[];
+const GIGA_URL='https://functions.yandexcloud.net/d4eu4nvpd63nab865nin';
 function resetPhoto(){
   photoB64=null;aiItems=[];
   const prev=document.getElementById('photoPreview');prev.style.display='none';prev.src='';
@@ -1119,13 +1139,41 @@ async function analyzePhoto(){
   const box=document.getElementById('aiBox');const load=document.getElementById('aiLoad');const items=document.getElementById('aiItems');
   box.classList.add('show');load.style.display='block';items.innerHTML='';
   document.getElementById('addPhotoBtn').style.display='none';
+  const prompt='Определи продукты/блюда на фото.'+(desc?' Пользователь описал эту еду так: "'+desc+'". Считай описание достоверным и приоритетным (названия, ингредиенты, способ приготовления, вес и порции), фото используй только для уточнения того, чего нет в описании.':'')+' ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. kcal/p/f/c — на 100 г. Пустой массив если ничего.';
+  if(localStorage.getItem('evg_provider')==='giga'){
+    const gKey=localStorage.getItem('evg_giga_key'),gUrl=localStorage.getItem('evg_giga_url')||GIGA_URL;
+    if(!gKey||!gUrl){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь ключ и адрес прокси GigaChat в Настройки</div>';return;}
+    try{
+      const resp=await fetch(gUrl,{method:'POST',headers:{'Content-Type':'application/json','x-giga-key':gKey},body:JSON.stringify({model:'GigaChat-2-Max',image:await shrinkPhoto(),prompt})});
+      const data=await resp.json();
+      if(!resp.ok||!data.text)throw new Error(data.error||('HTTP '+resp.status));
+      const m=data.text.match(/\[[\s\S]*\]/);
+      aiItems=JSON.parse(m?m[0]:data.text).map(it=>({...it,checked:true}));
+      renderAI();
+    }catch(err){load.style.display='none';const d=document.createElement('div');d.style.cssText='color:var(--red);padding:10px';d.textContent='Ошибка GigaChat: '+err.message;items.innerHTML='';items.appendChild(d);}
+    return;
+  }
   if(!key){load.style.display='none';items.innerHTML='<div style="color:var(--orange);font-size:14px;padding:10px;font-weight:500">⚠️ Добавь API ключ в Настройки</div>';return;}
   try{
-    const resp=await fetch('https://divine-pine-6f4f.evgenia-barakshina.workers.dev/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:'Определи продукты/блюда на фото.'+(desc?' Пользователь описал эту еду так: "'+desc+'". Считай описание достоверным и приоритетным (названия, ингредиенты, способ приготовления, вес и порции), фото используй только для уточнения того, чего нет в описании.':'')+' ТОЛЬКО JSON: [{"name":"по-русски","kcal":число,"p":белки,"f":жиры,"c":углеводы,"emoji":"эмодзи","estimatedG":вес}]. kcal/p/f/c — на 100 г. Пустой массив если ничего.'}]}]})});
+    const resp=await fetch('https://divine-pine-6f4f.evgenia-barakshina.workers.dev/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:800,messages:[{role:'user',content:[{type:'image',source:{type:'base64',media_type:'image/jpeg',data:photoB64}},{type:'text',text:prompt}]}]})});
     const data=await resp.json();
     aiItems=JSON.parse(data.content[0].text.trim().replace(/```json|```/g,'').trim()).map(it=>({...it,checked:true}));
     renderAI();
   }catch(err){load.style.display='none';items.innerHTML='<div style="color:var(--red);padding:10px">Ошибка. Проверь API ключ.</div>';}
+}
+// Уменьшаем фото до 1280px: прокси GigaChat не принимает большие запросы
+function shrinkPhoto(){
+  return new Promise((res,rej)=>{
+    const img=new Image();
+    img.onload=()=>{
+      const k=Math.min(1,1280/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=Math.round(img.width*k);c.height=Math.round(img.height*k);
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      res(c.toDataURL('image/jpeg',0.85).split(',')[1]);
+    };
+    img.onerror=()=>rej(new Error('не удалось прочитать фото'));
+    img.src=document.getElementById('photoPreview').src;
+  });
 }
 function renderAI(){
   document.getElementById('aiLoad').style.display='none';
@@ -1149,10 +1197,14 @@ function addPhotoItems(){
 }
 
 // ===== SETTINGS =====
+function toggleGigaFields(){document.getElementById('gigaFields').style.display=document.getElementById('provInp').value==='giga'?'block':'none';}
 function saveSettings(){
   S.goal=parseInt(document.getElementById('goalInp').value)||1700;
   const key=document.getElementById('apiInp').value.trim();
   save();if(key)localStorage.setItem('evg_api',key);
+  localStorage.setItem('evg_provider',document.getElementById('provInp').value);
+  const gKey=document.getElementById('gigaKeyInp').value.trim();if(gKey)localStorage.setItem('evg_giga_key',gKey);
+  const gUrl=document.getElementById('gigaUrlInp').value.trim();if(gUrl)localStorage.setItem('evg_giga_url',gUrl);
   document.getElementById('settingsModal').classList.remove('open');
   renderHome();showToast('✅ Сохранено');
 }
